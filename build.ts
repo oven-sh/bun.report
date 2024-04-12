@@ -48,6 +48,7 @@ export async function build(mode: string) {
       },
     define: {
       'process.env.NODE_ENV': JSON.stringify(mode),
+      'DEBUG': mode === 'development' ? 'true' : 'false',
     },
     naming: {
       entry: 'frontend.js',
@@ -109,6 +110,7 @@ if (import.meta.main) {
     },
     define: {
       'process.env.NODE_ENV': JSON.stringify('production'),
+      'DEBUG': 'false',
     },
     naming: {
       entry: 'server.js'

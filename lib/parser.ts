@@ -6,12 +6,12 @@ if (typeof DEBUG === 'undefined') {
   (globalThis as any).DEBUG = process.env.NODE_ENV === 'development';
 }
 
-export const debug =
+const debug =
   process.env.NODE_ENV === 'production'
     ? () => { }
     : console.log;
 
-export const platform_map: { [key: string]: [Platform, Arch] } = {
+const platform_map: { [key: string]: [Platform, Arch] } = {
   'w': ['windows', 'x86_64'],
   'e': ['windows', 'x86_64_baseline'],
   // 'W': ['windows', 'aarch64'],
@@ -25,7 +25,7 @@ export const platform_map: { [key: string]: [Platform, Arch] } = {
   'L': ['linux', 'aarch64'],
 }
 
-export const reasons: { [key: string]: (input: string) => string | Promise<string> } = {
+const reasons: { [key: string]: (input: string) => string | Promise<string> } = {
   '0': parsePanicMessage,
   '1': () => 'panic: reached unreachable code',
   '2': (addr) => `Segmentation fault at ${parseVlqAddr(addr)}`,
@@ -81,12 +81,16 @@ export interface RemapResponse {
   addresses: Address[];
 }
 
-export function validateSemver(version: string): boolean {
+function validateSemver(version: string): boolean {
   return /^\d+\.\d+\.\d+$/.test(version);
 }
 
 export async function parse(str: string): Promise<Parse | null> {
   try {
+    str = str
+      .replace(/^(?:(https?:\/\/)?bun\.report\/)?/, '')
+      .replace(/\/view$/, '');
+
     const first_slash = str.indexOf('/');
     const version = str.slice(0, first_slash);
     if (!validateSemver(version)) return null;

@@ -1,11 +1,11 @@
 import type { ServeOptions, Server } from 'bun';
-import type { RemapResponse, ParsedAddress } from '../lib/parser';
+import { type RemapResponse, type ParsedAddress, parse, type Parse } from '../lib/parser';
 import { remap } from './remap';
 import assert from 'node:assert';
 import { join } from 'node:path';
 
 const html = process.env.NODE_ENV === 'production'
-  ? await Bun.file(join(import.meta.dir, 'index.html')).text()
+  ? await Bun.file(join(import.meta.dir, 'index.html')).arrayBuffer()
   : null;
 
 // Server
@@ -56,11 +56,23 @@ export default {
         });
       }
     }
+
     if (pathname === '/favicon.ico') {
       return new Response(Bun.file(join(import.meta.dir, process.env.NODE_ENV === 'production' ? 'favicon.ico' : '../frontend/favicon.ico')));
     }
 
-    return new Response('Not found', { status: 404 });
+    if (pathname.endsWith('/view')) {
+      return new Response('Not found', { status: 307, headers: { Location: `/?trace=${pathname.slice(1, -5)}` } });
+    }
+
+    return parse(pathname.slice(1))
+      .then(async (parsed) => {
+        if (!parsed) {
+          return new Response('Not found', { status: 404 });
+        }
+
+        return remapAndRedirect(parsed);
+      });
   },
 } satisfies ServeOptions;
 
@@ -138,6 +150,12 @@ async function postRemap(request: Request, server: Server) {
   } catch (e) {
     return handleError(e);
   }
+}
+
+async function remapAndRedirect(parsed: Parse) {
+  const remapped = await remap(parsed);
+
+  
 }
 
 function handleError(e: any) {

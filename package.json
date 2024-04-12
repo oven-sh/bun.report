@@ -1,5 +1,6 @@
 {
-  "name": "bun-remap",
+  "name": "bun-tracestrings",
+  "private": true,
   "module": "index.ts",
   "type": "module",
   "scripts": {
@@ -7,15 +8,16 @@
     "start": "NODE_ENV=production bun ./dist/server.js",
     "loc": "bunx cloc backend frontend lib pdb-addr2line2/src *.ts"
   },
-  "devDependencies": {
-    "@types/bun": "latest"
+  "exports": {
+    ".": "./lib.ts"
   },
-  "peerDependencies": {
+  "devDependencies": {
+    "@types/bun": "latest",
+    "html-minifier": "^4.0.0",
+    "lightningcss": "^1.24.1",
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "html-minifier": "^4.0.0",
-    "lightningcss": "^1.24.1",
     "marked": "^12.0.1",
     "octokit": "^3.2.0"
   }

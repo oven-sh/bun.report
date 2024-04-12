@@ -1,8 +1,9 @@
-/node_modules
-/.cache
-/frontend/dist
-/pdb-addr2line/target
-.env.local*
 .DS_Store
+.env.local*
+*.db
 *.pdb
+/.cache
 /dist
+/frontend/dist
+/node_modules
+/pdb-addr2line/target

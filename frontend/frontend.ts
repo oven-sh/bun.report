@@ -1,8 +1,8 @@
 import type { Parse, RemapResponse } from '../lib/parser';
 
-import { cacheKey, addrsToHTML, placeholderAddrsToHTML } from '../lib/format';
 import { parse } from '../lib/parser';
-import { capitalize, debounce, escapeHTML as eschtml } from '../lib/util';
+import { cacheKey, capitalize, debounce, escapeHTML as eschtml } from '../lib/util';
+import { addrsToHTML, placeholderAddrsToHTML } from './formatting';
 
 // Bindings
 const input = document.querySelector('#in') as HTMLInputElement;
@@ -100,8 +100,7 @@ const onInputChange = debounce(async () => {
     return;
   }
 
-  const normalized = value.replace(/^(?:(https:\/\/)?bun\.report\/)?/, '');
-  parsed = await parse(normalized);
+  parsed = await parse(value);
   console.log(parsed);
 
   if (!parsed) {
@@ -116,18 +115,24 @@ const onInputChange = debounce(async () => {
 }, 50);
 input.addEventListener('input', onInputChange);
 
-// Local Storage Sync
+// Local Storage Sync + URL query param
 {
-  let existing: any = localStorage.getItem('bun-remap.input');
-  if (existing) {
-    existing = JSON.parse(existing)
-    if (existing[0] > Date.now()) {
-      input.value = existing[1];
-      onInputChange();
-    } else {
-      localStorage.removeItem('bun-remap.input');
+  let search = location.search;
+  if (search.startsWith('?trace=')) {
+    input.value = search.slice(7);
+    history.replaceState(null, document.title, location.pathname);
+  } else {
+    let existing: any = localStorage.getItem('bun-remap.input');
+    if (existing) {
+      existing = JSON.parse(existing)
+      if (existing[0] > Date.now()) {
+        input.value = existing[1];
+      } else {
+        localStorage.removeItem('bun-remap.input');
+      }
     }
   }
+  input.value && onInputChange();
 }
 
 // Screens
@@ -232,7 +237,7 @@ function cardFooter() {
   return /* html */ `
     <p>
       Bun v${parsed.version} <small>(<code>${commit}</code>)</small>
-      on ${capitalize(parsed.os)} ${arch[0]} ${arch.length > 1 ? `(baseline)` : ''}
+      on ${capitalize(parsed.os)} ${arch[0]} ${arch.length > 1 ? '(baseline)' : ''}
     </p>
   `;
 }

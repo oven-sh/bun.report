@@ -1,21 +1,24 @@
 import type { Address, Parse, Remap } from '../lib/parser';
 import { getCommit } from './git';
 import { fetchDebugFile } from './debug-store';
-import { join } from 'node:path';
+import { getCachedRemap, putCachedRemap } from './db';
+import { cacheKey } from '../lib/util';
+import { llvm_symbolizer, pdb_addr2line } from './system-deps';
 
-const pdb_addr2line =
-  process.env.NODE_ENV === 'production'
-    ? join(import.meta.dir, './pdb-addr2line')
-    : join(import.meta.dir, '..', 'pdb-addr2line2/target/release/pdb-addr2line2');
 
 export async function remap(parse: Parse): Promise<Remap> {
-  if (parse.os === 'windows') {
-    return remapWindows(parse);
+  const key = cacheKey(parse);
+  const cached = getCachedRemap(key);
+  if (cached) {
+    return cached;
   }
-  throw new Error('Unsupported OS');
+
+  const remap = await remapUncached(parse);
+  putCachedRemap(key, remap);
+  return remap;
 }
 
-export async function remapWindows(parse: Parse): Promise<Remap> {
+export async function remapUncached(parse: Parse): Promise<Remap> {
   let commit = await getCommit(parse.commitish);
   if (!commit) {
     const e: any = new Error(`Could not find commit ${parse.commitish}`);
@@ -36,7 +39,7 @@ export async function remapWindows(parse: Parse): Promise<Remap> {
   }
 
   const cmd = [
-    pdb_addr2line,
+    parse.os === 'windows' ? pdb_addr2line : llvm_symbolizer,
     '--exe',
     exe_path,
     '-f',

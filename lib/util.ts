@@ -1,3 +1,5 @@
+import type { Parse } from "./parser";
+
 // Extracted from @paperdave/utils
 // https://github.com/paperdave/various/blob/main/packages/utils/src/debounce.ts
 // MIT License
@@ -45,3 +47,17 @@ export const basename = (path: string) => path.split('/').pop()!;
 
 export type Platform = 'windows' | 'linux' | 'macos';
 export type Arch = 'x86_64' | 'aarch64' | 'x86_64_baseline';
+
+export function cacheKey(parse: Parse) {
+  return [
+    parse.commitish,
+    parse.arch,
+    parse.os,
+    parse.version,
+    ...parse.addresses.map(a => a.address.toString(16)),
+  ].join('_');
+}
+
+export function escmd(str: string): string {
+  return str.replace(/[*#\\\(\)\[\]\<\>_\`]/g, '\\$&');
+}
