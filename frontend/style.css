@@ -1,0 +1,192 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #f9fafb;
+  --fg: #1e1e1e;
+  --pink: #f472b6;
+  --card: #f3f4f6;
+  --card-border: #e5e7eb;
+  --fn-bg: #e4e4e4;
+  --fn-border: #cfcfcf;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14151a;
+    --fg: #f9fafb;
+    --card: #14151a;
+    --card-border: #14151a;
+  }
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--fg);
+}
+
+main {
+  max-width: 768px;
+  margin: 0 auto;
+  padding: 1em;
+}
+
+code {
+  font-family: "Fira Code", "Hack", "Source Code Pro", "SF Mono", "Inconsolata", monospace;
+}
+
+header {
+  display: flex;
+  align-items: baseline;
+}
+
+header div {
+  flex: 1;
+}
+
+header a {
+  display: block;
+}
+
+svg {
+  width: 2em;
+  height: 2em;
+  color: var(--fg);
+}
+
+#in {
+  width: 100%;
+  padding: 0.5rem;
+  border: 2px solid var(--pink);
+  border-radius: 4px;
+
+  padding-left: 0;
+  text-indent: 0.5rem;
+}
+#in::placeholder {
+  opacity: 0.5;
+}
+
+hr {
+  border: none;
+  border-bottom: 2px solid rgba(128, 128, 128, 0.2);
+  margin: 2rem 0;
+}
+
+.app {
+  margin-top: 1rem;
+}
+
+.error {
+  color: red;
+}
+
+.card  {
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background-color: var(--card);
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+.card > :first-child {
+  margin-top: 0;
+}
+
+.card > :last-child {
+  margin-bottom: 0;
+}
+
+.js {
+  display: block;
+  opacity: 0.8;
+  font-style: italic;
+  padding: 0.5rem 1rem 0.5rem 0;
+}
+.js::after {
+  content: '...';
+}
+
+pre {
+  line-height: 1.5;
+  padding-left: 1rem;
+}
+
+table {
+  padding-left: 1rem;
+}
+
+tr td:first-child {
+  padding-right: 0.75rem;
+  text-align: right;
+}
+
+li {
+  margin-top: 0.5rem;
+}
+
+a {
+  color: var(--fg);
+  text-decoration: underline;
+}
+
+a:hover {
+  color: #a03939;
+}
+
+a:active {
+  color: #ff4464;
+}
+
+.loc {
+  opacity: 0.7;
+}
+
+.fn {
+  background-color: var(--fn-bg);
+  border: 1px solid var(--fn-border);
+  border-radius: 4px;
+  padding: 2px;
+  font-size: 87%;
+}
+
+.namespace {
+  color: #861a96;
+  font-weight: bold;
+}
+
+.kw {
+  color: #cf7137;
+  font-weight: bold;
+}
+
+.skeleton {
+  display: inline-block;
+  animation: flash 2s var(--delay) ease-in-out infinite, appear 100ms linear both;
+  border-radius: 8px;
+  color: transparent;
+}
+
+.skeleton * {
+  opacity: 0;
+}
+
+@keyframes appear {
+  0%, 20% {
+    background-color: transparent;
+  }
+  to {
+    background-color: var(--fg); 
+  }
+}
+@keyframes flash {
+  0%, 20%, 80%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}

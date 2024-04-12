@@ -1,0 +1,10 @@
+[package]
+name = "pdb-addr2line"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = "4.5.4"
+memmap2 = "0.9.4"
+msvc-demangler = "0.10.0"
+pdb-addr2line = "0.11.0"
