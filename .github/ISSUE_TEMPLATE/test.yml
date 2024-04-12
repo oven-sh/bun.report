@@ -9,6 +9,7 @@ body:
         someone should write better text in here please
 
   - type: textarea
+    id: remapped_trace
     attributes:
       label: Stack Trace
       description: auto fill
