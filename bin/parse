@@ -1,0 +1,14 @@
+#!/usr/bin/env bun
+import { parse } from "../lib";
+
+let args = process.argv.slice(2);
+
+if (args.length === 0) {
+  console.error('Usage: parse <trace string>');
+  process.exit(1);
+}
+
+let trace = args[0];
+
+const parsed = await parse(trace);
+console.log(parsed);

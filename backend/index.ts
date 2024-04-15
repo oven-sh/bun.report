@@ -1,8 +1,10 @@
 import type { ServeOptions, Server } from 'bun';
-import { type RemapResponse, type ParsedAddress, parse, type Parse } from '../lib/parser';
+import { type RemapAPIResponse, type ParsedAddress, parse, type Parse } from '../lib/parser';
 import { remap } from './remap';
 import assert from 'node:assert';
 import { join } from 'node:path';
+import { addrsToMarkdown } from '../lib';
+import { formatMarkdown } from '../lib/github-markdown';
 
 const html = process.env.NODE_ENV === 'production'
   ? await Bun.file(join(import.meta.dir, 'index.html')).arrayBuffer()
@@ -146,19 +148,29 @@ async function postRemap(request: Request, server: Server) {
     return Response.json({
       commit: remapped.commit,
       addresses: remapped.addresses,
-    } satisfies RemapResponse);
+    } satisfies RemapAPIResponse);
   } catch (e) {
-    return handleError(e);
+    return handleError(e, false);
   }
 }
 
-async function remapAndRedirect(parsed: Parse) {
-  const remapped = await remap(parsed);
+const template = 'test.yml';
 
-  
+async function remapAndRedirect(parsed: Parse) {
+  try {
+    const remapped = await remap(parsed);
+
+    const report = formatMarkdown(remapped);
+
+    const url = `https://github.com/oven-sh/bun.report/issues/new?labels=bug,crash&template=${template}&remapped_trace=${encodeURIComponent(report)}`;
+
+    return Response.redirect(url, 307);
+  } catch (e) {
+    return handleError(e, true);
+  }
 }
 
-function handleError(e: any) {
+function handleError(e: any, visual: boolean) {
   switch (e?.code) {
     case 'DebugInfoUnavailable':
       if (process.env.NODE_ENV === 'development') {

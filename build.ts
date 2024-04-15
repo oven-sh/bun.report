@@ -4,6 +4,7 @@ import * as lightning from 'lightningcss';
 // @ts-ignore
 import * as html_minifier from 'html-minifier';
 import * as marked from 'marked';
+import * as terser from 'terser';
 
 export async function build(mode: string) {
   let in_file = await Bun.file(join(import.meta.dir, './frontend/frontend.ts')).text();

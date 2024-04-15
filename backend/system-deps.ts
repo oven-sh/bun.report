@@ -1,12 +1,13 @@
 import { join } from 'node:path';
+import { existsSync } from 'node:fs';
 
 export const pdb_addr2line =
   process.env.NODE_ENV === 'production'
     ? join(import.meta.dir, './pdb-addr2line')
-    : join(import.meta.dir, '..', 'pdb-addr2line2/target/release/pdb-addr2line2');
+    : join(import.meta.dir, '..', 'pdb-addr2line/target/release/pdb-addr2line');
 
-if (Bun.which(pdb_addr2line) == null) {
-  throw new Error(`pdb-addr2line missing`);
+if (!existsSync(pdb_addr2line)) {
+  throw new Error(`pdb-addr2line missing (expected at ${pdb_addr2line})`);
 }
 
 export const xz = Bun.which('xz')!;

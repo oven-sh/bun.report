@@ -3,6 +3,7 @@ import type { Platform, Arch } from '../lib/util';
 import assert from 'node:assert';
 import { exists, rm } from 'node:fs/promises';
 import { xz } from './system-deps';
+import { parse } from 'marked';
 
 const cache_root = join(import.meta.dir, '..', '.cache');
 
@@ -35,9 +36,20 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: string): 
 
   const { promise, resolve, reject } = Promise.withResolvers<string | null>();
   in_progress_downloads.set(path, promise);
+  promise.catch(() => { }); // mark as handled
+
   try {
+    if (os !== 'windows') {
+      throw new Error(`Unsupported OS ${os}. Please place file directly at ${path}`);
+    }
     const url = `${process.env.BUN_DOWNLOAD_BASE}/${os}-${arch}/${commit}${fetch_suffix}`;
+    console.log('Fetching ' + url);
     const response = await fetch(url);
+    if (response.status === 404) {
+      in_progress_downloads.delete(path);
+      resolve(null);
+      return null;
+    }
     if (response.status !== 200) {
       throw new Error(`Failed to fetch ${url}: ${response.status}`);
     }
@@ -57,7 +69,7 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: string): 
       }
     } else {
       // blocked on knowing how this gets uploaded
-      throw new Error(`Unsupported OS ${os}`);
+      throw new Error(`Unsupported OS ${os}. Please place file directly at ${path}`);
     }
   } catch (e) {
     await rm(path, { force: true });

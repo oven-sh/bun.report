@@ -1,0 +1,52 @@
+#!/usr/bin/env bun
+import { remapUncached } from "../backend/remap";
+import { addrsToMarkdown, formatMarkdown, parse } from "../lib";
+
+let args = process.argv.slice(2);
+
+let positionals: string[] = [];
+let options: { [key: string]: any } = {};
+
+for (let i = 0; i < args.length; i++) {
+  const arg = args[i];
+  if (arg.startsWith('--')) {
+    let value: any = true;
+    if (arg === '--exe') {
+      i++;
+      value = args[i];
+    }
+    options[arg.slice(2)] = value;
+  } else {
+    positionals.push(arg);
+  }
+}
+
+let trace = positionals[0];
+if (!trace) {
+  console.error(
+    `Usage: remap <trace string> <opts>
+
+Options:
+  --md, display as github issue markdown
+  --exe, path to executable
+`);
+  process.exit(1);
+}
+
+
+const parsed = await parse(trace);
+
+if (!parsed) {
+  console.error('Failed to parse trace string');
+  process.exit(1);
+}
+
+const remapped = await remapUncached(parsed, {
+  exe: options.exe
+});
+
+if (options.md) {
+  console.log(formatMarkdown(remapped));
+} else {
+  console.log(remapped);
+}

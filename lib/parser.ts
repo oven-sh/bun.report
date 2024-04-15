@@ -48,6 +48,7 @@ export interface Parse {
 
 export interface Remap {
   message: string;
+  version: string;
   os: Platform;
   arch: Arch;
   commit: string;
@@ -63,20 +64,18 @@ export interface ParsedAddress {
 
 export interface RemappedAddress {
   remapped: true;
-  file: string;
-  line: number;
+  src: { file: string, line: number } | null;
   function: string;
   object: string;
 }
 
 export interface UnknownAddress {
-  function: string | null;
   remapped: false;
   object: string;
   address: number;
 }
 
-export interface RemapResponse {
+export interface RemapAPIResponse {
   commit: string;
   addresses: Address[];
 }
@@ -118,19 +117,25 @@ export async function parse(str: string): Promise<Parse | null> {
       c = str[i];
       object = 'bun';
       if (c === undefined) {
-        DEBUG && debug('invalid part %o', str.slice(i));
+        DEBUG && debug('invalid end of string at %o', i);
         return null;
       }
 
-      if (c === '_') {
+      if (c === '=') {
         addresses.push({ address: 0, object: 'js' });
+        i += 1;
+        continue;
+      }
+
+      if (c === '_') {
+        addresses.push({ address: 0, object: '?' });
         i += 1;
         continue;
       }
 
       [address, inc] = decodePart(str.slice(i));
       if (address == null) {
-        DEBUG && debug('invalid part %o', str.slice(i));
+        DEBUG && debug('invalid first part %o', str.slice(i));
         return null;
       }
       i += inc;
@@ -140,7 +145,7 @@ export async function parse(str: string): Promise<Parse | null> {
       }
 
       if (address === 1) {
-        [c, inc] = decodePart(str.slice(i + 1));
+        [c, inc] = decodePart(str.slice(i));
         if (c == null) {
           DEBUG && debug('invalid object len %o', str.slice(i));
           return null;
@@ -152,7 +157,7 @@ export async function parse(str: string): Promise<Parse | null> {
 
         [address, inc] = decodePart(str.slice(i));
         if (address == null) {
-          DEBUG && debug('invalid part %o', str.slice(i));
+          DEBUG && debug('invalid second part %s %o', object, i, str.slice(i));
           return null;
         }
         i += inc;
@@ -204,9 +209,12 @@ function parsePanicMessage(message_compressed: string): Promise<string> | string
 }
 
 function parseVlqAddr(unparsed_addr: string): string {
-  let [first, i] = decodePart(unparsed_addr);
-  if (!first) return 'unknown address';
+  let [first, i] = decodePart(unparsed_addr) as [any, number];
   let [second] = decodePart(unparsed_addr.slice(i));
-  if (!second) return 'unknown address';
-  return 'address 0x' + first.toString(16) + second.toString(16).padStart(8, '0');
+  if (first == null || second == null) return 'unknown address';
+  first = first ? first.toString(16) : '';
+  return 'address 0x'
+    + (first
+      + (second + (second < 0 ? 2 ** 32 : 0)).toString(16).padStart(8, '0')).toUpperCase();
 }
+

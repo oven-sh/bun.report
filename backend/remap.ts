@@ -18,87 +18,88 @@ export async function remap(parse: Parse): Promise<Remap> {
   return remap;
 }
 
-export async function remapUncached(parse: Parse): Promise<Remap> {
-  let commit = await getCommit(parse.commitish);
+const macho_first_offset = 0x100000000;
+
+export async function remapUncached(parse: Parse, opts: { exe?: string } = {}): Promise<Remap> {
+  let commit = opts.exe ? 'unknown' : await getCommit(parse.commitish);
   if (!commit) {
     const e: any = new Error(`Could not find commit ${parse.commitish}`);
     e.code = 'DebugInfoUnavailable';
     throw e;
   }
 
-  const bun_addrs = parse.addresses
-    .filter(a => a.object === 'bun')
-    .map(a => a.address.toString(16));
-
-  const exe_path = await fetchDebugFile(parse.os, parse.arch, commit);
+  const exe_path = opts.exe ?? await fetchDebugFile(parse.os, parse.arch, commit);
 
   if (!exe_path) {
-    const e: any = new Error(`Could not find debug file for ${parse.os}-${parse.arch} at ${exe_path}`);
+    const e: any = new Error(`Could not find debug file for ${parse.os}-${parse.arch} for commit ${parse.commitish}`);
     e.code = 'DebugInfoUnavailable';
     throw e;
   }
 
-  const cmd = [
-    parse.os === 'windows' ? pdb_addr2line : llvm_symbolizer,
-    '--exe',
-    exe_path,
-    '-f',
-    ...bun_addrs
-  ];
-  const subproc = Bun.spawn({
-    cmd,
-    stdio: ['ignore', 'pipe', 'pipe'],
-  });
+  let lines: string[] = [];
 
-  if ((await subproc.exited) !== 0) {
-    const e: any = new Error(
-      'pdb-addr2line failed: '
-      + await Bun.readableStreamToText(subproc.stderr)
-    );
-    e.code = 'PdbAddr2LineFailed';
+  const bun_addrs = parse.addresses
+    .filter(a => a.object === 'bun')
+    .map(a => '0x' + (parse.os === 'macos' ? macho_first_offset + a.address : a.address).toString(16));
+  if (bun_addrs.length > 0) {
+    const cmd = [
+      parse.os === 'windows' ? pdb_addr2line : llvm_symbolizer,
+      '--exe',
+      exe_path,
+      ...parse.os !== 'windows'
+        ? ['--no-inlines', '--relative-address']
+        : ['--llvm'],
+      '-f',
+      ...bun_addrs
+    ];
+
+    console.log('running', cmd.join(' '));
+
+    const subproc = Bun.spawn({
+      cmd,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+
+    if ((await subproc.exited) !== 0) {
+      const e: any = new Error(
+        'pdb-addr2line failed: '
+        + await Bun.readableStreamToText(subproc.stderr)
+      );
+      e.code = 'PdbAddr2LineFailed';
+    }
+
+    const stdout = await Bun.readableStreamToText(subproc.stdout);
+    lines = stdout.split('\n');
   }
-
-  const stdout = await Bun.readableStreamToText(subproc.stdout);
-  const lines = stdout.split('\n');
 
   const mapped_addrs: Address[] = parse.addresses.map(addr => {
     if (addr.object === 'bun') {
       const fn_line = lines.shift();
       const source_line = lines.shift();
-      if (!fn_line || !source_line) {
-        throw new Error('pdb-addr2line parse failed: missing no source line');
-      }
+      if (fn_line && source_line) {
+        const parsed_line = parsePdb2AddrLineFile(source_line);
 
-      const parsed_line = parsePdb2AddrLineFile(source_line);
-      if (!parsed_line) {
         return {
-          remapped: false,
-          object: addr.object,
-          address: addr.address,
-          function: fn_line.startsWith('?')
-            ? null
-            : cleanFunctionName(fn_line),
+          remapped: true,
+          src: parsed_line ? {
+            file: parsed_line.file,
+            line: parsed_line.line,
+          } : null,
+          function: cleanFunctionName(fn_line),
+          object: 'bun',
         } satisfies Address;
       }
-
-      return {
-        remapped: true,
-        file: parsed_line.file,
-        line: parsed_line.line,
-        function: cleanFunctionName(fn_line),
-        object: 'bun',
-      } satisfies Address;
-    } else {
-      return {
-        remapped: false,
-        object: addr.object,
-        address: addr.address,
-        function: null,
-      } satisfies Address;
     }
+
+    return {
+      remapped: false,
+      object: addr.object,
+      address: addr.address,
+    } satisfies Address;
   });
 
   return {
+    version: parse.version,
     message: parse.message,
     os: parse.os,
     arch: parse.arch,
@@ -131,7 +132,7 @@ export function cleanFunctionName(str: string): string {
 }
 
 export function parsePdb2AddrLineFile(str: string): { file: string, line: number } | null {
-  if (str === '??:?') return null;
+  if (str.startsWith('??:')) return null;
 
   const last_colon = str.lastIndexOf(':');
   if (last_colon === -1) {

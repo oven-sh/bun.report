@@ -1,8 +1,8 @@
-import type { Parse, RemapResponse } from '../lib/parser';
+import type { Parse, RemapAPIResponse } from '../lib/parser';
 
 import { parse } from '../lib/parser';
-import { cacheKey, capitalize, debounce, escapeHTML as eschtml } from '../lib/util';
-import { addrsToHTML, placeholderAddrsToHTML } from './formatting';
+import { cacheKey, debounce, escapeHTML as eschtml } from '../lib/util';
+import { addrsToHTML } from './html';
 
 // Bindings
 const input = document.querySelector('#in') as HTMLInputElement;
@@ -22,7 +22,7 @@ let ui_state: UIState = UIState.None;
 let ui_state_data: any = null;
 
 let parsed: Parse | null = null;
-let fetched: RemapResponse | null = null
+let fetched: RemapAPIResponse | null = null
 let remapping_error: string | null = null;
 
 let pending_fetch_ctrl: AbortController | null = null;
@@ -37,7 +37,7 @@ function transition(state: UIState, data?: any) {
 }
 
 // Data fetching framework
-async function fetchRemap(parse: Parse): Promise<RemapResponse | null> {
+async function fetchRemap(parse: Parse): Promise<RemapAPIResponse | null> {
   // One remap fetch may be in progress. If there are two, cancel the first
   if (pending_fetch_ctrl) {
     pending_fetch_ctrl.abort();
@@ -172,7 +172,7 @@ const screens: Record<UIState, () => void> = {
     await new Promise(r => setTimeout(r, 100));
     if (fetched_fast) return;
 
-    const list = placeholderAddrsToHTML(parsed.addresses).map(l => `<tr>${l}</tr>`).join('');
+    const list = addrsToHTML(null!, parsed.addresses).map(l => `<tr>${l}</tr>`).join('');
 
     out.innerHTML = /* html */ `
       <div class='card'>
@@ -225,6 +225,12 @@ function cardHead() {
   `
 }
 
+const os_names: { [key: string]: string } = {
+  'w': 'Windows',
+  'm': 'macOS',
+  'l': 'Linux',
+}
+
 function cardFooter() {
   parsed = parsed!;
 
@@ -237,7 +243,7 @@ function cardFooter() {
   return /* html */ `
     <p>
       Bun v${parsed.version} <small>(<code>${commit}</code>)</small>
-      on ${capitalize(parsed.os)} ${arch[0]} ${arch.length > 1 ? '(baseline)' : ''}
+      on ${os_names[parsed.os[0]]} ${arch[0]} ${arch.length > 1 ? '(baseline)' : ''}
     </p>
   `;
 }
