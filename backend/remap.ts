@@ -139,12 +139,17 @@ export function parsePdb2AddrLineFile(str: string): { file: string, line: number
     return null;
   }
 
-  const line = Math.floor(Number(str.slice(last_colon + 1)));
+  const second_colon = str.lastIndexOf(':', last_colon - 1);
+  if (second_colon === -1) {
+    return null;
+  }
+
+  const line = Math.floor(Number(str.slice(second_colon + 1, last_colon)));
   if (isNaN(line)) {
     return null;
   }
 
-  const file_full = str.slice(0, last_colon);
+  const file_full = str.slice(0, second_colon);
   const file = file_full
     .replace(/\\/g, '/')
     .replace(/.*?\/src\//g, 'src/');

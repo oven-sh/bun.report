@@ -3,8 +3,7 @@ import { type RemapAPIResponse, type ParsedAddress, parse, type Parse } from '..
 import { remap } from './remap';
 import assert from 'node:assert';
 import { join } from 'node:path';
-import { addrsToMarkdown } from '../lib';
-import { formatMarkdown } from '../lib/github-markdown';
+import { formatMarkdown } from '../lib/format';
 
 const html = process.env.NODE_ENV === 'production'
   ? await Bun.file(join(import.meta.dir, 'index.html')).arrayBuffer()

@@ -61,3 +61,7 @@ export function cacheKey(parse: Parse) {
 export function escmd(str: string): string {
   return str.replace(/[*#\\\(\)\[\]\<\>_\`]/g, '\\$&');
 }
+
+export function escmdcode(str: string): string {
+  return str.replace(/[\`]/g, '\\$&');
+}

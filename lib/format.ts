@@ -1,5 +1,5 @@
 import type { Address } from "./parser";
-import { basename, escmd } from "./util";
+import { basename, escmdcode } from "./util";
 
 import type { Remap } from "./parser";
 
@@ -39,9 +39,9 @@ export function addrsToMarkdown(commit: string, addrs: Address[]): string[] {
 
     if (addr.remapped) {
       lines.push(`${addr.src ?
-        `[\`${escmd(basename(addr.src.file))}:${addr.src.line}\`](https://github.com/oven-sh/bun/blob/${commit}/${addr.src.file}#L${addr.src.line}): `
+        `[\`${escmdcode(basename(addr.src.file))}:${addr.src.line}\`](https://github.com/oven-sh/bun/blob/${commit}/${addr.src.file}#L${addr.src.line}): `
         : ''
-        }\`${addr.function}\`${addr.object !== 'bun' ? ` in ${addr.object}` : ''}`);
+        }\`${escmdcode(addr.function)}\`${addr.object !== 'bun' ? ` in ${addr.object}` : ''}`);
     } else {
       lines.push(`??? at \`0x${addr.address.toString(16)}\` ${addr.object !== 'bun' ? `in ${addr.object}` : ''}`);
     }
