@@ -7,7 +7,7 @@ import { addrsToHTML } from './html';
 // Bindings
 const input = document.querySelector('#in') as HTMLInputElement;
 const out = document.querySelector('#out') as HTMLDivElement;
-const store = await caches?.open('bun-remap');
+const store = await globalThis.caches?.open('bun-remap');
 
 // UI State
 enum UIState {
