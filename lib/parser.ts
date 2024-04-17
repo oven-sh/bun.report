@@ -62,6 +62,7 @@ export interface Remap {
   arch: Arch;
   commit: ResolvedCommit;
   addresses: Address[];
+  issue?: string;
 }
 
 export type Address = RemappedAddress | UnknownAddress;

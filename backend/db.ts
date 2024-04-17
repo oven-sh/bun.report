@@ -2,7 +2,7 @@
 // This is used to avoid remapping the same address multiple times.
 import { Database } from 'bun:sqlite';
 import type { Remap } from '../lib/parser';
-import type { Arch, Platform } from '../lib/util';
+import { remapCacheKey, type Arch, type Platform } from '../lib/util';
 import { rm } from 'node:fs/promises';
 import { relative } from 'node:path';
 
@@ -17,7 +17,7 @@ if (existing_tables.length === 0) {
   db.run(`
     CREATE TABLE remap (
       cache_key TEXT PRIMARY KEY,
-      remapped_data TEXT
+      remapped_data TEXT,
     );
   `);
 
@@ -28,25 +28,38 @@ if (existing_tables.length === 0) {
       last_updated INTEGER NOT NULL
     )
   `);
+
+  db.run(`
+    CREATE TABLE issues (
+      cache_key TEXT PRIMARY KEY,
+      issue INTEGER NOT NULL,
+    )
+  `);
 }
 
-const get_remap_stmt = db.prepare('SELECT remapped_data FROM remap WHERE cache_key = ?');
-const insert_remap_stmt = db.prepare('INSERT INTO remap (cache_key, remapped_data) VALUES (?, ?)');
+const get_remap_stmt = db.prepare('SELECT remapped_data, github_issue FROM remap WHERE cache_key = ?');
+const insert_remap_stmt = db.prepare('INSERT INTO remap (cache_key, remapped_data, github_issue) VALUES (?, ?, ?)');
 
 const get_debug_file_stmt = db.prepare('SELECT file_path FROM debug_file WHERE cache_key = ?');
 const insert_debug_file_stmt = db.prepare('INSERT INTO debug_file (cache_key, file_path, last_updated) VALUES (?, ?, ?)');
 const update_debug_file_stmt = db.prepare('UPDATE debug_file SET last_updated = ? WHERE cache_key = ?');
 
+const get_issue_stmt = db.prepare('SELECT issue FROM issues WHERE cache_key = ?');
+const insert_issue_stmt = db.prepare('INSERT INTO issues (cache_key, issue) VALUES (?, ?)');
+
 export function getCachedRemap(cache_key: string): Remap | null {
-  const result = get_remap_stmt.get(cache_key) as { remapped_data: string } | null;
+  const result = get_remap_stmt.get(cache_key) as { remapped_data: string, github_issue: string } | null;
   if (result) {
-    return JSON.parse(result.remapped_data);
+    const remap = JSON.parse(result.remapped_data);
+    const issue = getIssueForRemap(remapCacheKey(remap));
+    remap.issue = issue;
+    return remap;
   }
   return null;
 }
 
 export function putCachedRemap(cache_key: string, remap: Remap) {
-  insert_remap_stmt.run(cache_key, JSON.stringify(remap));
+  insert_remap_stmt.run(cache_key, JSON.stringify(remap), "null");
 }
 
 export function getCachedDebugFile(os: Platform, arch: Arch, commit: string): string | null {
@@ -74,5 +87,20 @@ export async function garbageCollect() {
     console.log('Remove ' + relative(process.cwd(), file_path));
     await rm(file_path, {});
     db.run('DELETE FROM debug_file WHERE cache_key = ?', [cache_key]);
+  }
+}
+
+export function tagIssue(cache_key: string, issue: number) {
+  const has_existing = get_issue_stmt.get(cache_key) as { issue: string } | null;
+  if (has_existing) {
+    return;
+  }
+  insert_issue_stmt.run(cache_key, issue);
+}
+
+export function getIssueForRemap(cache_key: string) {
+  const obj = get_issue_stmt.get(cache_key) as { issue: string } | null;
+  if (obj) {
+    return obj.issue;
   }
 }

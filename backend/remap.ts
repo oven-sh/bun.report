@@ -2,13 +2,14 @@ import type { Address, Parse, Remap, ResolvedCommit } from '../lib/parser';
 import { getCommit } from './git';
 import { fetchDebugFile } from './debug-store';
 import { getCachedRemap, putCachedRemap } from './db';
-import { cacheKey } from '../lib/util';
+import { parseCacheKey } from '../lib/util';
 import { llvm_symbolizer, pdb_addr2line } from './system-deps';
 
 
 export async function remap(parse: Parse): Promise<Remap> {
-  const key = cacheKey(parse);
+  const key = parseCacheKey(parse);
   const cached = getCachedRemap(key);
+
   if (cached) {
     return cached;
   }

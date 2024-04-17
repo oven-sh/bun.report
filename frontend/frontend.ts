@@ -1,7 +1,7 @@
 import type { Parse, RemapAPIResponse } from '../lib/parser';
 
 import { parse } from '../lib/parser';
-import { cacheKey, debounce, escapeHTML as eschtml } from '../lib/util';
+import { parseCacheKey, debounce, escapeHTML as eschtml } from '../lib/util';
 import { addrsToHTML } from './html';
 
 // Bindings
@@ -46,7 +46,7 @@ async function fetchRemap(parse: Parse): Promise<RemapAPIResponse | null> {
   let fetch_id = current_fetch_id = Math.random();
 
   // Use a cached entry
-  const cached_request = new Request(`/remap/${cacheKey(parse)}`);
+  const cached_request = new Request(`/remap/${parseCacheKey(parse)}`);
   const cached = await store?.match(cached_request, {});
   if (cached) return cached.json();
   if (fetch_id !== current_fetch_id) return null;
@@ -237,7 +237,7 @@ function cardFooter() {
   let { pr, oid } = fetched?.commit ?? {};
 
   const commit = pr
-    ? `<a href="https://github.com/oven-sh/bun/pulls/${pr.number}" target="_blank">#${pr.number}</a>`
+    ? `<a href="https://github.com/oven-sh/bun/pull/${pr.number}" target="_blank">#${pr.number}</a>`
     : oid
       ? `<a href="https://github.com/oven-sh/bun/commit/${oid}" target="_blank">${parsed.commitish}</a>`
       : parsed.commitish;

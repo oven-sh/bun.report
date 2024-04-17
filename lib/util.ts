@@ -1,4 +1,4 @@
-import type { Parse } from "./parser";
+import type { Parse, Remap } from "./parser";
 
 // Extracted from @paperdave/utils
 // https://github.com/paperdave/various/blob/main/packages/utils/src/debounce.ts
@@ -48,14 +48,39 @@ export const basename = (path: string) => path.split('/').pop()!;
 export type Platform = 'windows' | 'linux' | 'macos';
 export type Arch = 'x86_64' | 'aarch64' | 'x86_64_baseline';
 
-export function cacheKey(parse: Parse) {
-  return [
+export function parseCacheKey(parse: Parse) {
+  const data = [
     parse.commitish,
     parse.arch,
     parse.os,
     parse.version,
     ...parse.addresses.map(a => a.address.toString(16)),
   ].join('_');
+  const hasher = new Bun.CryptoHasher('sha256');
+  hasher.update(data);
+  const buffer = (hasher.digest() as Buffer).toString('base64url');
+  return buffer.slice(0, 20);
+}
+
+// Intentionally not including version so that we can link to same issues across versions
+export function remapCacheKey(remap: Remap) {
+  const data = [
+    remap.os,
+    remap.arch,
+    ...remap.addresses.flatMap(a => [
+      a.object,
+      ...a.remapped ? [
+        a.function,
+        a.src?.file ?? 'no-file',
+      ] : [
+        a.address.toString(16),
+      ]
+    ]),
+  ].join('_');
+  const hasher = new Bun.CryptoHasher('sha256');
+  hasher.update(data);
+  const buffer = (hasher.digest() as Buffer).toString('base64url');
+  return buffer.slice(0, 20);
 }
 
 export function escmd(str: string): string {
