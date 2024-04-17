@@ -89,7 +89,7 @@ export interface UnknownAddress {
 export interface RemapAPIResponse {
   commit: ResolvedCommit;
   addresses: Address[];
-  issue?: number;
+  issue: number | null;
 }
 
 function validateSemver(version: string): boolean {

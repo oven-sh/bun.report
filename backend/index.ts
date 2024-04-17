@@ -160,6 +160,7 @@ async function postRemap(request: Request, server: Server) {
     return Response.json({
       commit: remapped.commit,
       addresses: remapped.addresses,
+      issue: remapped.issue ?? null,
     } satisfies RemapAPIResponse);
   } catch (e) {
     return handleError(e, false);
