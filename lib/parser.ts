@@ -46,12 +46,21 @@ export interface Parse {
   addresses: ParsedAddress[];
 }
 
+export interface ResolvedCommit {
+  oid: string;
+  pr: {
+    title: string;
+    number: number;
+    ref: string;
+  } | null;
+}
+
 export interface Remap {
   message: string;
   version: string;
   os: Platform;
   arch: Arch;
-  commit: string;
+  commit: ResolvedCommit;
   addresses: Address[];
 }
 
@@ -76,7 +85,7 @@ export interface UnknownAddress {
 }
 
 export interface RemapAPIResponse {
-  commit: string;
+  commit: ResolvedCommit;
   addresses: Address[];
 }
 

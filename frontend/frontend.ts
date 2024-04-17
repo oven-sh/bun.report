@@ -188,7 +188,7 @@ const screens: Record<UIState, () => void> = {
     parsed = parsed!;
     fetched = fetched!;
 
-    const list = addrsToHTML(fetched.commit, fetched.addresses).map(l => `<tr>${l}</tr>`).join('');
+    const list = addrsToHTML(fetched.commit.oid, fetched.addresses).map(l => `<tr>${l}</tr>`).join('');
 
     out.innerHTML = /* html */ `
       <div class='card'>
@@ -234,9 +234,13 @@ const os_names: { [key: string]: string } = {
 function cardFooter() {
   parsed = parsed!;
 
-  const commit = fetched
-    ? `<a href="https://github.com/oven-sh/bun/commit/${fetched.commit}" target="_blank">${parsed.commitish}</a>`
-    : parsed.commitish;
+  let { pr, oid } = fetched?.commit ?? {};
+
+  const commit = pr
+    ? `<a href="https://github.com/oven-sh/bun/pulls/${pr.number}" target="_blank">#${pr.number}</a>`
+    : oid
+      ? `<a href="https://github.com/oven-sh/bun/commit/${oid}" target="_blank">${parsed.commitish}</a>`
+      : parsed.commitish;
 
   const arch = parsed.arch.split('_baseline');
 

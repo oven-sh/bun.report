@@ -1,4 +1,4 @@
-import type { Address, Parse, Remap } from '../lib/parser';
+import type { Address, Parse, Remap, ResolvedCommit } from '../lib/parser';
 import { getCommit } from './git';
 import { fetchDebugFile } from './debug-store';
 import { getCachedRemap, putCachedRemap } from './db';
@@ -21,7 +21,9 @@ export async function remap(parse: Parse): Promise<Remap> {
 const macho_first_offset = 0x100000000;
 
 export async function remapUncached(parse: Parse, opts: { exe?: string } = {}): Promise<Remap> {
-  let commit = opts.exe ? 'unknown' : await getCommit(parse.commitish);
+  const commit: ResolvedCommit | null = opts.exe
+    ? { oid: 'unknown', pr: null }
+    : await getCommit(parse.commitish);
   if (!commit) {
     const e: any = new Error(`Could not find commit ${parse.commitish}`);
     e.code = 'DebugInfoUnavailable';
@@ -103,7 +105,7 @@ export async function remapUncached(parse: Parse, opts: { exe?: string } = {}): 
     message: parse.message,
     os: parse.os,
     arch: parse.arch,
-    commit: parse.commitish,
+    commit: commit,
     addresses: mapped_addrs,
   };
 }
