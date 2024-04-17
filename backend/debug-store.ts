@@ -28,7 +28,7 @@ const in_progress_downloads = new Map<string, Promise<string | null>>();
 const map_download_arch = {
   'x86_64': 'x64',
   'x86_64_baseline': 'x64',
-  'aarch64': 'arm64',
+  'aarch64': 'aarch64',
 } as const;
 
 const map_download_os = {
@@ -113,7 +113,7 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedC
       throw e;
     }
 
-    const desired_file = join(tmp.path, dir, 'bun' + store_suffix);
+    const desired_file = join(tmp.path, dir, 'bun' + store_suffix + (os !== 'windows' ? '-profile' : ''));
     if (!await exists(desired_file)) {
       throw new Error(`Failed to find ${relative(tmp.path, desired_file)} in extraction`);
     }
