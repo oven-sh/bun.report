@@ -6,6 +6,9 @@ import { parseCacheKey } from '../lib/util';
 import { llvm_symbolizer, pdb_addr2line } from './system-deps';
 import { formatMarkdown } from '../lib';
 
+/** This map serves as a sort of "mutex" */
+const in_progress_remaps = new Map<string, Promise<Remap>>();
+
 export async function remap(parse: Parse): Promise<Remap> {
   const key = parseCacheKey(parse);
   const cached = getCachedRemap(key);
@@ -14,28 +17,22 @@ export async function remap(parse: Parse): Promise<Remap> {
     return cached;
   }
 
-  const remap = await remapUncached(parse);
-  putCachedRemap(key, remap);
-
-  if (process.env.DISCORD_WEBHOOK_URL) {
-    const markdown = formatMarkdown(remap);
-    const markdown_no_links = markdown.replaceAll(/\((https?:[^\)]*?)\)/g, '(<$1>)');
-    const body = JSON.stringify({
-      content: markdown_no_links,
-    });
-    const response = await fetch(process.env.DISCORD_WEBHOOK_URL, {
-      method: 'POST',
-      body,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (!response.ok) {
-      console.error(await response.text());
-    }
+  if (in_progress_remaps.has(key)) {
+    return in_progress_remaps.get(key)!;
   }
 
-  return remap;
+  const { promise, resolve, reject } = Promise.withResolvers<Remap>();
+  in_progress_remaps.set(key, promise);
+  promise.catch(() => { }); // mark as handled
+
+  try {
+    const remap = await remapUncached(parse);
+    resolve(remap);
+    return remap;
+  } catch (e) {
+    reject(e);
+    throw e;
+  }
 }
 
 const macho_first_offset = 0x100000000;
@@ -120,7 +117,8 @@ export async function remapUncached(parse: Parse, opts: { exe?: string } = {}): 
     } satisfies Address;
   });
 
-  return {
+  const key = parseCacheKey(parse);
+  const remap = {
     version: parse.version,
     message: parse.message,
     os: parse.os,
@@ -128,6 +126,27 @@ export async function remapUncached(parse: Parse, opts: { exe?: string } = {}): 
     commit: commit,
     addresses: mapped_addrs,
   };
+  putCachedRemap(key, remap);
+
+  if (process.env.DISCORD_WEBHOOK_URL) {
+    const markdown = formatMarkdown(remap);
+    const markdown_no_links = markdown.replaceAll(/\((https?:[^\)]*?)\)/g, '(<$1>)');
+    const body = JSON.stringify({
+      content: markdown_no_links,
+    });
+    const response = await fetch(process.env.DISCORD_WEBHOOK_URL, {
+      method: 'POST',
+      body,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      console.error(await response.text());
+    }
+  }
+
+  return remap;
 }
 
 export function cleanFunctionName(str: string): string {
