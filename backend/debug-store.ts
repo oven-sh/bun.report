@@ -42,7 +42,17 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: string): 
     if (os !== 'windows') {
       throw new Error(`Unsupported OS ${os}. Please place file directly at ${path}`);
     }
-    const url = `${process.env.BUN_DOWNLOAD_BASE}/${os}-${arch}/${commit}${fetch_suffix}`;
+    const store_arch = {
+      'x86_64': 'x64',
+      'x86_64_baseline': 'x64',
+      'aarch64': 'arm64',
+    }[arch];
+    const store_os = {
+      'windows': 'windows',
+      'macos': 'darwin',
+      'linux': 'linux',
+    }[os];
+    const url = `${process.env.BUN_DOWNLOAD_BASE}/releases/${commit}/bun-${store_os}-${store_arch}/${fetch_suffix}`;
     console.log('Fetching ' + url);
     const response = await fetch(url);
     if (response.status === 404) {
