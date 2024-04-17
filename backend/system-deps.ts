@@ -10,9 +10,9 @@ if (!existsSync(pdb_addr2line)) {
   throw new Error(`pdb-addr2line missing (expected at ${pdb_addr2line})`);
 }
 
-export const xz = Bun.which('xz')!;
-if (xz == null) {
-  throw new Error(`xz missing`);
+export const unzip = Bun.which('unzip')!;
+if (unzip == null) {
+  throw new Error(`unzip missing`);
 }
 
 export const llvm_symbolizer = Bun.which('llvm-symbolizer')!;

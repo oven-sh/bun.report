@@ -1,0 +1,44 @@
+#!/usr/bin/env bun
+import { parse } from "../lib";
+import { getCommit } from "../backend/git";
+import { fetchDebugFile } from "../backend/debug-store";
+
+let args = process.argv.slice(2);
+
+let id;
+let os = 'windows';
+let arch = 'x86_64';
+
+for (let i = 0; i < args.length; i++) {
+  const arg = args[i];
+  if (arg == '--os') {
+    i++;
+    os = args[i];
+  } else if (arg == '--arch') {
+    i++;
+    arch = args[i];
+  } else {
+    id = arg;
+  }
+}
+
+if (
+  !id
+  || ['windows', 'macos', 'linux'].indexOf(os) === -1
+  || ['x86_64', 'x86_64_baseline', 'aarch64'].indexOf(arch) === -1
+) {
+  console.error('Usage: fetch <trace string or commit id>');
+  process.exit(1);
+}
+
+
+if (id.includes('/')) {
+  id = (await parse(id)).commitish;
+}
+
+if (id.length !== 40) {
+  id = await getCommit(id);
+}
+
+const file = await fetchDebugFile(os, arch, 'canary');
+console.log(file);

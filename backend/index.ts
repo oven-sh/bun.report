@@ -4,6 +4,7 @@ import { remap } from './remap';
 import assert from 'node:assert';
 import { join } from 'node:path';
 import { formatMarkdown } from '../lib/format';
+import { garbageCollect } from './db';
 
 const html = process.env.NODE_ENV === 'production'
   ? await Bun.file(join(import.meta.dir, 'index.html')).arrayBuffer()
@@ -153,15 +154,13 @@ async function postRemap(request: Request, server: Server) {
   }
 }
 
-const template = 'test.yml';
+const template = '6-crash-report.yml';
 
 async function remapAndRedirect(parsed: Parse) {
   try {
     const remapped = await remap(parsed);
-
     const report = formatMarkdown(remapped);
-
-    const url = `https://github.com/oven-sh/bun.report/issues/new?labels=bug,crash&template=${template}&remapped_trace=${encodeURIComponent(report)}`;
+    const url = `https://github.com/oven-sh/bun/issues/new?labels=bug,crash&template=${template}&remapped_trace=${encodeURIComponent(report)}`;
 
     return Response.redirect(url, 307);
   } catch (e) {
@@ -184,3 +183,7 @@ function handleError(e: any, visual: boolean) {
       return new Response('Internal server error', { status: 500 })
   }
 }
+
+setInterval(() => {
+  garbageCollect();
+}, 1000 * 60 * 60 * 24 * 7);
