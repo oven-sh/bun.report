@@ -131,4 +131,5 @@ if (import.meta.main) {
 
   await Bun.write('dist/index.html', html);
   await Bun.write('dist/pdb-addr2line', Bun.file('pdb-addr2line/target/release/pdb-addr2line'));
+  await Bun.write('dist/favicon.ico', Bun.file('frontend/favicon.ico'));
 }
