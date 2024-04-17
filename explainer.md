@@ -6,7 +6,7 @@ We made this little tool to help to help debug panics and crashes in [Bun](https
 
 Instead of bloating Bun's binary with hundreds of megabytes of debug symbols, we put the version, platform, and stack addresses into a VLQ-encoded URL.
 
-On panic or crash, we print the URL to this page, which this tool re-maps into a stacktrace. From there, we redirect to file a GitHub issue with the stack trace prefilled.
+On panic or crash, we print the URL to this page, which this tool re-maps into a stacktrace. From there, we redirect to GitHub issue prefilled with the stack trace.
 
 This is similar in spirit to a JavaScript sourcemap.
 
