@@ -17,8 +17,8 @@ if (existing_tables.length === 0) {
   db.run(`
     CREATE TABLE remap (
       cache_key TEXT PRIMARY KEY,
-      remapped_data TEXT,
-    );
+      remapped_data TEXT
+    )
   `);
 
   db.run(`
@@ -32,13 +32,13 @@ if (existing_tables.length === 0) {
   db.run(`
     CREATE TABLE issues (
       cache_key TEXT PRIMARY KEY,
-      issue INTEGER NOT NULL,
+      issue INTEGER NOT NULL
     )
   `);
 }
 
-const get_remap_stmt = db.prepare('SELECT remapped_data, github_issue FROM remap WHERE cache_key = ?');
-const insert_remap_stmt = db.prepare('INSERT INTO remap (cache_key, remapped_data, github_issue) VALUES (?, ?, ?)');
+const get_remap_stmt = db.prepare('SELECT remapped_data FROM remap WHERE cache_key = ?');
+const insert_remap_stmt = db.prepare('INSERT INTO remap (cache_key, remapped_data) VALUES (?, ?)');
 
 const get_debug_file_stmt = db.prepare('SELECT file_path FROM debug_file WHERE cache_key = ?');
 const insert_debug_file_stmt = db.prepare('INSERT INTO debug_file (cache_key, file_path, last_updated) VALUES (?, ?, ?)');
@@ -59,7 +59,7 @@ export function getCachedRemap(cache_key: string): Remap | null {
 }
 
 export function putCachedRemap(cache_key: string, remap: Remap) {
-  insert_remap_stmt.run(cache_key, JSON.stringify(remap), "null");
+  insert_remap_stmt.run(cache_key, JSON.stringify(remap));
 }
 
 export function getCachedDebugFile(os: Platform, arch: Arch, commit: string): string | null {
