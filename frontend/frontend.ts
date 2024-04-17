@@ -1,14 +1,13 @@
-import type { Parse, RemapAPIResponse } from '../lib/parser';
+import type { Parse, RemapAPIResponse } from "../lib/parser";
 
-import { parse } from '../lib/parser';
-import { parseCacheKey, debounce, escapeHTML as eschtml } from '../lib/util';
-import { addrsToHTML } from './html';
+import { parse } from "../lib/parser";
+import { parseCacheKey, debounce, escapeHTML as eschtml } from "../lib/util";
+import { addrsToHTML } from "./html";
 
 // Bindings
-const input = document.querySelector('#in') as HTMLInputElement;
-const out = document.querySelector('#out') as HTMLDivElement;
-const store = await globalThis.caches?.open('bun-remap');
-const example = document.querySelector('#example') as HTMLButtonElement;
+const input = document.querySelector("#in") as HTMLInputElement;
+const out = document.querySelector("#out") as HTMLDivElement;
+const store = await globalThis.caches?.open("bun-remap");
 
 // UI State
 enum UIState {
@@ -23,7 +22,7 @@ let ui_state: UIState = UIState.None;
 let ui_state_data: any = null;
 
 let parsed: Parse | null = null;
-let fetched: RemapAPIResponse | null = null
+let fetched: RemapAPIResponse | null = null;
 let remapping_error: string | null = null;
 
 let pending_fetch_ctrl: AbortController | null = null;
@@ -31,10 +30,9 @@ let current_fetch_id: number = 0;
 
 // UI framework
 function transition(state: UIState, data?: any) {
-  if (ui_state === state && ui_state_data === data)
-    return;
+  if (ui_state === state && ui_state_data === data) return;
   ui_state_data = data;
-  screens[ui_state = state]();
+  screens[(ui_state = state)]();
 }
 
 // Data fetching framework
@@ -44,7 +42,7 @@ async function fetchRemap(parse: Parse): Promise<RemapAPIResponse | null> {
     pending_fetch_ctrl.abort();
     pending_fetch_ctrl = null;
   }
-  let fetch_id = current_fetch_id = Math.random();
+  let fetch_id = (current_fetch_id = Math.random());
 
   // Use a cached entry
   const cached_request = new Request(`/remap/${parseCacheKey(parse)}`);
@@ -54,8 +52,8 @@ async function fetchRemap(parse: Parse): Promise<RemapAPIResponse | null> {
 
   // Fetch the remap
   pending_fetch_ctrl = new AbortController();
-  const response = await fetch('/remap', {
-    method: 'POST',
+  const response = await fetch("/remap", {
+    method: "POST",
     body: JSON.stringify({
       addresses: parse.addresses,
       os: parse.os,
@@ -65,13 +63,15 @@ async function fetchRemap(parse: Parse): Promise<RemapAPIResponse | null> {
       message: parse.message,
     }),
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
-    signal: pending_fetch_ctrl.signal
+    signal: pending_fetch_ctrl.signal,
   });
   if (fetch_id !== current_fetch_id) return null;
   if (!response.ok) {
-    throw new Error(`${response.status} ${response.statusText}\nPlease try again later.`);
+    throw new Error(
+      `${response.status} ${response.statusText}\nPlease try again later.`
+    );
   }
 
   const remap = await response.json();
@@ -80,12 +80,15 @@ async function fetchRemap(parse: Parse): Promise<RemapAPIResponse | null> {
     throw new Error(`${remap.error}`);
   }
 
-  location.host.startsWith('localhost') ||
-    store?.put(cached_request, new Response(JSON.stringify(remap), {
-      headers: {
-        'Cache-Control': `public, max-age=${60 * 60 * 24 * 3}'`,
-      },
-    }));
+  location.host.startsWith("localhost") ||
+    store?.put(
+      cached_request,
+      new Response(JSON.stringify(remap), {
+        headers: {
+          "Cache-Control": `public, max-age=${60 * 60 * 24 * 3}'`,
+        },
+      })
+    );
 
   if (fetch_id !== current_fetch_id) return null;
   pending_fetch_ctrl = null;
@@ -98,7 +101,7 @@ const onInputChange = debounce(async () => {
   const value = input.value;
   if (!value) {
     transition(UIState.None);
-    localStorage.removeItem('bun-remap.input');
+    localStorage.removeItem("bun-remap.input");
     return;
   }
 
@@ -107,30 +110,32 @@ const onInputChange = debounce(async () => {
 
   if (!parsed) {
     transition(UIState.Invalid);
-    localStorage.removeItem('bun-remap.input');
+    localStorage.removeItem("bun-remap.input");
     return;
   }
 
-  localStorage.setItem('bun-remap.input', JSON.stringify([Date.now() + (1000 * 60 * 60 * 24 * 3), input.value]));
+  localStorage.setItem(
+    "bun-remap.input",
+    JSON.stringify([Date.now() + 1000 * 60 * 60 * 24 * 3, input.value])
+  );
 
   transition(UIState.Loading, value);
 }, 50);
-input.addEventListener('input', onInputChange);
+input.addEventListener("input", onInputChange);
 
 // Local Storage Sync + URL query param
 {
   let search = location.search;
-  if (search.startsWith('?trace=')) {
+  if (search.startsWith("?trace=")) {
     input.value = search.slice(7);
-    history.replaceState(null, document.title, location.pathname);
   } else {
-    let existing: any = localStorage.getItem('bun-remap.input');
+    let existing: any = localStorage.getItem("bun-remap.input");
     if (existing) {
-      existing = JSON.parse(existing)
+      existing = JSON.parse(existing);
       if (existing[0] > Date.now()) {
         input.value = existing[1];
       } else {
-        localStorage.removeItem('bun-remap.input');
+        localStorage.removeItem("bun-remap.input");
       }
     }
   }
@@ -141,13 +146,13 @@ input.addEventListener('input', onInputChange);
 const screens: Record<UIState, () => void> = {
   // When the input box is cleared, clear the output
   [UIState.None]: () => {
-    out.innerHTML = ''
-    example.style.display = '';
+    document.body.classList.add("ui-none");
+    document.body.classList.remove("ui-invalid", "ui-loading", "ui-fetched");
+    out.innerHTML = "";
   },
 
   // When the input is valid, show that in an error message
   [UIState.Invalid]: () => {
-    example.style.display = '';
     out.innerHTML = /* html */ `
       <article><p class='error'>The input string is not a valid Bun Trace String.</p></article>
     `;
@@ -158,30 +163,30 @@ const screens: Record<UIState, () => void> = {
     // btw, these 'x = x!' marks tell typescript that `parsed` is not null.
     parsed = parsed!;
     fetched = null;
-
-    example.style.display = 'none';
+    document.body.classList.add("ui-loading");
+    document.body.classList.remove("ui-invalid", "ui-none", "ui-fetched");
 
     let fetched_fast = false;
     fetchRemap(parsed)
-      .then(remap => {
+      .then((remap) => {
         if (!remap) return;
         fetched = remap;
         transition(UIState.Fetched);
       })
-      .catch(e => {
+      .catch((e) => {
         console.error(e);
         remapping_error = e.message;
         transition(UIState.FetchError);
       })
-      .finally(() =>
-        fetched_fast = true
-      );
+      .finally(() => (fetched_fast = true));
 
     // wait a tiny bit before showing the placeholder, this will cover for fast internet
-    await new Promise(r => setTimeout(r, 100));
+    await new Promise((r) => setTimeout(r, 100));
     if (fetched_fast) return;
 
-    const list = addrsToHTML(null!, parsed.addresses).map(l => `<tr>${l}</tr>`).join('');
+    const list = addrsToHTML(null!, parsed.addresses)
+      .map((l) => `<tr>${l}</tr>`)
+      .join("");
 
     out.innerHTML = /* html */ `
       <div class='card'>
@@ -197,11 +202,18 @@ const screens: Record<UIState, () => void> = {
     parsed = parsed!;
     fetched = fetched!;
 
-    const list = addrsToHTML(fetched.commit.oid, fetched.addresses).map(l => `<tr>${l}</tr>`).join('');
+    document.body.classList.add("ui-fetched");
+    document.body.classList.remove("ui-invalid", "ui-none", "ui-loading");
+
+    const list = addrsToHTML(fetched.commit.oid, fetched.addresses)
+      .map((l) => `<tr>${l}</tr>`)
+      .join("");
 
     const issue = fetched.issue
       ? `<a class='button' href="https://github.com/oven-sh/bun/issues/${fetched.issue}" target="_blank">#${fetched.issue}</a>`
-      : `<a class="button" href="${reportUrl(input.value)}" target="_blank">Report on GitHub</a>`;
+      : `<a class="button" href="${reportUrl(
+          input.value
+        )}" target="_blank">File issue on GitHub</a>`;
 
     out.innerHTML = /* html */ `
       <div class='card'>
@@ -219,7 +231,13 @@ const screens: Record<UIState, () => void> = {
     remapping_error = remapping_error!;
     fetched = null;
 
-    localStorage.removeItem('bun-remap.input');
+    localStorage.removeItem("bun-remap.input");
+    document.body.classList.remove(
+      "ui-invalid",
+      "ui-none",
+      "ui-loading",
+      "ui-fetched"
+    );
 
     out.innerHTML = /* html */ `
       <div class='card'>
@@ -228,22 +246,25 @@ const screens: Record<UIState, () => void> = {
         ${cardFooter()}
       </div>
     `;
-  }
+  },
 };
 
 function cardHead() {
   parsed = parsed!;
 
   return /* html */ `
-    <p><code>${eschtml(parsed.message).replace(/^panic: /, '<strong>panic</strong>: ')}</code></p>
-  `
+    <p><code>${eschtml(parsed.message).replace(
+      /^panic: /,
+      "<strong>panic</strong>: "
+    )}</code></p>
+  `;
 }
 
 const os_names: { [key: string]: string } = {
-  'w': 'Windows',
-  'm': 'macOS',
-  'l': 'Linux',
-}
+  w: "Windows",
+  m: "macOS",
+  l: "Linux",
+};
 
 function cardFooter() {
   parsed = parsed!;
@@ -253,27 +274,23 @@ function cardFooter() {
   const commit = pr
     ? `<a href="https://github.com/oven-sh/bun/pull/${pr.number}" target="_blank">#${pr.number}</a>`
     : oid
-      ? `<a href="https://github.com/oven-sh/bun/commit/${oid}" target="_blank">${parsed.commitish}</a>`
-      : parsed.commitish;
+    ? `<a href="https://github.com/oven-sh/bun/commit/${oid}" target="_blank">${parsed.commitish}</a>`
+    : parsed.commitish;
 
-  const arch = parsed.arch.split('_baseline');
+  const arch = parsed.arch.split("_baseline");
 
   return /* html */ `
     <p>
       Bun v${parsed.version} <small>(<code>${commit}</code>)</small>
-      on ${os_names[parsed.os[0]]} ${arch[0]} ${arch.length > 1 ? '(baseline)' : ''}
+      on ${os_names[parsed.os[0]]} ${arch[0]} ${
+    arch.length > 1 ? "(baseline)" : ""
+  }
     </p>
   `;
 }
 
 function reportUrl(str: string) {
-  const prefix = 'https://bun.report/';
+  const prefix = "https://bun.report/";
   if (str.startsWith(prefix)) return str;
   return prefix + str;
 }
-
-// Example URL
-example.addEventListener('click', () => {
-  input.value = 'https://bun.report/1.1.4/w141127f1mwnxL+5xnIw32zF+68B0lsR+9lpGkhtOmtp9Oyo0mK+uvmKA0eNrzzCtJLcpLzFFILC5OLSrJzM9TSEvMzCktStVTCMnILFbILFZIVEgqTVfIzFNwKs3TAwDJFhFp';
-  onInputChange();
-});

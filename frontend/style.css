@@ -14,7 +14,8 @@
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   margin: 0;
   background-color: var(--bg);
   color: var(--fg);
@@ -27,8 +28,9 @@ main {
   padding: 1em;
 }
 
-h1, strong {
-  color: var(--h1); 
+h1,
+strong {
+  color: var(--h1);
 }
 
 p {
@@ -36,7 +38,8 @@ p {
 }
 
 code {
-  font-family: "Fira Code", "Hack", "Source Code Pro", "SF Mono", "Inconsolata", monospace;
+  font-family: "Fira Code", "Hack", "Source Code Pro", "SF Mono", "Inconsolata",
+    monospace;
 }
 
 .logo {
@@ -70,28 +73,29 @@ svg {
 
 #in {
   width: 100%;
-  padding: 0.7rem;
+  padding: 1.2rem 2rem;
   border: 2px solid var(--pink);
-  border-radius: 4px;
+  border-radius: 100px;
   background-color: var(--bg);
   color: var(--fg);
-
-  padding-left: 0;
-  text-indent: 0.7rem;
-  font-size: 0.8rem;
+  font-family: "Fira Code", "Hack", "Source Code Pro", "SF Mono", "Inconsolata",
+    monospace;
+  display: block;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
-button, .button, #in {
+button,
+.button,
+#in {
   transition: outline-width 0.08s ease-out;
   outline: 0.01px solid #f472b699;
 }
 
-button:focus-visible, .button:focus-visible, #in:focus {
+button:focus-visible,
+.button:focus-visible,
+#in:focus {
   outline-width: 3px;
-}
-
-#in::placeholder {
-  opacity: 0.5;
 }
 
 hr {
@@ -108,7 +112,7 @@ hr {
   color: red;
 }
 
-.card  {
+.card {
   border-radius: 8px;
   border: 1px solid var(--card-border);
   background-color: var(--card);
@@ -131,7 +135,7 @@ hr {
   padding: 0.5rem 1rem 0.5rem 0;
 }
 .js::after {
-  content: '...';
+  content: "...";
 }
 
 pre {
@@ -203,35 +207,41 @@ a:active {
   padding-bottom: 0.5rem;
 }
 
-button, .button {
+button,
+.button {
   appearance: none;
   background-color: var(--pink);
-  border: 2px solid #e1589f;
+  border: 2px solid rgb(247, 97, 174);
   border-radius: 6px;
   padding: 0.4rem 0.7rem;
   color: black;
-  font-weight: normal;
+  font-weight: medium;
   cursor: pointer;
   font-size: 1rem;
   text-decoration: none;
 }
 
-button:hover, .button:hover {
+button:hover,
+.button:hover {
   background-color: #f789c2;
   color: black;
 }
 
-@keyframes a{
-  0%, 20% {
+@keyframes a {
+  0%,
+  20% {
     background-color: transparent;
   }
   to {
-    background-color: var(--fg); 
+    background-color: var(--fg);
   }
 }
 
-@keyframes f{
-  0%, 20%, 80%, 100% {
+@keyframes f {
+  0%,
+  20%,
+  80%,
+  100% {
     opacity: 0.3;
   }
   50% {
@@ -254,12 +264,38 @@ button:hover, .button:hover {
     color: #ccc1c9;
     text-decoration: underline;
   }
-  
+
   a:hover {
     color: #bc7dab;
   }
-  
+
   a:active {
     color: #ff4464;
+  }
+}
+
+.ui-invalid #example,
+.ui-loading #example,
+.ui-fetched #example {
+  visibility: hidden;
+}
+
+.ui-none #example {
+  visibility: visible;
+}
+
+@media (max-width: 480px) {
+  .card {
+    margin-left: -1em;
+    margin-right: -1em;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  tbody {
+    white-space: nowrap;
+  }
+  table {
+    padding-left: 0;
   }
 }
