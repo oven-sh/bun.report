@@ -35,6 +35,7 @@ const reasons: { [key: string]: (input: string) => string | Promise<string> } = 
   '6': () => `Unaligned memory access`,
   '7': () => `Stack overflow`,
   '8': (rest) => 'error: ' + rest,
+  '9': () => `Bun ran out of memory`,
 }
 
 export interface Parse {
