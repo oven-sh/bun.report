@@ -59,6 +59,12 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedC
     return in_progress_downloads.get(path)!;
   }
 
+  if (!process.env.BUN_DOWNLOAD_BASE) {
+    const e: any = new Error('BUN_DOWNLOAD_BASE is not set');
+    e.code = 'MissingToken';
+    throw e;
+  }
+
   const { promise, resolve, reject } = Promise.withResolvers<string | null>();
   in_progress_downloads.set(path, promise);
   promise.catch(() => { }); // mark as handled

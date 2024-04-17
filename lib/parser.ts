@@ -63,7 +63,7 @@ export interface Remap {
   arch: Arch;
   commit: ResolvedCommit;
   addresses: Address[];
-  issue?: string;
+  issue?: number;
 }
 
 export type Address = RemappedAddress | UnknownAddress;
@@ -89,6 +89,7 @@ export interface UnknownAddress {
 export interface RemapAPIResponse {
   commit: ResolvedCommit;
   addresses: Address[];
+  issue?: number;
 }
 
 function validateSemver(version: string): boolean {

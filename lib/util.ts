@@ -56,10 +56,13 @@ export function parseCacheKey(parse: Parse) {
     parse.version,
     ...parse.addresses.map(a => a.address.toString(16)),
   ].join('_');
-  const hasher = new Bun.CryptoHasher('sha256');
-  hasher.update(data);
-  const buffer = (hasher.digest() as Buffer).toString('base64url');
-  return buffer.slice(0, 20);
+  if (typeof Bun !== 'undefined') {
+    const hasher = new Bun.CryptoHasher('sha256');
+    hasher.update(data);
+    const buffer = (hasher.digest() as Buffer).toString('base64url');
+    return buffer.slice(0, 20);
+  }
+  return data;
 }
 
 // Intentionally not including version so that we can link to same issues across versions

@@ -104,6 +104,7 @@ async function postRemap(request: Request, server: Server) {
   let arch: 'x86_64' | 'aarch64';
   let version: string;
   let commitish: string;
+  let message: string;
 
   const body: unknown = await request.json();
   try {
@@ -137,6 +138,10 @@ async function postRemap(request: Request, server: Server) {
     assert(typeof body.commitish === 'string');
     assert(body.commitish.length === 7);
     commitish = body.commitish;
+
+    assert('message' in body);
+    assert(typeof body.message === 'string');
+    message = body.message;
   } catch (e) {
     return new Response('Invalid request', { status: 400 });
   }
@@ -149,7 +154,7 @@ async function postRemap(request: Request, server: Server) {
       arch,
       version,
       commitish,
-      message: '',
+      message,
     });
 
     return Response.json({
@@ -222,7 +227,8 @@ async function remapAndRedirect(parsed: Parse, is_discord_bot: boolean) {
       });
     }
 
-    const report = formatMarkdown(remapped) + '\n\n<!-- from bun.report: ' + remapCacheKey(remapped) + ' -->';
+    const markdown = formatMarkdown(remapped);
+    const report = markdown + '\n\n<!-- from bun.report: ' + remapCacheKey(remapped) + ' -->';
     const url = `https://github.com/oven-sh/bun/issues/new?labels=bug,crash&template=${template}&remapped_trace=${encodeURIComponent(report)}`;
 
     return Response.redirect(url, 307);
@@ -233,6 +239,8 @@ async function remapAndRedirect(parsed: Parse, is_discord_bot: boolean) {
 
 function handleError(e: any, visual: boolean) {
   switch (e?.code) {
+    case 'MissingToken':
+      return Response.json({ error: 'Missing GITHUB_TOKEN' });
     case 'DebugInfoUnavailable':
       if (process.env.NODE_ENV === 'development') {
         console.error(e);

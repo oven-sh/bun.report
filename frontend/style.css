@@ -5,6 +5,7 @@
 :root {
   --bg: #f9fafb;
   --fg: #1e1e1e;
+  --h1: var(--fg);
   --pink: #f472b6;
   --card: #f3f4f6;
   --card-border: #e5e7eb;
@@ -12,20 +13,12 @@
   --fn-border: #cfcfcf;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #14151a;
-    --fg: #f9fafb;
-    --card: #14151a;
-    --card-border: #14151a;
-  }
-}
-
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   margin: 0;
   background-color: var(--bg);
   color: var(--fg);
+  font-size: 1.18rem;
 }
 
 main {
@@ -34,16 +27,34 @@ main {
   padding: 1em;
 }
 
+h1, strong {
+  color: var(--h1); 
+}
+
+p {
+  line-height: 1.45;
+}
+
 code {
   font-family: "Fira Code", "Hack", "Source Code Pro", "SF Mono", "Inconsolata", monospace;
 }
 
+.logo {
+  width: 100px;
+  height: 100px;
+}
+
 header {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
   display: flex;
   align-items: baseline;
 }
 
-header div {
+.row div {
   flex: 1;
 }
 
@@ -54,18 +65,31 @@ header a {
 svg {
   width: 2em;
   height: 2em;
-  color: var(--fg);
+  color: var(--h1);
 }
 
 #in {
   width: 100%;
-  padding: 0.5rem;
+  padding: 0.7rem;
   border: 2px solid var(--pink);
   border-radius: 4px;
+  background-color: var(--bg);
+  color: var(--fg);
 
   padding-left: 0;
-  text-indent: 0.5rem;
+  text-indent: 0.7rem;
+  font-size: 0.8rem;
 }
+
+button, .button, #in {
+  transition: outline-width 0.08s ease-out;
+  outline: 0.01px solid #f472b699;
+}
+
+button:focus-visible, .button:focus-visible, #in:focus {
+  outline-width: 3px;
+}
+
 #in::placeholder {
   opacity: 0.5;
 }
@@ -165,7 +189,7 @@ a:active {
 
 .skeleton {
   display: inline-block;
-  animation: flash 2s var(--delay) ease-in-out infinite, appear 100ms linear both;
+  animation: f 2s var(--delay) ease-in-out infinite, a 100ms linear both;
   border-radius: 8px;
   color: transparent;
 }
@@ -174,7 +198,30 @@ a:active {
   opacity: 0;
 }
 
-@keyframes appear {
+.spacing {
+  margin: 1rem 0;
+  padding-bottom: 0.5rem;
+}
+
+button, .button {
+  appearance: none;
+  background-color: var(--pink);
+  border: 2px solid #e1589f;
+  border-radius: 6px;
+  padding: 0.4rem 0.7rem;
+  color: black;
+  font-weight: normal;
+  cursor: pointer;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+button:hover, .button:hover {
+  background-color: #f789c2;
+  color: black;
+}
+
+@keyframes a{
   0%, 20% {
     background-color: transparent;
   }
@@ -182,11 +229,37 @@ a:active {
     background-color: var(--fg); 
   }
 }
-@keyframes flash {
+
+@keyframes f{
   0%, 20%, 80%, 100% {
     opacity: 0.3;
   }
   50% {
     opacity: 0.6;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14151a;
+    --fg: #d1d5db;
+    --h1: #f9fafb;
+    --card: #212228;
+    --card-border: #212228;
+    --fn-bg: #2c2e3b;
+    --fn-border: #373947;
+  }
+
+  a {
+    color: #ccc1c9;
+    text-decoration: underline;
+  }
+  
+  a:hover {
+    color: #bc7dab;
+  }
+  
+  a:active {
+    color: #ff4464;
   }
 }

@@ -8,6 +8,7 @@ import { addrsToHTML } from './html';
 const input = document.querySelector('#in') as HTMLInputElement;
 const out = document.querySelector('#out') as HTMLDivElement;
 const store = await globalThis.caches?.open('bun-remap');
+const example = document.querySelector('#example') as HTMLButtonElement;
 
 // UI State
 enum UIState {
@@ -61,6 +62,7 @@ async function fetchRemap(parse: Parse): Promise<RemapAPIResponse | null> {
       arch: parse.arch,
       version: parse.version,
       commitish: parse.commitish,
+      message: parse.message,
     }),
     headers: {
       'Content-Type': 'application/json',
@@ -138,10 +140,14 @@ input.addEventListener('input', onInputChange);
 // Screens
 const screens: Record<UIState, () => void> = {
   // When the input box is cleared, clear the output
-  [UIState.None]: () => out.innerHTML = '',
+  [UIState.None]: () => {
+    out.innerHTML = ''
+    example.style.display = '';
+  },
 
   // When the input is valid, show that in an error message
   [UIState.Invalid]: () => {
+    example.style.display = '';
     out.innerHTML = /* html */ `
       <article><p class='error'>The input string is not a valid Bun Trace String.</p></article>
     `;
@@ -153,6 +159,8 @@ const screens: Record<UIState, () => void> = {
     parsed = parsed!;
     fetched = null;
 
+    example.style.display = 'none';
+
     let fetched_fast = false;
     fetchRemap(parsed)
       .then(remap => {
@@ -161,6 +169,7 @@ const screens: Record<UIState, () => void> = {
         transition(UIState.Fetched);
       })
       .catch(e => {
+        console.error(e);
         remapping_error = e.message;
         transition(UIState.FetchError);
       })
@@ -190,11 +199,16 @@ const screens: Record<UIState, () => void> = {
 
     const list = addrsToHTML(fetched.commit.oid, fetched.addresses).map(l => `<tr>${l}</tr>`).join('');
 
+    const issue = fetched.issue
+      ? `<a class='button' href="https://github.com/oven-sh/bun/issues/${fetched.issue}" target="_blank">#${fetched.issue}</a>`
+      : `<a class="button" href="${reportUrl(input.value)}" target="_blank">Report on GitHub</a>`;
+
     out.innerHTML = /* html */ `
       <div class='card'>
         ${cardHead()}
         <table><tbody>${list}</tbody></table>
         ${cardFooter()}
+        <div class='spacing'>${issue}</div>
       </div>
     `;
   },
@@ -251,3 +265,15 @@ function cardFooter() {
     </p>
   `;
 }
+
+function reportUrl(str: string) {
+  const prefix = 'https://bun.report/';
+  if (str.startsWith(prefix)) return str;
+  return prefix + str;
+}
+
+// Example URL
+example.addEventListener('click', () => {
+  input.value = 'https://bun.report/1.1.4/w141127f1mwnxL+5xnIw32zF+68B0lsR+9lpGkhtOmtp9Oyo0mK+uvmKA0eNrzzCtJLcpLzFFILC5OLSrJzM9TSEvMzCktStVTCMnILFbILFZIVEgqTVfIzFNwKs3TAwDJFhFp';
+  onInputChange();
+});

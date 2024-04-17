@@ -4,7 +4,6 @@ import * as lightning from 'lightningcss';
 // @ts-ignore
 import * as html_minifier from 'html-minifier';
 import * as marked from 'marked';
-import * as terser from 'terser';
 
 export async function build(mode: string) {
   let in_file = await Bun.file(join(import.meta.dir, './frontend/frontend.ts')).text();
@@ -32,7 +31,15 @@ export async function build(mode: string) {
 
   const temp_path = join(import.meta.dir, './frontend/frontend.tmp.ts');
   await Bun.write(temp_path, in_file);
-  using disposable = { [Symbol.dispose]: () => rmSync(temp_path) };
+  using disposable = {
+    [Symbol.dispose]: () => {
+      try {
+        rmSync(temp_path)
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
 
   const result = await Bun.build({
     entrypoints: [

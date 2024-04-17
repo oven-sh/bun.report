@@ -13,6 +13,12 @@ export async function getCommit(commitish: string): Promise<ResolvedCommit | nul
     return commitish_cache.get(commitish)!;
   }
 
+  if (!process.env.GITHUB_TOKEN) {
+    const e: any = new Error('GITHUB_TOKEN is not set');
+    e.code = 'MissingToken';
+    throw e;
+  }
+
   try {
     const data = await octokit.graphql(/* graphql */ `
       query {

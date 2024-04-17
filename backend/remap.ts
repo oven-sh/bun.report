@@ -4,7 +4,7 @@ import { fetchDebugFile } from './debug-store';
 import { getCachedRemap, putCachedRemap } from './db';
 import { parseCacheKey } from '../lib/util';
 import { llvm_symbolizer, pdb_addr2line } from './system-deps';
-
+import { formatMarkdown } from '../lib';
 
 export async function remap(parse: Parse): Promise<Remap> {
   const key = parseCacheKey(parse);
@@ -16,6 +16,25 @@ export async function remap(parse: Parse): Promise<Remap> {
 
   const remap = await remapUncached(parse);
   putCachedRemap(key, remap);
+
+  if (process.env.DISCORD_WEBHOOK_URL) {
+    const markdown = formatMarkdown(remap);
+    const markdown_no_links = markdown.replaceAll(/\((https?:[^\)]*?)\)/g, '(<$1>)');
+    const body = JSON.stringify({
+      content: markdown_no_links,
+    });
+    const response = await fetch(process.env.DISCORD_WEBHOOK_URL, {
+      method: 'POST',
+      body,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      console.error(await response.text());
+    }
+  }
+
   return remap;
 }
 
@@ -72,7 +91,7 @@ export async function remapUncached(parse: Parse, opts: { exe?: string } = {}): 
     }
 
     const stdout = await Bun.readableStreamToText(subproc.stdout);
-    lines = stdout.split('\n');
+    lines = stdout.split('\n').filter(l => l.length > 0);
   }
 
   const mapped_addrs: Address[] = parse.addresses.map(addr => {
