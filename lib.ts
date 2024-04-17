@@ -30,6 +30,7 @@ export async function remap(parse: Parse, signal: AbortSignal): Promise<Remap> {
   }
 
   return {
+    version: parse.version,
     message: parse.message,
     os: parse.os,
     arch: parse.arch,
