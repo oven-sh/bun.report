@@ -7,7 +7,7 @@ import { addrsToHTML } from './html';
 // Bindings
 const input = document.querySelector('#in') as HTMLInputElement;
 const out = document.querySelector('#out') as HTMLDivElement;
-const store = await caches.open('bun-remap');
+const store = await caches?.open('bun-remap');
 
 // UI State
 enum UIState {
@@ -47,7 +47,7 @@ async function fetchRemap(parse: Parse): Promise<RemapAPIResponse | null> {
 
   // Use a cached entry
   const cached_request = new Request(`/remap/${cacheKey(parse)}`);
-  const cached = await store.match(cached_request, {});
+  const cached = await store?.match(cached_request, {});
   if (cached) return cached.json();
   if (fetch_id !== current_fetch_id) return null;
 
@@ -79,7 +79,7 @@ async function fetchRemap(parse: Parse): Promise<RemapAPIResponse | null> {
   }
 
   location.host.startsWith('localhost') ||
-    store.put(cached_request, new Response(JSON.stringify(remap), {
+    store?.put(cached_request, new Response(JSON.stringify(remap), {
       headers: {
         'Cache-Control': `public, max-age=${60 * 60 * 24 * 3}'`,
       },
