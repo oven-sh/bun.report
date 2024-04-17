@@ -3,7 +3,7 @@ import type { Parse, Remap } from './lib/parser';
 export * from './lib/parser';
 export * from './lib/format';
 
-export async function remap(parse: Parse, signal: AbortSignal): Promise<Remap> {
+export async function remap(parse: Parse, signal?: AbortSignal): Promise<Remap> {
   const response = await fetch('https://bun.report/remap', {
     method: 'POST',
     body: JSON.stringify({
