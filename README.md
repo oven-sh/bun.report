@@ -9,6 +9,7 @@ System dependencies:
 - [Bun](https://bun.sh)
 - For remapping Windows traces, you need to compile [pdb-addr2line](https://github.com/mstange/pdb-addr2line), which requires a Rust toolchain installed. This is built from source because I noticed existing binaries did not seem to work well.
 - For remapping macOS and Linux traces, you need `llvm-symbolizer` installed. This can be installed by having LLVM installed.
+- `unzip` is required to unzip downloaded files.
 
 Everything is written in TypeScript. The backend is a `Bun.serve` server with manual routing, using a frameworkless frontend built with `Bun.build`.
 
