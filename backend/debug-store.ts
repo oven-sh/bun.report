@@ -23,7 +23,7 @@ export async function temp() {
 }
 
 /** This map serves as a sort of "mutex" */
-const in_progress_downloads = new Map<string, Promise<string | null>>();
+const in_progress_downloads = new Map<string, Promise<string>>();
 
 const map_download_arch = {
   'x86_64': 'x64',
@@ -37,7 +37,7 @@ const map_download_os = {
   'linux': 'linux',
 } as const;
 
-export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedCommit): Promise<string | null> {
+export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedCommit): Promise<string> {
   const oid = commit.oid;
   assert(oid.length === 40);
 
@@ -65,7 +65,7 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedC
     throw e;
   }
 
-  const { promise, resolve, reject } = Promise.withResolvers<string | null>();
+  const { promise, resolve, reject } = Promise.withResolvers<string>();
   in_progress_downloads.set(path, promise);
   promise.catch(() => { }); // mark as handled
 
@@ -75,7 +75,7 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedC
 
     using tmp = await temp();
     const dir = `bun-${download_os}-${download_arch}-profile`;
-    const url = `${process.env.BUN_DOWNLOAD_BASE}/${commit}/${dir}.zip`;
+    const url = `${process.env.BUN_DOWNLOAD_BASE}/${commit.oid}/${dir}.zip`;
 
     const response = await fetch(url);
     if (response.status === 404) {
@@ -85,18 +85,22 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedC
           let success = await tryFromPR(os, arch, commit, tmp.path);
           if (!success) {
             in_progress_downloads.delete(path);
-            resolve(null);
-            return null;
+            const err: any = new Error(`Failed to fetch debug file for ${os}-${arch} for PR ${pr.number}`);
+            err.code = 'DebugInfoUnavailable';
+            reject(err);
+            throw err;
           }
-        } catch (e) {
+        } catch (err) {
           in_progress_downloads.delete(path);
-          resolve(null);
-          return null;
+          reject(err);
+          throw err;
         }
       } else {
         in_progress_downloads.delete(path);
-        resolve(null);
-        return null;
+        const err: any = new Error(`Failed to fetch debug file for ${os}-${arch} for commit ${commit.oid}`);
+        err.code = 'DebugInfoUnavailable';
+        reject(err);
+        throw err;
       }
     } else {
       if (response.status !== 200) {
