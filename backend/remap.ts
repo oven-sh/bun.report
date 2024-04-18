@@ -6,6 +6,32 @@ import { parseCacheKey } from '../lib/util';
 import { llvm_symbolizer, pdb_addr2line } from './system-deps';
 import { formatMarkdown } from '../lib';
 
+const command_map: { [key: string]: string } = {
+  'I': "AddCommand",
+  'a': "AutoCommand",
+  'b': "BuildCommand",
+  'B': "BunxCommand",
+  'c': "CreateCommand",
+  'D': "DiscordCommand",
+  'g': "GetCompletionsCommand",
+  'h': "HelpCommand",
+  'j': "InitCommand",
+  'i': "InstallCommand",
+  'C': "InstallCompletionsCommand",
+  'l': "LinkCommand",
+  'P': "PackageManagerCommand",
+  'R': "RemoveCommand",
+  'r': "RunCommand",
+  'n': "RunAsNodeCommand",
+  't': "TestCommand",
+  'U': "UnlinkCommand",
+  'u': "UpdateCommand",
+  'p': "UpgradeCommand",
+  'G': "ReplCommand",
+  'w': "ReservedCommand",
+  'e': "ExecCommand",
+};
+
 /** This map serves as a sort of "mutex" */
 const in_progress_remaps = new Map<string, Promise<Remap>>();
 
@@ -125,6 +151,7 @@ export async function remapUncached(parse: Parse, opts: { exe?: string } = {}): 
     arch: parse.arch,
     commit: commit,
     addresses: mapped_addrs,
+    command: command_map[parse.command] ?? parse.command,
   };
   putCachedRemap(key, remap);
 

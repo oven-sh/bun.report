@@ -45,6 +45,7 @@ export interface Parse {
   arch: Arch;
   commitish: string;
   addresses: ParsedAddress[];
+  command: string;
 }
 
 export interface ResolvedCommit {
@@ -64,6 +65,7 @@ export interface Remap {
   commit: ResolvedCommit;
   addresses: Address[];
   issue?: number;
+  command: string;
 }
 
 export type Address = RemappedAddress | UnknownAddress;
@@ -90,6 +92,7 @@ export interface RemapAPIResponse {
   commit: ResolvedCommit;
   addresses: Address[];
   issue: number | null;
+  command: string;
 }
 
 function validateSemver(version: string): boolean {
@@ -112,17 +115,19 @@ export async function parse(str: string): Promise<Parse | null> {
       return null;
     }
 
-    const addresses: ParsedAddress[] = [];
+    const command = str[first_slash + 2];
+    const trace_version = str[first_slash + 3];
 
-    const commitish = str.slice(first_slash + 2, first_slash + 9);
-
-    const trace_version = str[first_slash + 9];
     if (trace_version !== '1') {
       DEBUG && debug('invalid version \'%s\'', version);
       return null;
     }
 
-    let i = first_slash + 10;
+    const addresses: ParsedAddress[] = [];
+
+    let i = first_slash + 4 + 7;
+
+    const commitish = str.slice(first_slash + 4, i);
 
     let c, object, address, inc;
     while (true) {
@@ -188,7 +193,15 @@ export async function parse(str: string): Promise<Parse | null> {
       DEBUG && debug('invalid message %o', str.slice(i));
       return null;
     }
-    return { version, os, arch, commitish, addresses, message: message! };
+    return {
+      version,
+      os,
+      arch,
+      commitish,
+      addresses,
+      message: message!,
+      command,
+    };
   } catch (e) {
     DEBUG && debug(e);
     return null;

@@ -5,7 +5,7 @@ import type { Remap } from "./parser";
 
 export function formatMarkdown(remap: Remap): string {
   return [
-    `Bun v${remap.version} (${treeURLMD(remap.commit)}) on ${remap.os} ${remap.arch}:`,
+    `Bun v${remap.version} (${treeURLMD(remap.commit)}) on ${remap.os} ${remap.arch} [${remap.command}]`,
     '',
     remap.message.replace(/^panic: /, '**panic**: '),
     '',

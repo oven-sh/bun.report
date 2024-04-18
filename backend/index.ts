@@ -69,6 +69,21 @@ export default {
       return new Response('Not found', { status: 307, headers: { Location: `/?trace=${pathname.slice(1, -5)}` } });
     }
 
+    if (pathname.endsWith('/ack')) {
+      return parse(pathname.slice(1, -4))
+        .then(async (parsed) => {
+          if (!parsed) {
+            return new Response('Not found', { status: 404 });
+          }
+
+          remap(parsed)
+            .then(() => { })
+            .catch(() => { });
+
+          return new Response('ok');
+        });
+    }
+
     return parse(pathname.slice(1))
       .then(async (parsed) => {
         if (!parsed) {
@@ -105,6 +120,7 @@ async function postRemap(request: Request, server: Server) {
   let version: string;
   let commitish: string;
   let message: string;
+  let command: string;
 
   const body: unknown = await request.json();
   try {
@@ -142,6 +158,10 @@ async function postRemap(request: Request, server: Server) {
     assert('message' in body);
     assert(typeof body.message === 'string');
     message = body.message;
+
+    assert('command' in body);
+    assert(typeof body.command === 'string');
+    command = body.command;
   } catch (e) {
     return new Response('Invalid request', { status: 400 });
   }
@@ -155,12 +175,14 @@ async function postRemap(request: Request, server: Server) {
       version,
       commitish,
       message,
+      command,
     });
 
     return Response.json({
       commit: remapped.commit,
       addresses: remapped.addresses,
       issue: remapped.issue ?? null,
+      command: remapped.command,
     } satisfies RemapAPIResponse);
   } catch (e) {
     return handleError(e, false);
