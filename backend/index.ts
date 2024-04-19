@@ -118,8 +118,7 @@ function postRequest(request: Request, server: Server) {
     case '/remap':
       return postRemap(request, server);
     case '/github-webhook':
-      postGithubWebhook(request, server);
-      return new Response('ok');
+      return postGithubWebhook(request, server);
     default:
       return new Response('Not found', { status: 404 });
   }
@@ -242,6 +241,8 @@ async function postGithubWebhook(request: Request, server: Server) {
     const cache_key = match[1];
     await tagIssue(cache_key, issue_number);
   }
+
+  return new Response('ok');
 }
 
 const template = '6-crash-report.yml';

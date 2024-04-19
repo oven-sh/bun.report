@@ -178,7 +178,7 @@ export async function tryFromPR(os: Platform, arch: Arch, commit: ResolvedCommit
   const download_os = map_download_os[os];
   const download_arch = map_download_arch[arch];
 
-  const data = await octokit.rest.actions.listWorkflowRunsForRepo({
+  const data_1 = await octokit.rest.actions.listWorkflowRunsForRepo({
     owner: "oven-sh",
     repo: "bun",
     event: "pull_request",
@@ -186,13 +186,20 @@ export async function tryFromPR(os: Platform, arch: Arch, commit: ResolvedCommit
     branch: pr.ref, // Filter by branch associated with the PR
     per_page: 100, // Fetch up to 100 workflow runs
   });
-  const runs = data.data.workflow_runs
-    .filter((run) => run.head_sha === oid);
-  // .filter((run) => run.path === '.github/workflows/ci.yml')[0];
-
-  console.log('found runs', runs.map(r => ({ id: r.id, name: r.name, path: r.path })));
-
-  const run = runs[0];
+  const data_2 = await octokit.rest.actions.listWorkflowRunsForRepo({
+    owner: "oven-sh",
+    repo: "bun",
+    event: "pull_request",
+    status: "in_progress",
+    branch: pr.ref, // Filter by branch associated with the PR
+    per_page: 100, // Fetch up to 100 workflow runs
+  });
+  const runs = (
+    data_1.data.workflow_runs
+      .concat(data_2.data.workflow_runs)
+  )
+    .filter((run) => run.head_sha === oid)
+    .filter((run) => run.path === '.github/workflows/ci.yml')[0];
 
   if (!run) {
     return false;
