@@ -38,7 +38,7 @@ initTable('feature_data', `
 `);
 
 const get_remap_stmt = db.prepare('SELECT remapped_data FROM remap WHERE cache_key = ?');
-const insert_remap_stmt = db.prepare('INSERT INTO remap (cache_key, remapped_data) VALUES (?, ?)');
+const insert_remap_stmt = db.prepare('INSERT OR REPLACE INTO remap (cache_key, remapped_data) VALUES (?, ?)');
 
 const get_debug_file_stmt = db.prepare('SELECT file_path FROM debug_file WHERE cache_key = ?');
 const insert_debug_file_stmt = db.prepare('INSERT INTO debug_file (cache_key, file_path, last_updated) VALUES (?, ?, ?)');

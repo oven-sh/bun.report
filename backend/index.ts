@@ -17,6 +17,10 @@ export default {
   port: 3000,
 
   fetch(request, server) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`${request.method} ${request.url}`);
+    }
+
     if (request.method === 'POST') {
       return postRequest(request, server);
     }
@@ -73,12 +77,21 @@ export default {
       return parse(pathname.slice(1, -4))
         .then(async (parsed) => {
           if (!parsed) {
+            if (process.env.NODE_ENV === 'development') {
+              console.log('Invalid trace string sent for ack');
+              console.error(pathname.slice(1, -4));
+            }
             return new Response('Not found', { status: 404 });
           }
 
           remap(parsed)
             .then(() => { })
-            .catch(() => { });
+            .catch((e) => {
+              if (process.env.NODE_ENV === 'development') {
+                console.log('Invalid trace string sent for ack');
+                console.error(e);
+              }
+            });
 
           return new Response('ok');
         });
@@ -121,6 +134,7 @@ async function postRemap(request: Request, server: Server) {
   let commitish: string;
   let message: string;
   let command: string;
+  let features: [number, number];
 
   const body: unknown = await request.json();
   try {
@@ -162,6 +176,12 @@ async function postRemap(request: Request, server: Server) {
     assert('command' in body);
     assert(typeof body.command === 'string');
     command = body.command;
+
+    assert('features' in body);
+    assert(Array.isArray(body.features));
+    assert(body.features.length === 2);
+    assert(body.features.every(x => typeof x === 'number'));
+    features = body.features as [number, number];
   } catch (e) {
     return new Response('Invalid request', { status: 400 });
   }
@@ -176,6 +196,7 @@ async function postRemap(request: Request, server: Server) {
       commitish,
       message,
       command,
+      features,
     });
 
     return Response.json({

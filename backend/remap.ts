@@ -5,6 +5,7 @@ import { getCachedRemap, putCachedRemap } from './db';
 import { parseCacheKey } from '../lib/util';
 import { llvm_symbolizer, pdb_addr2line } from './system-deps';
 import { formatMarkdown } from '../lib';
+import { decodeFeatures } from './feature';
 
 const command_map: { [key: string]: string } = {
   'I': "AddCommand",
@@ -73,9 +74,14 @@ export async function remapUncached(parse: Parse, opts: { exe?: string } = {}): 
     throw e;
   }
 
-  const exe_path = opts.exe ?? await fetchDebugFile(parse.os, parse.arch, commit);
+  const debug_info = opts.exe
+    ? {
+      file_path: opts.exe,
+      feature_data: null,
+    }
+    : await fetchDebugFile(parse.os, parse.arch, commit);
 
-  if (!exe_path) {
+  if (!debug_info) {
     const e: any = new Error(`Could not find debug file for ${parse.os}-${parse.arch} for commit ${parse.commitish}`);
     e.code = 'DebugInfoUnavailable';
     throw e;
@@ -90,7 +96,7 @@ export async function remapUncached(parse: Parse, opts: { exe?: string } = {}): 
     const cmd = [
       parse.os === 'windows' ? pdb_addr2line : llvm_symbolizer,
       '--exe',
-      exe_path,
+      debug_info.file_path,
       ...parse.os !== 'windows'
         ? ['--no-inlines', '--relative-address']
         : ['--llvm'],
@@ -152,6 +158,9 @@ export async function remapUncached(parse: Parse, opts: { exe?: string } = {}): 
     commit: commit,
     addresses: mapped_addrs,
     command: command_map[parse.command] ?? parse.command,
+    features: debug_info.feature_data
+      ? decodeFeatures(parse.features, debug_info.feature_data)
+      : [],
   };
   putCachedRemap(key, remap);
 

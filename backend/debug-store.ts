@@ -12,7 +12,7 @@ const cache_root = join(import.meta.dir, '..', '.cache');
 
 interface DebugInfo {
   file_path: string;
-  feature_config: FeatureConfig;
+  feature_data: FeatureConfig;
 }
 
 export function storeRoot(platform: Platform, arch: Arch) {
@@ -61,7 +61,7 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedC
     const feature_config = getCachedFeatureData(oid)!;
     return {
       file_path: cached_path,
-      feature_config,
+      feature_data: feature_config,
     };
   }
 
@@ -246,8 +246,7 @@ export async function tryFromPR(os: Platform, arch: Arch, commit: ResolvedCommit
 
     try {
       const features = await Bun.file(join(temp, 'features.json')).json();
-
-      putCachedFeatureData(oid, features);
+      putCachedFeatureData(oid, migrateFeatureData(features));
     } catch { }
   }
 
@@ -260,5 +259,14 @@ export async function fetchFeatureData(commit: string): Promise<FeatureConfig> {
   if (response.status !== 200) {
     throw new Error(`Failed to fetch ${url}: ${response.status}`);
   }
-  return JSON.parse(await response.text());
+  return migrateFeatureData(JSON.parse(await response.text()));
+}
+
+function migrateFeatureData(any: any): FeatureConfig {
+  if (Array.isArray(any)) {
+    return {
+      features: any,
+    };
+  }
+  return any;
 }
