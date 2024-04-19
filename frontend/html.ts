@@ -6,11 +6,11 @@ function skeleton(mul: number, add: number, i: number) {
 }
 
 export function addrsToHTML(commit: string, addrs: (Address | ParsedAddress)[]): string[] {
-  let js_in_a_row = 0;
-  let pushJS = () => {
-    if (js_in_a_row > 0) {
-      lines.push(`<td><span class='js'>${js_in_a_row === 1 ? 'javascript code' : `${js_in_a_row} javascript functions`}</span></td>`);
-      js_in_a_row = 0;
+  let unknown_in_a_row = 0;
+  let pushUnknown = () => {
+    if (unknown_in_a_row > 0) {
+      lines.push(`<td><span class='js'>${unknown_in_a_row} unknown/js code</span></td>`);
+      unknown_in_a_row = 0;
     }
   }
 
@@ -18,12 +18,12 @@ export function addrsToHTML(commit: string, addrs: (Address | ParsedAddress)[]):
 
   let i = 0;
   for (const addr of addrs) {
-    if (addr.object === 'js') {
-      js_in_a_row++;
+    if (addr.object === '?') {
+      unknown_in_a_row++;
       continue;
     }
 
-    pushJS();
+    pushUnknown();
 
     lines.push(
       ('remapped' in addr) ? (
@@ -43,7 +43,7 @@ export function addrsToHTML(commit: string, addrs: (Address | ParsedAddress)[]):
     i++;
   }
 
-  pushJS();
+  pushUnknown();
 
   return lines;
 }
