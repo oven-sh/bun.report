@@ -5,37 +5,37 @@ import type { Remap } from '../lib/parser';
 import { remapCacheKey, type Arch, type Platform } from '../lib/util';
 import { rm } from 'node:fs/promises';
 import { relative } from 'node:path';
+import type { FeatureConfig } from './feature';
 
 const db = new Database('bun-remap.db');
 
 /** Three weeks */
 const cache_lifetime_ms = 1000 * 60 * 60 * 24 * 7 * 3;
 
-const existing_tables = db.query('SELECT name FROM sqlite_master WHERE type=\'table\' AND name=\'remap\';').all();
-if (existing_tables.length === 0) {
-  console.log('Initializing Database');
-  db.run(`
-    CREATE TABLE remap (
-      cache_key TEXT PRIMARY KEY,
-      remapped_data TEXT
-    )
-  `);
-
-  db.run(`
-    CREATE TABLE debug_file (
-      cache_key TEXT PRIMARY KEY,
-      file_path TEXT NOT NULL,
-      last_updated INTEGER NOT NULL
-    )
-  `);
-
-  db.run(`
-    CREATE TABLE issues (
-      cache_key TEXT PRIMARY KEY,
-      issue INTEGER NOT NULL
-    )
-  `);
+function initTable(name: string, query: string) {
+  const existing_table = db.query('SELECT name FROM sqlite_master WHERE type=\'table\' AND name=\'' + name + '\';').all();
+  if (existing_table.length === 0) {
+    db.run(`CREATE TABLE ${name} (${query})`);
+  }
 }
+
+initTable('remap', `
+  cache_key TEXT PRIMARY KEY,
+  remapped_data TEXT
+`);
+initTable('debug_file', `
+  cache_key TEXT PRIMARY KEY,
+  file_path TEXT NOT NULL,
+  last_updated INTEGER NOT NULL
+`);
+initTable('issues', `
+  cache_key TEXT PRIMARY KEY,
+  issue INTEGER NOT NULL
+`);
+initTable('feature_data', `
+  id TEXT PRIMARY KEY,
+  data TEXT NOT NULL
+`);
 
 const get_remap_stmt = db.prepare('SELECT remapped_data FROM remap WHERE cache_key = ?');
 const insert_remap_stmt = db.prepare('INSERT INTO remap (cache_key, remapped_data) VALUES (?, ?)');
@@ -46,6 +46,9 @@ const update_debug_file_stmt = db.prepare('UPDATE debug_file SET last_updated = 
 
 const get_issue_stmt = db.prepare('SELECT issue FROM issues WHERE cache_key = ?');
 const insert_issue_stmt = db.prepare('INSERT INTO issues (cache_key, issue) VALUES (?, ?)');
+
+const get_feature_data_stmt = db.prepare('SELECT data FROM feature_data WHERE id = ?');
+const insert_feature_data_stmt = db.prepare('INSERT INTO feature_data (id, data) VALUES (?, ?)');
 
 export function getCachedRemap(cache_key: string): Remap | null {
   const result = get_remap_stmt.get(cache_key) as { remapped_data: string, github_issue: string } | null;
@@ -74,6 +77,18 @@ export function getCachedDebugFile(os: Platform, arch: Arch, commit: string): st
 
 export function putCachedDebugFile(os: Platform, arch: Arch, commit: string, file_path: string) {
   insert_debug_file_stmt.run(`${os}-${arch}-${commit}`, file_path, Date.now());
+}
+
+export function getCachedFeatureData(commit: string): FeatureConfig | null {
+  const result = get_feature_data_stmt.get(commit) as { data: string } | null;
+  if (result) {
+    return JSON.parse(result.data);
+  }
+  return null;
+}
+
+export function putCachedFeatureData(commit: string, data: FeatureConfig) {
+  insert_feature_data_stmt.run(commit, JSON.stringify(data));
 }
 
 export async function garbageCollect() {

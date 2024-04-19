@@ -3,11 +3,17 @@ import type { Platform, Arch } from '../lib/util';
 import assert from 'node:assert';
 import { exists, rm, mkdir, rename } from 'node:fs/promises';
 import { unzip } from './system-deps';
-import { getCachedDebugFile, putCachedDebugFile } from './db';
+import { getCachedDebugFile, getCachedFeatureData, putCachedDebugFile, putCachedFeatureData } from './db';
 import type { ResolvedCommit } from '../lib';
 import { octokit } from './git';
+import type { FeatureConfig } from './feature';
 
 const cache_root = join(import.meta.dir, '..', '.cache');
+
+interface DebugInfo {
+  file_path: string;
+  feature_config: FeatureConfig;
+}
 
 export function storeRoot(platform: Platform, arch: Arch) {
   return join(cache_root, platform + '-' + arch);
@@ -18,12 +24,12 @@ export async function temp() {
   await mkdir(path, { recursive: true });
   return {
     path,
-    [Symbol.dispose]: () => { },
+    [Symbol.dispose]: () => void rm(path, { force: true }).catch(() => { }),
   };
 }
 
 /** This map serves as a sort of "mutex" */
-const in_progress_downloads = new Map<string, Promise<string | null>>();
+const in_progress_downloads = new Map<string, Promise<DebugInfo | null>>();
 
 const map_download_arch = {
   'x86_64': 'x64',
@@ -37,7 +43,7 @@ const map_download_os = {
   'linux': 'linux',
 } as const;
 
-export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedCommit): Promise<string | null> {
+export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedCommit): Promise<DebugInfo | null> {
   const oid = commit.oid;
   assert(oid.length === 40);
 
@@ -52,7 +58,11 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedC
 
   const cached_path = getCachedDebugFile(os, arch, oid);
   if (cached_path) {
-    return cached_path;
+    const feature_config = getCachedFeatureData(oid)!;
+    return {
+      file_path: cached_path,
+      feature_config,
+    };
   }
 
   if (in_progress_downloads.has(path)) {
@@ -65,9 +75,11 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedC
     throw e;
   }
 
-  const { promise, resolve, reject } = Promise.withResolvers<string | null>();
+  const { promise, resolve, reject } = Promise.withResolvers<DebugInfo | null>();
   in_progress_downloads.set(path, promise);
   promise.catch(() => { }); // mark as handled
+
+  let feature_config: FeatureConfig;
 
   try {
     const download_os = map_download_os[os];
@@ -127,15 +139,23 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedC
     await mkdir(dirname(path), { recursive: true });
     await rename(desired_file, path);
 
+    feature_config = getCachedFeatureData(oid) ?? await fetchFeatureData(oid);
+
     putCachedDebugFile(os, arch, oid, path);
   } catch (e) {
     await rm(path, { force: true });
     reject(e);
     throw e;
   }
+
+
   in_progress_downloads.delete(path);
-  resolve(path);
-  return path;
+  const result = {
+    file_path: path,
+    feature_config,
+  };
+  resolve(result);
+  return result;
 }
 
 export async function tryFromPR(os: Platform, arch: Arch, commit: ResolvedCommit, temp: string): Promise<boolean> {
@@ -171,35 +191,74 @@ export async function tryFromPR(os: Platform, arch: Arch, commit: ResolvedCommit
   });
 
   const dir = `bun-${download_os}-${download_arch}-profile`;
-  const artifact = artifacts.data.artifacts.find((artifact) => artifact.name === dir);
 
-  if (!artifact) {
-    return false;
+  {
+    const artifact = artifacts.data.artifacts.find((artifact) => artifact.name === dir);
+
+    if (!artifact) {
+      return false;
+    }
+
+    const downloaded_artifact = await octokit.rest.actions.downloadArtifact({
+      owner: "oven-sh",
+      repo: "bun",
+      artifact_id: artifact.id,
+      archive_format: 'zip',
+    });
+
+    await Bun.write(join(temp, 'artifact-download.zip'), downloaded_artifact.data as any);
+
+    const subproc = Bun.spawn({
+      cmd: [unzip, join(temp, 'artifact-download.zip')],
+      stdio: ['ignore', 'pipe', 'pipe'],
+      cwd: temp,
+    });
+
+    if ((await subproc.exited) !== 0) {
+      const e: any = new Error(
+        'unzip failed: '
+        + await Bun.readableStreamToText(subproc.stderr)
+      );
+      e.code = 'UnzipFailed';
+      throw e;
+    }
   }
 
-  const downloaded_artifact = await octokit.rest.actions.downloadArtifact({
-    owner: "oven-sh",
-    repo: "bun",
-    artifact_id: artifact.id,
-    archive_format: 'zip',
-  });
+  get_features: {
+    const artifact = artifacts.data.artifacts.find((artifact) => artifact.name === 'bun-feature-data');
+    if (!artifact) break get_features;
 
-  await Bun.write(join(temp, 'artifact-download.zip'), downloaded_artifact.data as any);
+    const downloaded_artifact = await octokit.rest.actions.downloadArtifact({
+      owner: "oven-sh",
+      repo: "bun",
+      artifact_id: artifact.id,
+      archive_format: 'zip',
+    });
 
-  const subproc = Bun.spawn({
-    cmd: [unzip, join(temp, 'artifact-download.zip')],
-    stdio: ['ignore', 'pipe', 'pipe'],
-    cwd: temp,
-  });
+    await Bun.write(join(temp, 'artifact-download-2.zip'), downloaded_artifact.data as any);
 
-  if ((await subproc.exited) !== 0) {
-    const e: any = new Error(
-      'unzip failed: '
-      + await Bun.readableStreamToText(subproc.stderr)
-    );
-    e.code = 'UnzipFailed';
-    throw e;
+    const subproc = Bun.spawn({
+      cmd: [unzip, join(temp, 'artifact-download-2.zip')],
+      stdio: ['ignore', 'pipe', 'pipe'],
+      cwd: temp,
+    });
+    await subproc.exited;
+
+    try {
+      const features = await Bun.file(join(temp, 'features.json')).json();
+
+      putCachedFeatureData(oid, features);
+    } catch { }
   }
 
   return true;
+}
+
+export async function fetchFeatureData(commit: string): Promise<FeatureConfig> {
+  const url = `${process.env.BUN_DOWNLOAD_BASE}/${commit}/features.json`;
+  const response = await fetch(url);
+  if (response.status !== 200) {
+    throw new Error(`Failed to fetch ${url}: ${response.status}`);
+  }
+  return JSON.parse(await response.text());
 }
