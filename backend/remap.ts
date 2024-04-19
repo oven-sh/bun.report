@@ -77,7 +77,7 @@ export async function remapUncached(parse: Parse, opts: { exe?: string } = {}): 
   const debug_info = opts.exe
     ? {
       file_path: opts.exe,
-      feature_data: null,
+      feature_config: null,
     }
     : await fetchDebugFile(parse.os, parse.arch, commit);
 
@@ -158,8 +158,8 @@ export async function remapUncached(parse: Parse, opts: { exe?: string } = {}): 
     commit: commit,
     addresses: mapped_addrs,
     command: command_map[parse.command] ?? parse.command,
-    features: debug_info.feature_data
-      ? decodeFeatures(parse.features, debug_info.feature_data)
+    features: debug_info.feature_config
+      ? decodeFeatures(parse.features, debug_info.feature_config)
       : [],
   };
   putCachedRemap(key, remap);

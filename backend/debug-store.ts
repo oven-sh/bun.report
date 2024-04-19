@@ -12,7 +12,7 @@ const cache_root = join(import.meta.dir, '..', '.cache');
 
 interface DebugInfo {
   file_path: string;
-  feature_data: FeatureConfig;
+  feature_config: FeatureConfig;
 }
 
 export function storeRoot(platform: Platform, arch: Arch) {
@@ -47,6 +47,10 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedC
   const oid = commit.oid;
   assert(oid.length === 40);
 
+  if (process.env.NODE_ENV === 'development') {
+    console.log('fetching debug file for', os, arch, commit);
+  }
+
   const store_suffix = os === 'windows' ? '.pdb' : '';
 
   const root = storeRoot(os, arch);
@@ -61,7 +65,7 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedC
     const feature_config = getCachedFeatureData(oid)!;
     return {
       file_path: cached_path,
-      feature_data: feature_config,
+      feature_config: feature_config,
     };
   }
 
@@ -82,6 +86,10 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedC
   let feature_config: FeatureConfig;
 
   try {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('fetching debug file for', os, arch, oid);
+    }
+
     const download_os = map_download_os[os];
     const download_arch = map_download_arch[arch];
 
@@ -93,6 +101,9 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedC
     if (response.status === 404) {
       const pr = commit.pr;
       if (pr) {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('fetching debug file for', os, arch, oid, 'from PR', pr.number);
+        }
         try {
           let success = await tryFromPR(os, arch, commit, tmp.path);
           if (!success) {
@@ -175,13 +186,19 @@ export async function tryFromPR(os: Platform, arch: Arch, commit: ResolvedCommit
     branch: pr.ref, // Filter by branch associated with the PR
     per_page: 100, // Fetch up to 100 workflow runs
   });
-  const run = data.data.workflow_runs
-    .filter((run) => run.head_sha === oid)
-    .filter((run) => run.path === '.github/workflows/ci.yml')[0];
+  const runs = data.data.workflow_runs
+    .filter((run) => run.head_sha === oid);
+  // .filter((run) => run.path === '.github/workflows/ci.yml')[0];
+
+  console.log('found runs', runs.map(r => ({ id: r.id, name: r.name, path: r.path })));
+
+  const run = runs[0];
 
   if (!run) {
     return false;
   }
+
+  console.log('found run', run.id);
 
   const artifacts = await octokit.rest.actions.listWorkflowRunArtifacts({
     owner: "oven-sh",
@@ -196,6 +213,10 @@ export async function tryFromPR(os: Platform, arch: Arch, commit: ResolvedCommit
     const artifact = artifacts.data.artifacts.find((artifact) => artifact.name === dir);
 
     if (!artifact) {
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`no artifact ${dir}`);
+        console.log(artifacts.data.artifacts.map(a => a.name));
+      }
       return false;
     }
 
