@@ -5,6 +5,33 @@ import { getCachedRemap, putCachedRemap } from './db';
 import { parseCacheKey } from '../lib/util';
 import { llvm_symbolizer, pdb_addr2line } from './system-deps';
 import { formatMarkdown } from '../lib';
+import { decodeFeatures } from './feature';
+
+const command_map: { [key: string]: string } = {
+  'I': "AddCommand",
+  'a': "AutoCommand",
+  'b': "BuildCommand",
+  'B': "BunxCommand",
+  'c': "CreateCommand",
+  'D': "DiscordCommand",
+  'g': "GetCompletionsCommand",
+  'h': "HelpCommand",
+  'j': "InitCommand",
+  'i': "InstallCommand",
+  'C': "InstallCompletionsCommand",
+  'l': "LinkCommand",
+  'P': "PackageManagerCommand",
+  'R': "RemoveCommand",
+  'r': "RunCommand",
+  'n': "RunAsNodeCommand",
+  't': "TestCommand",
+  'U': "UnlinkCommand",
+  'u': "UpdateCommand",
+  'p': "UpgradeCommand",
+  'G': "ReplCommand",
+  'w': "ReservedCommand",
+  'e': "ExecCommand",
+};
 
 /** This map serves as a sort of "mutex" */
 const in_progress_remaps = new Map<string, Promise<Remap>>();
@@ -47,9 +74,14 @@ export async function remapUncached(parse: Parse, opts: { exe?: string } = {}): 
     throw e;
   }
 
-  const exe_path = opts.exe ?? await fetchDebugFile(parse.os, parse.arch, commit);
+  const debug_info = opts.exe
+    ? {
+      file_path: opts.exe,
+      feature_config: null,
+    }
+    : await fetchDebugFile(parse.os, parse.arch, commit);
 
-  if (!exe_path) {
+  if (!debug_info) {
     const e: any = new Error(`Could not find debug file for ${parse.os}-${parse.arch} for commit ${parse.commitish}`);
     e.code = 'DebugInfoUnavailable';
     throw e;
@@ -64,7 +96,7 @@ export async function remapUncached(parse: Parse, opts: { exe?: string } = {}): 
     const cmd = [
       parse.os === 'windows' ? pdb_addr2line : llvm_symbolizer,
       '--exe',
-      exe_path,
+      debug_info.file_path,
       ...parse.os !== 'windows'
         ? ['--no-inlines', '--relative-address']
         : ['--llvm'],
@@ -125,6 +157,10 @@ export async function remapUncached(parse: Parse, opts: { exe?: string } = {}): 
     arch: parse.arch,
     commit: commit,
     addresses: mapped_addrs,
+    command: command_map[parse.command] ?? parse.command,
+    features: debug_info.feature_config
+      ? decodeFeatures(parse.features, debug_info.feature_config)
+      : [],
   };
   putCachedRemap(key, remap);
 

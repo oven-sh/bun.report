@@ -4,7 +4,7 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV=development bun ./backend/index.ts --watch",
+    "dev": "NODE_ENV=development bun --watch ./backend/index.ts",
     "start": "NODE_ENV=production bun ./dist/server.js",
     "loc": "bunx cloc backend frontend lib pdb-addr2line2/src *.ts"
   },

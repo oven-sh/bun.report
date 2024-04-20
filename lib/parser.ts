@@ -3,7 +3,7 @@ import { decodePart } from "./vlq";
 
 declare const DEBUG: boolean;
 if (typeof DEBUG === 'undefined') {
-  (globalThis as any).DEBUG = process.env.NODE_ENV === 'development';
+  (globalThis as any).DEBUG = process.env.NODE_ENV !== 'production';
 }
 
 const debug =
@@ -45,6 +45,8 @@ export interface Parse {
   arch: Arch;
   commitish: string;
   addresses: ParsedAddress[];
+  command: string;
+  features: [number, number];
 }
 
 export interface ResolvedCommit {
@@ -64,6 +66,8 @@ export interface Remap {
   commit: ResolvedCommit;
   addresses: Address[];
   issue?: number;
+  command: string;
+  features: string[]
 }
 
 export type Address = RemappedAddress | UnknownAddress;
@@ -90,6 +94,7 @@ export interface RemapAPIResponse {
   commit: ResolvedCommit;
   addresses: Address[];
   issue: number | null;
+  command: string;
 }
 
 function validateSemver(version: string): boolean {
@@ -112,19 +117,32 @@ export async function parse(str: string): Promise<Parse | null> {
       return null;
     }
 
-    const addresses: ParsedAddress[] = [];
+    const command = str[first_slash + 2];
+    const trace_version = str[first_slash + 3];
 
-    const commitish = str.slice(first_slash + 2, first_slash + 9);
-
-    const trace_version = str[first_slash + 9];
     if (trace_version !== '1') {
-      DEBUG && debug('invalid version \'%s\'', version);
+      DEBUG && debug('invalid version \'%s\'', trace_version);
       return null;
     }
 
-    let i = first_slash + 10;
+    const addresses: ParsedAddress[] = [];
+
+    let i = first_slash + 4 + 7;
+
+    const commitish = str.slice(first_slash + 4, i);
 
     let c, object, address, inc;
+
+    [c, inc] = decodePart(str.slice(i));
+    i += inc;
+    [object, inc] = decodePart(str.slice(i));
+    i += inc;
+    if (object == null || c == null) {
+      DEBUG && debug('invalid features part %o', str.slice(i));
+      return null;
+    }
+    const features_data = [c, object] as [number, number];
+
     while (true) {
       c = str[i];
       object = 'bun';
@@ -188,7 +206,16 @@ export async function parse(str: string): Promise<Parse | null> {
       DEBUG && debug('invalid message %o', str.slice(i));
       return null;
     }
-    return { version, os, arch, commitish, addresses, message: message! };
+    return {
+      version,
+      os,
+      arch,
+      commitish,
+      addresses,
+      message: message!,
+      command,
+      features: features_data,
+    };
   } catch (e) {
     DEBUG && debug(e);
     return null;
@@ -224,9 +251,12 @@ function parseVlqAddr(unparsed_addr: string): string {
   let [first, i] = decodePart(unparsed_addr) as [any, number];
   let [second] = decodePart(unparsed_addr.slice(i));
   if (first == null || second == null) return 'unknown address';
-  first = first ? first.toString(16) : '';
+  first = first ? correctIntToUint32(first).toString(16) : '';
   return 'address 0x'
     + (first
-      + (second + (second < 0 ? 2 ** 32 : 0)).toString(16).padStart(8, '0')).toUpperCase();
+      + correctIntToUint32(second).toString(16).padStart(8, '0')).toUpperCase();
 }
 
+function correctIntToUint32(int: number): number {
+  return int + (int < 0 ? 2 ** 32 : 0);
+}

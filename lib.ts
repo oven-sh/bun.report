@@ -12,6 +12,7 @@ export async function remap(parse: Parse, signal?: AbortSignal): Promise<Remap> 
       arch: parse.arch,
       version: parse.version,
       commitish: parse.commitish,
+      command: parse.command,
     }),
     headers: {
       'Content-Type': 'application/json',
@@ -36,5 +37,6 @@ export async function remap(parse: Parse, signal?: AbortSignal): Promise<Remap> 
     arch: parse.arch,
     commit: remap.commit,
     addresses: remap.addresses,
+    command: remap.command,
   }
 }

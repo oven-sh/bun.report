@@ -17,6 +17,10 @@ export default {
   port: 3000,
 
   fetch(request, server) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`${request.method} ${request.url}`);
+    }
+
     if (request.method === 'POST') {
       return postRequest(request, server);
     }
@@ -69,6 +73,30 @@ export default {
       return new Response('Not found', { status: 307, headers: { Location: `/?trace=${pathname.slice(1, -5)}` } });
     }
 
+    if (pathname.endsWith('/ack')) {
+      return parse(pathname.slice(1, -4))
+        .then(async (parsed) => {
+          if (!parsed) {
+            if (process.env.NODE_ENV === 'development') {
+              console.log('Invalid trace string sent for ack');
+              console.error(pathname.slice(1, -4));
+            }
+            return new Response('Not found', { status: 404 });
+          }
+
+          remap(parsed)
+            .then(() => { })
+            .catch((e) => {
+              if (process.env.NODE_ENV === 'development') {
+                console.log('Invalid trace string sent for ack');
+                console.error(e);
+              }
+            });
+
+          return new Response('ok');
+        });
+    }
+
     return parse(pathname.slice(1))
       .then(async (parsed) => {
         if (!parsed) {
@@ -90,8 +118,7 @@ function postRequest(request: Request, server: Server) {
     case '/remap':
       return postRemap(request, server);
     case '/github-webhook':
-      postGithubWebhook(request, server);
-      return new Response('ok');
+      return postGithubWebhook(request, server);
     default:
       return new Response('Not found', { status: 404 });
   }
@@ -105,6 +132,8 @@ async function postRemap(request: Request, server: Server) {
   let version: string;
   let commitish: string;
   let message: string;
+  let command: string;
+  let features: [number, number];
 
   const body: unknown = await request.json();
   try {
@@ -142,6 +171,16 @@ async function postRemap(request: Request, server: Server) {
     assert('message' in body);
     assert(typeof body.message === 'string');
     message = body.message;
+
+    assert('command' in body);
+    assert(typeof body.command === 'string');
+    command = body.command;
+
+    assert('features' in body);
+    assert(Array.isArray(body.features));
+    assert(body.features.length === 2);
+    assert(body.features.every(x => typeof x === 'number'));
+    features = body.features as [number, number];
   } catch (e) {
     return new Response('Invalid request', { status: 400 });
   }
@@ -155,12 +194,15 @@ async function postRemap(request: Request, server: Server) {
       version,
       commitish,
       message,
+      command,
+      features,
     });
 
     return Response.json({
       commit: remapped.commit,
       addresses: remapped.addresses,
       issue: remapped.issue ?? null,
+      command: remapped.command,
     } satisfies RemapAPIResponse);
   } catch (e) {
     return handleError(e, false);
@@ -199,6 +241,8 @@ async function postGithubWebhook(request: Request, server: Server) {
     const cache_key = match[1];
     await tagIssue(cache_key, issue_number);
   }
+
+  return new Response('ok');
 }
 
 const template = '6-crash-report.yml';

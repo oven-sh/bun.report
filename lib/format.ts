@@ -5,13 +5,15 @@ import type { Remap } from "./parser";
 
 export function formatMarkdown(remap: Remap): string {
   return [
-    `Bun v${remap.version} (${treeURLMD(remap.commit)}) on ${remap.os} ${remap.arch}:`,
+    `Bun v${remap.version} (${treeURLMD(remap.commit)}) on ${remap.os} ${remap.arch} [${remap.command}]`,
     '',
     remap.message.replace(/^panic: /, '**panic**: '),
     '',
     ...addrsToMarkdown(remap.commit.oid, remap.addresses)
-      .map(l => `- ${l}`)
-  ].join('\n');
+      .map(l => `- ${l}`),
+    '',
+    remap.features ? `Features: ${remap.features.join(', ')}` : '',
+  ].join('\n').trim().replace(/\n\n+/g, '\n\n');
 }
 
 function treeURLMD(commit: ResolvedCommit) {
@@ -23,23 +25,23 @@ function treeURLMD(commit: ResolvedCommit) {
 }
 
 export function addrsToMarkdown(commit: string, addrs: Address[]): string[] {
-  let js_in_a_row = 0;
-  let pushJS = () => {
-    if (js_in_a_row > 0) {
-      lines.push(`*${js_in_a_row === 1 ? 'javascript code' : `${js_in_a_row} javascript functions`}*`);
-      js_in_a_row = 0;
+  let unknown_in_a_row = 0;
+  let pushUnknown = () => {
+    if (unknown_in_a_row > 0) {
+      lines.push(`*${unknown_in_a_row} unknown/js code*`);
+      unknown_in_a_row = 0;
     }
   }
 
   const lines: string[] = [];
 
   for (const addr of addrs) {
-    if (addr.object === 'js') {
-      js_in_a_row++;
+    if (addr.object === '?') {
+      unknown_in_a_row++;
       continue;
     }
 
-    pushJS();
+    pushUnknown();
 
     if (addr.remapped) {
       lines.push(`${addr.src ?
@@ -51,29 +53,29 @@ export function addrsToMarkdown(commit: string, addrs: Address[]): string[] {
     }
   }
 
-  pushJS();
+  pushUnknown();
 
   return lines;
 }
 
 export function addrsToPlainText(commit: string, addrs: Address[]): string[] {
-  let js_in_a_row = 0;
-  let pushJS = () => {
-    if (js_in_a_row > 0) {
-      lines.push(`${js_in_a_row === 1 ? 'javascript code' : `${js_in_a_row} javascript functions`}`);
-      js_in_a_row = 0;
+  let unknown_in_a_row = 0;
+  let pushUnknown = () => {
+    if (unknown_in_a_row > 0) {
+      lines.push(`${unknown_in_a_row} unknown/js code`);
+      unknown_in_a_row = 0;
     }
   }
 
   const lines: string[] = [];
 
   for (const addr of addrs) {
-    if (addr.object === 'js') {
-      js_in_a_row++;
+    if (addr.object === '?') {
+      unknown_in_a_row++;
       continue;
     }
 
-    pushJS();
+    pushUnknown();
 
     if (addr.remapped) {
       lines.push(`${addr.src ?
@@ -85,7 +87,7 @@ export function addrsToPlainText(commit: string, addrs: Address[]): string[] {
     }
   }
 
-  pushJS();
+  pushUnknown();
 
   return lines;
 }
