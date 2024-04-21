@@ -1,134 +1,176 @@
-import type { ServeOptions, Server } from 'bun';
-import { type RemapAPIResponse, type ParsedAddress, parse, type Parse } from '../lib/parser';
-import { remap } from './remap';
-import assert from 'node:assert';
-import { join } from 'node:path';
-import { addrsToPlainText, formatMarkdown } from '../lib/format';
-import { garbageCollect, tagIssue } from './db';
-import { verify } from '@octokit/webhooks-methods';
-import { escapeHTML, remapCacheKey } from '../lib/util';
+import type { ServeOptions, Server } from "bun";
+import {
+  type RemapAPIResponse,
+  type ParsedAddress,
+  parse,
+  type Parse,
+} from "../lib/parser";
+import { remap } from "./remap";
+import assert from "node:assert";
+import { join } from "node:path";
+import { addrsToPlainText, formatMarkdown } from "../lib/format";
+import { garbageCollect, tagIssue } from "./db";
+import { verify } from "@octokit/webhooks-methods";
+import { escapeHTML, remapCacheKey } from "../lib/util";
 
-const html = process.env.NODE_ENV === 'production'
-  ? await Bun.file(join(import.meta.dir, 'index.html')).arrayBuffer()
-  : null;
+process.env.NODE_ENV ||= "development";
+
+const html =
+  process.env.NODE_ENV === "production"
+    ? await Bun.file(join(import.meta.dir, "index.html")).arrayBuffer()
+    : null;
+
+function getPathname(url: string) {
+  let pathname = new URL(url).pathname;
+
+  while (pathname.startsWith("//")) {
+    pathname = pathname.slice(1);
+  }
+
+  if (pathname === "") {
+    return "/";
+  }
+
+  return pathname;
+}
 
 // Server
 export default {
   port: 3000,
 
   fetch(request, server) {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
       console.log(`${request.method} ${request.url}`);
     }
 
-    if (request.method === 'POST') {
+    if (request.method === "POST") {
       return postRequest(request, server);
     }
 
-    const { pathname } = new URL(request.url);
+    const pathname = getPathname(request.url);
 
     // Development
-    if (process.env.NODE_ENV === 'development') {
-      if (pathname === '/') {
-        return Bun.file(join(import.meta.dir, '../frontend/index.dev.html'))
+    if (process.env.NODE_ENV === "development") {
+      if (pathname === "/") {
+        return Bun.file(join(import.meta.dir, "../frontend/index.dev.html"))
           .text()
-          .then(async (text) =>
-            new Response(text.replaceAll('%md%',
-              require('marked').parse(
-                await Bun.file(join(import.meta.dir, '../explainer.md')).text()
+          .then(
+            async (text) =>
+              new Response(
+                text.replaceAll(
+                  "%md%",
+                  require("marked").parse(
+                    await Bun.file(
+                      join(import.meta.dir, "../explainer.md")
+                    ).text()
+                  )
+                ),
+                {
+                  headers: {
+                    "Content-Type": "text/html; charset=utf-8",
+                  },
+                }
               )
-            ), {
-              headers: {
-                'Content-Type': 'text/html; charset=utf-8'
-              }
-            })
           );
       }
 
-      if (pathname === '/frontend.js') {
-        return import('../build')
-          .then(mod => mod.build('development'))
+      if (pathname === "/frontend.js") {
+        return import("../build")
+          .then((mod) => mod.build("development"))
           .then((f: any) => new Response(f));
       }
 
-      if (pathname === '/style.css') {
-        return new Response(Bun.file(join(import.meta.dir, '../frontend/style.css')));
+      if (pathname === "/style.css") {
+        return new Response(
+          Bun.file(join(import.meta.dir, "../frontend/style.css"))
+        );
       }
     }
-    if (process.env.NODE_ENV === 'production') {
-      if (pathname === '/') {
+    if (process.env.NODE_ENV === "production") {
+      if (pathname === "/") {
         return new Response(html, {
           headers: {
-            'Content-Type': 'text/html; charset=utf-8'
-          }
+            "Content-Type": "text/html; charset=utf-8",
+          },
         });
       }
     }
 
-    if (pathname === '/favicon.ico') {
-      return new Response(Bun.file(join(import.meta.dir, process.env.NODE_ENV === 'production' ? 'favicon.ico' : '../frontend/favicon.ico')));
+    if (pathname === "/favicon.ico") {
+      return new Response(
+        Bun.file(
+          join(
+            import.meta.dir,
+            process.env.NODE_ENV === "production"
+              ? "favicon.ico"
+              : "../frontend/favicon.ico"
+          )
+        )
+      );
     }
 
-    if (pathname.endsWith('/view')) {
-      return new Response('Not found', { status: 307, headers: { Location: `/?trace=${pathname.slice(1, -5)}` } });
+    if (pathname.endsWith("/view")) {
+      return new Response("Not found", {
+        status: 307,
+        headers: { Location: `/?trace=${pathname.slice(1, -5)}` },
+      });
     }
 
-    if (pathname.endsWith('/ack')) {
-      return parse(pathname.slice(1, -4))
-        .then(async (parsed) => {
-          if (!parsed) {
-            if (process.env.NODE_ENV === 'development') {
-              console.log('Invalid trace string sent for ack');
-              console.error(pathname.slice(1, -4));
-            }
-            return new Response('Not found', { status: 404 });
-          }
-
-          remap(parsed)
-            .then(() => { })
-            .catch((e) => {
-              if (process.env.NODE_ENV === 'development') {
-                console.log('Invalid trace string sent for ack');
-                console.error(e);
-              }
-            });
-
-          return new Response('ok');
-        });
-    }
-
-    return parse(pathname.slice(1))
-      .then(async (parsed) => {
+    if (pathname.endsWith("/ack")) {
+      return parse(pathname.slice(1, -4)).then(async (parsed) => {
         if (!parsed) {
-          return new Response('Not found', { status: 404 });
+          if (process.env.NODE_ENV === "development") {
+            console.log("Invalid trace string sent for ack");
+            console.error(pathname.slice(1, -4));
+          }
+          return new Response("Not found", { status: 404 });
         }
 
-        const is_discord_bot = request.headers.get('user-agent')?.includes('discord') ?? false;
+        remap(parsed)
+          .then(() => {})
+          .catch((e) => {
+            if (process.env.NODE_ENV === "development") {
+              console.log("Invalid trace string sent for ack");
+              console.error(e);
+            }
+          });
 
-        return remapAndRedirect(parsed, is_discord_bot);
+        return new Response("ok");
       });
+    }
+
+    return parse(pathname.slice(1)).then(async (parsed) => {
+      if (!parsed) {
+        return new Response("Not found", { status: 404 });
+      }
+
+      const is_discord_bot =
+        request.headers.get("user-agent")?.includes("discord") ?? false;
+
+      return remapAndRedirect(parsed, is_discord_bot);
+    });
   },
 } satisfies ServeOptions;
 
 // Post requests
 function postRequest(request: Request, server: Server) {
-  const pathname = new URL(request.url).pathname.replace(/\/$/, '');
+  const pathname = getPathname(request.url);
 
   switch (pathname) {
-    case '/remap':
+    case "/remap":
       return postRemap(request, server);
-    case '/github-webhook':
+    case "/github-webhook":
       return postGithubWebhook(request, server);
     default:
-      return new Response('Not found', { status: 404 });
+      return new Response("Not found", { status: 404 });
   }
 }
 
 async function postRemap(request: Request, server: Server) {
   // Validate input body request
   let addresses: ParsedAddress[] = [];
-  let os: 'windows' | 'macos' | 'linux';
-  let arch: 'x86_64' | 'aarch64';
+  let os: "windows" | "macos" | "linux";
+  let arch: "x86_64" | "aarch64";
   let version: string;
   let commitish: string;
   let message: string;
@@ -137,52 +179,52 @@ async function postRemap(request: Request, server: Server) {
 
   const body: unknown = await request.json();
   try {
-    assert(typeof body === 'object' && body && !Array.isArray(body));
+    assert(typeof body === "object" && body && !Array.isArray(body));
 
-    assert('addresses' in body);
+    assert("addresses" in body);
     assert(Array.isArray(body.addresses));
     for (const addr of body.addresses) {
-      assert('address' in addr);
-      assert(typeof addr.address === 'number');
+      assert("address" in addr);
+      assert(typeof addr.address === "number");
       assert(Number.isFinite(addr.address) && addr.address >= 0);
-      assert('object' in addr);
-      assert(typeof addr.object === 'string');
+      assert("object" in addr);
+      assert(typeof addr.object === "string");
       addresses.push({ address: addr.address, object: addr.object });
     }
 
-    assert('os' in body);
-    assert(body.os === 'macos' || body.os === 'linux' || body.os === 'windows');
+    assert("os" in body);
+    assert(body.os === "macos" || body.os === "linux" || body.os === "windows");
     os = body.os;
 
-    assert('arch' in body);
-    assert(body.arch === 'x86_64' || body.arch === 'aarch64');
+    assert("arch" in body);
+    assert(body.arch === "x86_64" || body.arch === "aarch64");
     arch = body.arch;
 
-    assert('version' in body);
-    assert(typeof body.version === 'string');
+    assert("version" in body);
+    assert(typeof body.version === "string");
     assert(/^\d+\.\d+\.\d+$/.test(body.version));
     version = body.version;
 
-    assert('commitish' in body);
-    assert(typeof body.commitish === 'string');
+    assert("commitish" in body);
+    assert(typeof body.commitish === "string");
     assert(body.commitish.length === 7);
     commitish = body.commitish;
 
-    assert('message' in body);
-    assert(typeof body.message === 'string');
+    assert("message" in body);
+    assert(typeof body.message === "string");
     message = body.message;
 
-    assert('command' in body);
-    assert(typeof body.command === 'string');
+    assert("command" in body);
+    assert(typeof body.command === "string");
     command = body.command;
 
-    assert('features' in body);
+    assert("features" in body);
     assert(Array.isArray(body.features));
     assert(body.features.length === 2);
-    assert(body.features.every(x => typeof x === 'number'));
+    assert(body.features.every((x) => typeof x === "number"));
     features = body.features as [number, number];
   } catch (e) {
-    return new Response('Invalid request', { status: 400 });
+    return new Response("Invalid request", { status: 400 });
   }
 
   // Do the remapping
@@ -212,22 +254,22 @@ async function postRemap(request: Request, server: Server) {
 async function postGithubWebhook(request: Request, server: Server) {
   const body = await request.text();
 
-  const sig = request.headers.get('x-hub-signature');
-  const event = request.headers.get('x-github-event');
-  const id = request.headers.get('x-github-delivery');
+  const sig = request.headers.get("x-hub-signature");
+  const event = request.headers.get("x-github-event");
+  const id = request.headers.get("x-github-delivery");
 
   if (!sig || !event || !id) {
-    return new Response('Missing headers', { status: 400 });
+    return new Response("Missing headers", { status: 400 });
   }
 
-  if (!await verify(process.env.GITHUB_WEBHOOK_SECRET!, sig, body)) {
-    return new Response('Invalid signature', { status: 400 });
+  if (!(await verify(process.env.GITHUB_WEBHOOK_SECRET!, sig, body))) {
+    return new Response("Invalid signature", { status: 400 });
   }
 
   const payload = JSON.parse(body);
 
-  if (event !== 'issues') return;
-  if (payload.action !== 'opened') return;
+  if (event !== "issues") return;
+  if (payload.action !== "opened") return;
   const issue = payload.issue;
   if (!issue) return;
   const issue_number = issue.number;
@@ -242,39 +284,54 @@ async function postGithubWebhook(request: Request, server: Server) {
     await tagIssue(cache_key, issue_number);
   }
 
-  return new Response('ok');
+  return new Response("ok");
 }
 
-const template = '6-crash-report.yml';
+const template = "6-crash-report.yml";
 
 async function remapAndRedirect(parsed: Parse, is_discord_bot: boolean) {
   try {
     const remapped = await remap(parsed);
 
     if (!remapped) {
-      return new Response('Failed to remap', { status: 500 });
+      return new Response("Failed to remap", { status: 500 });
     }
 
     if (remapped.issue) {
-      return Response.redirect(`https://github.com/oven-sh/bun/issues/${remapped.issue}`, 307);
+      return Response.redirect(
+        `https://github.com/oven-sh/bun/issues/${remapped.issue}`,
+        307
+      );
     }
 
     if (is_discord_bot) {
       const embed_title = remapped.message;
-      const embed_description = addrsToPlainText(remapped.commit.oid, remapped.addresses).join('\n');
+      const embed_description = addrsToPlainText(
+        remapped.commit.oid,
+        remapped.addresses
+      ).join("\n");
 
-      return new Response(`<meta property=og:title content="${escapeHTML(embed_title)}">
+      return new Response(
+        `<meta property=og:title content="${escapeHTML(embed_title)}">
 <meta property=og:description content="${escapeHTML(embed_description)}">
-`, {
-        headers: {
-          'Content-Type': 'text/html; charset=utf-8',
+`,
+        {
+          headers: {
+            "Content-Type": "text/html; charset=utf-8",
+          },
         }
-      });
+      );
     }
 
     const markdown = formatMarkdown(remapped);
-    const report = markdown + '\n\n<!-- from bun.report: ' + remapCacheKey(remapped) + ' -->';
-    const url = `https://github.com/oven-sh/bun/issues/new?labels=bug,crash&template=${template}&remapped_trace=${encodeURIComponent(report)}`;
+    const report =
+      markdown +
+      "\n\n<!-- from bun.report: " +
+      remapCacheKey(remapped) +
+      " -->";
+    const url = `https://github.com/oven-sh/bun/issues/new?labels=bug,crash&template=${template}&remapped_trace=${encodeURIComponent(
+      report
+    )}`;
 
     return Response.redirect(url, 307);
   } catch (e) {
@@ -284,19 +341,23 @@ async function remapAndRedirect(parsed: Parse, is_discord_bot: boolean) {
 
 function handleError(e: any, visual: boolean) {
   switch (e?.code) {
-    case 'MissingToken':
-      return Response.json({ error: 'Missing GITHUB_TOKEN' });
-    case 'DebugInfoUnavailable':
-      if (process.env.NODE_ENV === 'development') {
+    case "MissingToken":
+      return Response.json({ error: "Missing GITHUB_TOKEN" });
+    case "DebugInfoUnavailable":
+      if (process.env.NODE_ENV === "development") {
         console.error(e);
       }
-      return Response.json({ error: 'Could not find debug info for this version of Bun.' });
-    case 'PdbAddr2LineFailed':
+      return Response.json({
+        error: "Could not find debug info for this version of Bun.",
+      });
+    case "PdbAddr2LineFailed":
       console.error(e);
-      return Response.json({ error: 'Failed to remap addresses in debug info.' });
+      return Response.json({
+        error: "Failed to remap addresses in debug info.",
+      });
     default:
       console.error(e);
-      return new Response('Internal server error', { status: 500 })
+      return new Response("Internal server error", { status: 500 });
   }
 }
 
