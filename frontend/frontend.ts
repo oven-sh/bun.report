@@ -7,6 +7,7 @@ import { addrsToHTML } from "./html";
 // Bindings
 const input = document.querySelector("#in") as HTMLInputElement;
 const out = document.querySelector("#out") as HTMLDivElement;
+const example = document.querySelector("#example") as HTMLDivElement;
 const store = await globalThis.caches?.open("bun-remap");
 
 // UI State
@@ -33,6 +34,8 @@ function transition(state: UIState, data?: any) {
   if (ui_state === state && ui_state_data === data) return;
   ui_state_data = data;
   screens[(ui_state = state)]();
+
+  example.style.visibility = state === UIState.None ? "visible" : "hidden";
 }
 
 // Data fetching framework
@@ -139,8 +142,6 @@ input.addEventListener("input", onInputChange);
 const screens: Record<UIState, () => void> = {
   // When the input box is cleared, clear the output
   [UIState.None]: () => {
-    document.body.classList.add("ui-none");
-    document.body.classList.remove("ui-invalid", "ui-loading", "ui-fetched");
     out.innerHTML = "";
   },
 
@@ -156,8 +157,6 @@ const screens: Record<UIState, () => void> = {
     // btw, these 'x = x!' marks tell typescript that `parsed` is not null.
     parsed = parsed!;
     fetched = null;
-    document.body.classList.add("ui-loading");
-    document.body.classList.remove("ui-invalid", "ui-none", "ui-fetched");
 
     let fetched_fast = false;
     fetchRemap(parsed)
@@ -195,18 +194,13 @@ const screens: Record<UIState, () => void> = {
     parsed = parsed!;
     fetched = fetched!;
 
-    document.body.classList.add("ui-fetched");
-    document.body.classList.remove("ui-invalid", "ui-none", "ui-loading");
-
     const list = addrsToHTML(fetched.commit.oid, fetched.addresses)
       .map((l) => `<tr>${l}</tr>`)
       .join("");
 
     const issue = fetched.issue
       ? `<a class='button' href="https://github.com/oven-sh/bun/issues/${fetched.issue}" target="_blank">#${fetched.issue}</a>`
-      : `<a class="button" href="${reportUrl(
-        input.value
-      )}" target="_blank">File issue on GitHub</a>`;
+      : `<a class="button" href="${reportUrl(input.value)}" target="_blank">File issue on GitHub</a>`;
 
     out.innerHTML = /* html */ `
       <div class='card'>
@@ -225,12 +219,6 @@ const screens: Record<UIState, () => void> = {
     fetched = null;
 
     localStorage.removeItem("bun-remap.input");
-    document.body.classList.remove(
-      "ui-invalid",
-      "ui-none",
-      "ui-loading",
-      "ui-fetched"
-    );
 
     out.innerHTML = /* html */ `
       <div class='card'>
@@ -275,8 +263,7 @@ function cardFooter() {
   return /* html */ `
     <p>
       Bun v${parsed.version} <small>(<code>${commit}</code>)</small>
-      on ${os_names[parsed.os[0]]} ${arch[0]} ${arch.length > 1 ? "(baseline)" : ""
-    }
+      on ${os_names[parsed.os[0]]} ${arch[0]} ${arch.length > 1 ? "(baseline)" : ""}
     </p>
   `;
 }

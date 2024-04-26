@@ -274,16 +274,6 @@ button:hover,
   }
 }
 
-.ui-invalid #example,
-.ui-loading #example,
-.ui-fetched #example {
-  visibility: hidden;
-}
-
-.ui-none #example {
-  visibility: visible;
-}
-
 @media (max-width: 480px) {
   .card {
     margin-left: -1em;
