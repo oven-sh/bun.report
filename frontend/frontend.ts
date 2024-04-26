@@ -124,6 +124,7 @@ input.addEventListener("input", onInputChange);
   let search = location.search;
   if (search.startsWith("?trace=")) {
     input.value = search.slice(7);
+    history.replaceState(null, "", "/");
   } else {
     let existing: any = localStorage.getItem("bun-remap.input");
     if (existing) {
