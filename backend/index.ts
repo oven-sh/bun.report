@@ -127,7 +127,7 @@ export default {
         }
 
         remap(parsed)
-          .then(() => {})
+          .then(() => { })
           .catch((e) => {
             if (process.env.NODE_ENV === "development") {
               console.log("Invalid trace string sent for ack");
@@ -160,7 +160,8 @@ function postRequest(request: Request, server: Server) {
     case "/remap":
       return postRemap(request, server);
     case "/github-webhook":
-      return postGithubWebhook(request, server);
+      postGithubWebhook(request, server);
+      return new Response("ok");
     default:
       return new Response("Not found", { status: 404 });
   }
@@ -259,11 +260,11 @@ async function postGithubWebhook(request: Request, server: Server) {
   const id = request.headers.get("x-github-delivery");
 
   if (!sig || !event || !id) {
-    return new Response("Missing headers", { status: 400 });
+    return;
   }
 
   if (!(await verify(process.env.GITHUB_WEBHOOK_SECRET!, sig, body))) {
-    return new Response("Invalid signature", { status: 400 });
+    return;
   }
 
   const payload = JSON.parse(body);
@@ -283,8 +284,6 @@ async function postGithubWebhook(request: Request, server: Server) {
     const cache_key = match[1];
     await tagIssue(cache_key, issue_number);
   }
-
-  return new Response("ok");
 }
 
 const template = "6-crash-report.yml";

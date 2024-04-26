@@ -198,7 +198,7 @@ export async function tryFromPR(os: Platform, arch: Arch, commit: ResolvedCommit
     branch: pr.ref, // Filter by branch associated with the PR
     per_page: 100, // Fetch up to 100 workflow runs
   });
-  const runs = (
+  const run = (
     data_1.data.workflow_runs
       .concat(data_2.data.workflow_runs)
   )
