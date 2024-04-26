@@ -277,8 +277,9 @@ export async function tryFromPR(os: Platform, arch: Arch, commit: ResolvedCommit
     await subproc.exited;
 
     try {
-      const features = await Bun.file(join(temp, 'features.json')).json();
-      putCachedFeatureData(oid, migrateFeatureData(features));
+      const features = migrateFeatureData(await Bun.file(join(temp, 'features.json')).json());
+      features.is_pr = true;
+      putCachedFeatureData(oid, features);
     } catch { }
   }
 
@@ -298,7 +299,9 @@ function migrateFeatureData(any: any): FeatureConfig {
   if (Array.isArray(any)) {
     return {
       features: any,
+      is_pr: false,
     };
   }
+  any.is_pr ??= false;
   return any;
 }

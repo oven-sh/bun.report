@@ -12,7 +12,7 @@ export function formatMarkdown(remap: Remap): string {
     ...addrsToMarkdown(remap.commit.oid, remap.addresses)
       .map(l => `- ${l}`),
     '',
-    remap.features ? `Features: ${remap.features.join(', ')}` : '',
+    remap.features.length > 0 ? `Features: ${remap.features.join(', ')}` : '',
   ].join('\n').trim().replace(/\n\n+/g, '\n\n');
 }
 

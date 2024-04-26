@@ -2,6 +2,7 @@ export type EncodedFeatureList = [number, number];
 
 export interface FeatureConfig {
   features: string[];
+  is_pr: boolean;
 }
 
 export function decodeFeatures([high, low]: EncodedFeatureList, config: FeatureConfig): string[] {

@@ -34,8 +34,8 @@ export const escapeHTML =
   /* @__PURE__ */
   (string: string) => {
     return string
-      .replaceAll('"', '&quot;')
       .replaceAll('&', '&amp;')
+      .replaceAll('"', '&quot;')
       .replaceAll("'", '&#x27;')
       .replaceAll('<', '&lt;')
       .replaceAll('>', '&gt;');
