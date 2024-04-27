@@ -2,41 +2,39 @@ import { type Platform, type Arch } from "./util";
 import { decodePart } from "./vlq";
 
 declare const DEBUG: boolean;
-if (typeof DEBUG === 'undefined') {
-  (globalThis as any).DEBUG = process.env.NODE_ENV !== 'production';
+if (typeof DEBUG === "undefined") {
+  (globalThis as any).DEBUG = process.env.NODE_ENV !== "production";
 }
 
-const debug =
-  process.env.NODE_ENV === 'production'
-    ? () => { }
-    : console.log;
+const debug = process.env.NODE_ENV === "production" ? () => {} : console.log;
 
 const platform_map: { [key: string]: [Platform, Arch] } = {
-  'w': ['windows', 'x86_64'],
-  'e': ['windows', 'x86_64_baseline'],
+  w: ["windows", "x86_64"],
+  e: ["windows", "x86_64_baseline"],
   // 'W': ['windows', 'aarch64'],
 
-  'm': ['macos', 'x86_64'],
-  'b': ['macos', 'x86_64_baseline'],
-  'M': ['macos', 'aarch64'],
+  m: ["macos", "x86_64"],
+  b: ["macos", "x86_64_baseline"],
+  M: ["macos", "aarch64"],
 
-  'l': ['linux', 'x86_64'],
-  'B': ['linux', 'x86_64_baseline'],
-  'L': ['linux', 'aarch64'],
-}
+  l: ["linux", "x86_64"],
+  B: ["linux", "x86_64_baseline"],
+  L: ["linux", "aarch64"],
+};
 
-const reasons: { [key: string]: (input: string) => string | Promise<string> } = {
-  '0': parsePanicMessage,
-  '1': () => 'panic: reached unreachable code',
-  '2': (addr) => `Segmentation fault at ${parseVlqAddr(addr)}`,
-  '3': (addr) => `Illegal instruction at ${parseVlqAddr(addr)}`,
-  '4': (addr) => `Bus error at ${parseVlqAddr(addr)}`,
-  '5': (addr) => `Floating point exception at ${parseVlqAddr(addr)}`,
-  '6': () => `Unaligned memory access`,
-  '7': () => `Stack overflow`,
-  '8': (rest) => 'error: ' + rest,
-  '9': () => `Bun ran out of memory`,
-}
+const reasons: { [key: string]: (input: string) => string | Promise<string> } =
+  {
+    "0": parsePanicMessage,
+    "1": () => "panic: reached unreachable code",
+    "2": (addr) => `Segmentation fault at ${parseVlqAddr(addr)}`,
+    "3": (addr) => `Illegal instruction at ${parseVlqAddr(addr)}`,
+    "4": (addr) => `Bus error at ${parseVlqAddr(addr)}`,
+    "5": (addr) => `Floating point exception at ${parseVlqAddr(addr)}`,
+    "6": () => `Unaligned memory access`,
+    "7": () => `Stack overflow`,
+    "8": (rest) => "error: " + rest,
+    "9": () => `Bun ran out of memory`,
+  };
 
 export interface Parse {
   version: string;
@@ -47,6 +45,7 @@ export interface Parse {
   addresses: ParsedAddress[];
   command: string;
   features: [number, number];
+  cache_key?: string;
 }
 
 export interface ResolvedCommit {
@@ -67,19 +66,19 @@ export interface Remap {
   addresses: Address[];
   issue?: number;
   command: string;
-  features: string[]
+  features: string[];
 }
 
 export type Address = RemappedAddress | UnknownAddress;
 
 export interface ParsedAddress {
   address: number;
-  object: 'bun' | 'js' | string;
+  object: "bun" | "js" | string;
 }
 
 export interface RemappedAddress {
   remapped: true;
-  src: { file: string, line: number } | null;
+  src: { file: string; line: number } | null;
   function: string;
   object: string;
 }
@@ -104,24 +103,24 @@ function validateSemver(version: string): boolean {
 export async function parse(str: string): Promise<Parse | null> {
   try {
     str = str
-      .replace(/^(?:(https?:\/\/)?bun\.report\/)?/, '')
-      .replace(/\/view$/, '');
+      .replace(/^(?:(https?:\/\/)?bun\.report\/)?/, "")
+      .replace(/\/view$/, "");
 
-    const first_slash = str.indexOf('/');
+    const first_slash = str.indexOf("/");
     const version = str.slice(0, first_slash);
     if (!validateSemver(version)) return null;
 
     const [os, arch] = platform_map[str[first_slash + 1]] ?? [];
     if (!os || !arch) {
-      DEBUG && debug('invalid platform \'%s\'', str[first_slash + 1]);
+      DEBUG && debug("invalid platform '%s'", str[first_slash + 1]);
       return null;
     }
 
     const command = str[first_slash + 2];
     const trace_version = str[first_slash + 3];
 
-    if (trace_version !== '1') {
-      DEBUG && debug('invalid version \'%s\'', trace_version);
+    if (trace_version !== "1") {
+      DEBUG && debug("invalid version '%s'", trace_version);
       return null;
     }
 
@@ -138,34 +137,34 @@ export async function parse(str: string): Promise<Parse | null> {
     [object, inc] = decodePart(str.slice(i));
     i += inc;
     if (object == null || c == null) {
-      DEBUG && debug('invalid features part %o', str.slice(i));
+      DEBUG && debug("invalid features part %o", str.slice(i));
       return null;
     }
     const features_data = [c, object] as [number, number];
 
     while (true) {
       c = str[i];
-      object = 'bun';
+      object = "bun";
       if (c === undefined) {
-        DEBUG && debug('invalid end of string at %o', i);
+        DEBUG && debug("invalid end of string at %o", i);
         return null;
       }
 
-      if (c === '=') {
-        addresses.push({ address: 0, object: 'js' });
+      if (c === "=") {
+        addresses.push({ address: 0, object: "js" });
         i += 1;
         continue;
       }
 
-      if (c === '_') {
-        addresses.push({ address: 0, object: '?' });
+      if (c === "_") {
+        addresses.push({ address: 0, object: "?" });
         i += 1;
         continue;
       }
 
       [address, inc] = decodePart(str.slice(i));
       if (address == null) {
-        DEBUG && debug('invalid first part %o', str.slice(i));
+        DEBUG && debug("invalid first part %o", str.slice(i));
         return null;
       }
       i += inc;
@@ -177,7 +176,7 @@ export async function parse(str: string): Promise<Parse | null> {
       if (address === 1) {
         [c, inc] = decodePart(str.slice(i));
         if (c == null) {
-          DEBUG && debug('invalid object len %o', str.slice(i));
+          DEBUG && debug("invalid object len %o", str.slice(i));
           return null;
         }
         i += inc;
@@ -187,7 +186,7 @@ export async function parse(str: string): Promise<Parse | null> {
 
         [address, inc] = decodePart(str.slice(i));
         if (address == null) {
-          DEBUG && debug('invalid second part %s %o', object, i, str.slice(i));
+          DEBUG && debug("invalid second part %s %o", object, i, str.slice(i));
           return null;
         }
         i += inc;
@@ -198,12 +197,12 @@ export async function parse(str: string): Promise<Parse | null> {
 
     const reason = reasons[str[i]];
     if (!reason) {
-      DEBUG && debug('invalid reason %o', str.slice(i));
+      DEBUG && debug("invalid reason %o", str.slice(i));
       return null;
     }
     const message = await reason(str.slice(i + 1));
     if (!message) {
-      DEBUG && debug('invalid message %o', str.slice(i));
+      DEBUG && debug("invalid message %o", str.slice(i));
       return null;
     }
     return {
@@ -222,39 +221,55 @@ export async function parse(str: string): Promise<Parse | null> {
   }
 }
 
-function parsePanicMessage(message_compressed: string): Promise<string> | string {
-  if (typeof Bun !== 'undefined') {
-    return 'panic: ' + new TextDecoder().decode(
-      Bun.gunzipSync(Buffer.from(message_compressed, 'base64url'))
+function parsePanicMessage(
+  message_compressed: string
+): Promise<string> | string {
+  if (typeof Bun !== "undefined") {
+    return (
+      "panic: " +
+      new TextDecoder().decode(
+        Bun.gunzipSync(Buffer.from(message_compressed, "base64url"))
+      )
     );
   } else {
     const stream = new DecompressionStream("deflate");
     const writer = stream.writable.getWriter();
-    const write_promise = writer.write(Uint8Array.from(atob(message_compressed), c => c.charCodeAt(0)));
+    const write_promise = writer.write(
+      Uint8Array.from(atob(message_compressed), (c) => c.charCodeAt(0))
+    );
     writer.close();
     const reader = stream.readable.getReader();
 
-    return Promise.all([write_promise, (async () => {
-      const chunks = [];
-      while (true) {
-        const { done, value } = await reader.read();
+    return Promise.all([
+      write_promise,
+      (async () => {
+        const chunks = [];
+        while (true) {
+          const { done, value } = await reader.read();
 
-        if (done) break;
-        chunks.push(value);
-      }
-      return 'panic: ' + await new Blob(chunks).text();
-    })()]).then(x => x[1], () => '');
+          if (done) break;
+          chunks.push(value);
+        }
+        return "panic: " + (await new Blob(chunks).text());
+      })(),
+    ]).then(
+      (x) => x[1],
+      () => ""
+    );
   }
 }
 
 function parseVlqAddr(unparsed_addr: string): string {
   let [first, i] = decodePart(unparsed_addr) as [any, number];
   let [second] = decodePart(unparsed_addr.slice(i));
-  if (first == null || second == null) return 'unknown address';
-  first = first ? correctIntToUint32(first).toString(16) : '';
-  return 'address 0x'
-    + (first
-      + correctIntToUint32(second).toString(16).padStart(8, '0')).toUpperCase();
+  if (first == null || second == null) return "unknown address";
+  first = first ? correctIntToUint32(first).toString(16) : "";
+  return (
+    "address 0x" +
+    (
+      first + correctIntToUint32(second).toString(16).padStart(8, "0")
+    ).toUpperCase()
+  );
 }
 
 function correctIntToUint32(int: number): number {

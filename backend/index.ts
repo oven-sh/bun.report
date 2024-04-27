@@ -12,6 +12,7 @@ import { addrsToPlainText, formatMarkdown } from "../lib/format";
 import { garbageCollect, tagIssue } from "./db";
 import { verify } from "@octokit/webhooks-methods";
 import { escapeHTML, remapCacheKey } from "../lib/util";
+import { sendToSentry } from "./sentry";
 
 process.env.NODE_ENV ||= "development";
 
@@ -127,7 +128,14 @@ export default {
         }
 
         remap(parsed)
-          .then(() => { })
+          .then((remap) => {
+            return sendToSentry(
+              remap,
+              request.headers,
+              parsed.cache_key!,
+              server.requestIP(request)?.address ?? ""
+            );
+          })
           .catch((e) => {
             if (process.env.NODE_ENV === "development") {
               console.log("Invalid trace string sent for ack");
@@ -147,7 +155,12 @@ export default {
       const is_discord_bot =
         request.headers.get("user-agent")?.includes("discord") ?? false;
 
-      return remapAndRedirect(parsed, is_discord_bot);
+      return remapAndRedirect(
+        parsed,
+        is_discord_bot,
+        request.headers,
+        server.requestIP(request)?.address || ""
+      );
     });
   },
 } satisfies ServeOptions;
@@ -288,12 +301,25 @@ async function postGithubWebhook(request: Request, server: Server) {
 
 const template = "6-crash-report.yml";
 
-async function remapAndRedirect(parsed: Parse, is_discord_bot: boolean) {
+async function remapAndRedirect(
+  parsed: Parse,
+  is_discord_bot: boolean,
+  headers: Headers,
+  request_ip: string
+) {
   try {
     const remapped = await remap(parsed);
 
     if (!remapped) {
       return new Response("Failed to remap", { status: 500 });
+    }
+
+    if (!is_discord_bot) {
+      sendToSentry(remapped, headers, parsed.cache_key!, request_ip).catch(
+        (e) => {
+          console.error("Failed to send to sentry", e);
+        }
+      );
     }
 
     if (remapped.issue) {

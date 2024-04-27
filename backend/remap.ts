@@ -1,36 +1,37 @@
-import type { Address, Parse, Remap, ResolvedCommit } from '../lib/parser';
-import { getCommit } from './git';
-import { fetchDebugFile } from './debug-store';
-import { getCachedRemap, putCachedRemap } from './db';
-import { parseCacheKey } from '../lib/util';
-import { llvm_symbolizer, pdb_addr2line } from './system-deps';
-import { formatMarkdown } from '../lib';
-import { decodeFeatures } from './feature';
+import type { Address, Parse, Remap, ResolvedCommit } from "../lib/parser";
+import { getCommit } from "./git";
+import { fetchDebugFile } from "./debug-store";
+import { getCachedRemap, putCachedRemap } from "./db";
+import { parseCacheKey } from "../lib/util";
+import { llvm_symbolizer, pdb_addr2line } from "./system-deps";
+import { formatMarkdown } from "../lib";
+import { decodeFeatures } from "./feature";
+import { sendToSentry } from "./sentry";
 
 const command_map: { [key: string]: string } = {
-  'I': "AddCommand",
-  'a': "AutoCommand",
-  'b': "BuildCommand",
-  'B': "BunxCommand",
-  'c': "CreateCommand",
-  'D': "DiscordCommand",
-  'g': "GetCompletionsCommand",
-  'h': "HelpCommand",
-  'j': "InitCommand",
-  'i': "InstallCommand",
-  'C': "InstallCompletionsCommand",
-  'l': "LinkCommand",
-  'P': "PackageManagerCommand",
-  'R': "RemoveCommand",
-  'r': "RunCommand",
-  'n': "RunAsNodeCommand",
-  't': "TestCommand",
-  'U': "UnlinkCommand",
-  'u': "UpdateCommand",
-  'p': "UpgradeCommand",
-  'G': "ReplCommand",
-  'w': "ReservedCommand",
-  'e': "ExecCommand",
+  I: "AddCommand",
+  a: "AutoCommand",
+  b: "BuildCommand",
+  B: "BunxCommand",
+  c: "CreateCommand",
+  D: "DiscordCommand",
+  g: "GetCompletionsCommand",
+  h: "HelpCommand",
+  j: "InitCommand",
+  i: "InstallCommand",
+  C: "InstallCompletionsCommand",
+  l: "LinkCommand",
+  P: "PackageManagerCommand",
+  R: "RemoveCommand",
+  r: "RunCommand",
+  n: "RunAsNodeCommand",
+  t: "TestCommand",
+  U: "UnlinkCommand",
+  u: "UpdateCommand",
+  p: "UpgradeCommand",
+  G: "ReplCommand",
+  w: "ReservedCommand",
+  e: "ExecCommand",
 };
 
 /** This map serves as a sort of "mutex" */
@@ -39,6 +40,7 @@ const in_progress_remaps = new Map<string, Promise<Remap>>();
 export async function remap(parse: Parse): Promise<Remap> {
   const key = parseCacheKey(parse);
   const cached = getCachedRemap(key);
+  parse.cache_key = key;
 
   if (cached) {
     return cached;
@@ -50,7 +52,7 @@ export async function remap(parse: Parse): Promise<Remap> {
 
   const { promise, resolve, reject } = Promise.withResolvers<Remap>();
   in_progress_remaps.set(key, promise);
-  promise.catch(() => { }); // mark as handled
+  promise.catch(() => {}); // mark as handled
 
   try {
     const remap = await remapUncached(parse);
@@ -64,67 +66,79 @@ export async function remap(parse: Parse): Promise<Remap> {
 
 const macho_first_offset = 0x100000000;
 
-export async function remapUncached(parse: Parse, opts: { exe?: string } = {}): Promise<Remap> {
+export async function remapUncached(
+  parse: Parse,
+  opts: { exe?: string } = {}
+): Promise<Remap> {
   const commit: ResolvedCommit | null = opts.exe
-    ? { oid: 'unknown', pr: null }
+    ? { oid: "unknown", pr: null }
     : await getCommit(parse.commitish);
   if (!commit) {
     const e: any = new Error(`Could not find commit ${parse.commitish}`);
-    e.code = 'DebugInfoUnavailable';
+    e.code = "DebugInfoUnavailable";
     throw e;
   }
 
   const debug_info = opts.exe
     ? {
-      file_path: opts.exe,
-      feature_config: null,
-    }
+        file_path: opts.exe,
+        feature_config: null,
+      }
     : await fetchDebugFile(parse.os, parse.arch, commit);
 
   if (!debug_info) {
-    const e: any = new Error(`Could not find debug file for ${parse.os}-${parse.arch} for commit ${parse.commitish}`);
-    e.code = 'DebugInfoUnavailable';
+    const e: any = new Error(
+      `Could not find debug file for ${parse.os}-${parse.arch} for commit ${parse.commitish}`
+    );
+    e.code = "DebugInfoUnavailable";
     throw e;
   }
 
   let lines: string[] = [];
 
   const bun_addrs = parse.addresses
-    .filter(a => a.object === 'bun')
-    .map(a => '0x' + (parse.os === 'macos' ? macho_first_offset + a.address : a.address).toString(16));
+    .filter((a) => a.object === "bun")
+    .map(
+      (a) =>
+        "0x" +
+        (parse.os === "macos"
+          ? macho_first_offset + a.address
+          : a.address
+        ).toString(16)
+    );
   if (bun_addrs.length > 0) {
     const cmd = [
-      parse.os === 'windows' ? pdb_addr2line : llvm_symbolizer,
-      '--exe',
+      parse.os === "windows" ? pdb_addr2line : llvm_symbolizer,
+      "--exe",
       debug_info.file_path,
-      ...parse.os !== 'windows'
-        ? ['--no-inlines', '--relative-address']
-        : ['--llvm'],
-      '-f',
-      ...bun_addrs
+      ...(parse.os !== "windows"
+        ? ["--no-inlines", "--relative-address"]
+        : ["--llvm"]),
+      "-f",
+      ...bun_addrs,
     ];
 
-    console.log('running', cmd.join(' '));
+    console.log("running", cmd.join(" "));
 
     const subproc = Bun.spawn({
       cmd,
-      stdio: ['ignore', 'pipe', 'pipe'],
+      stdio: ["ignore", "pipe", "pipe"],
     });
 
     if ((await subproc.exited) !== 0) {
       const e: any = new Error(
-        'pdb-addr2line failed: '
-        + await Bun.readableStreamToText(subproc.stderr)
+        "pdb-addr2line failed: " +
+          (await Bun.readableStreamToText(subproc.stderr))
       );
-      e.code = 'PdbAddr2LineFailed';
+      e.code = "PdbAddr2LineFailed";
     }
 
     const stdout = await Bun.readableStreamToText(subproc.stdout);
-    lines = stdout.split('\n').filter(l => l.length > 0);
+    lines = stdout.split("\n").filter((l) => l.length > 0);
   }
 
-  const mapped_addrs: Address[] = parse.addresses.map(addr => {
-    if (addr.object === 'bun') {
+  const mapped_addrs: Address[] = parse.addresses.map((addr) => {
+    if (addr.object === "bun") {
       const fn_line = lines.shift();
       const source_line = lines.shift();
       if (fn_line && source_line) {
@@ -132,12 +146,14 @@ export async function remapUncached(parse: Parse, opts: { exe?: string } = {}): 
 
         return {
           remapped: true,
-          src: parsed_line ? {
-            file: parsed_line.file,
-            line: parsed_line.line,
-          } : null,
+          src: parsed_line
+            ? {
+                file: parsed_line.file,
+                line: parsed_line.line,
+              }
+            : null,
           function: cleanFunctionName(fn_line),
-          object: 'bun',
+          object: "bun",
         } satisfies Address;
       }
     }
@@ -166,15 +182,18 @@ export async function remapUncached(parse: Parse, opts: { exe?: string } = {}): 
 
   if (process.env.DISCORD_WEBHOOK_URL) {
     const markdown = formatMarkdown(remap);
-    const markdown_no_links = markdown.replaceAll(/\((https?:[^\)]*?)\)/g, '(<$1>)');
+    const markdown_no_links = markdown.replaceAll(
+      /\((https?:[^\)]*?)\)/g,
+      "(<$1>)"
+    );
     const body = JSON.stringify({
       content: markdown_no_links,
     });
     const response = await fetch(process.env.DISCORD_WEBHOOK_URL, {
-      method: 'POST',
+      method: "POST",
       body,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
     if (!response.ok) {
@@ -186,7 +205,7 @@ export async function remapUncached(parse: Parse, opts: { exe?: string } = {}): 
 }
 
 export function cleanFunctionName(str: string): string {
-  const last_paren = str.lastIndexOf(')');
+  const last_paren = str.lastIndexOf(")");
   if (last_paren === -1) {
     return str;
   }
@@ -194,29 +213,32 @@ export function cleanFunctionName(str: string): string {
   let n = 1;
   while (last_open_paren > 0) {
     last_open_paren--;
-    if (str[last_open_paren] === ')') {
+    if (str[last_open_paren] === ")") {
       n++;
-    } else if (str[last_open_paren] === '(') {
+    } else if (str[last_open_paren] === "(") {
       n--;
       if (n === 0) {
         break;
       }
     }
   }
-  return str.slice(0, last_open_paren)
-    .replace(/\(.+?\)/g, '(...)')
-    .replace(/__anon_\d+\b/g, '')
+  return str
+    .slice(0, last_open_paren)
+    .replace(/\(.+?\)/g, "(...)")
+    .replace(/__anon_\d+\b/g, "");
 }
 
-export function parsePdb2AddrLineFile(str: string): { file: string, line: number } | null {
-  if (str.startsWith('??:')) return null;
+export function parsePdb2AddrLineFile(
+  str: string
+): { file: string; line: number } | null {
+  if (str.startsWith("??:")) return null;
 
-  const last_colon = str.lastIndexOf(':');
+  const last_colon = str.lastIndexOf(":");
   if (last_colon === -1) {
     return null;
   }
 
-  const second_colon = str.lastIndexOf(':', last_colon - 1);
+  const second_colon = str.lastIndexOf(":", last_colon - 1);
   if (second_colon === -1) {
     return null;
   }
@@ -227,9 +249,7 @@ export function parsePdb2AddrLineFile(str: string): { file: string, line: number
   }
 
   const file_full = str.slice(0, second_colon);
-  const file = file_full
-    .replace(/\\/g, '/')
-    .replace(/.*?\/src\//g, 'src/');
+  const file = file_full.replace(/\\/g, "/").replace(/.*?\/src\//g, "src/");
 
   return { file, line };
 }
