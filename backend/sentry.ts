@@ -15,13 +15,14 @@ function toStackFrame(address: Address, commit: string): Sentry.StackFrame {
         function: fn,
         module: object,
         // @ts-ignore - https://develop.sentry.dev/sdk/event-payloads/stacktrace/
-        // source_link: `https://raw.githubusercontent.com/oven-sh/bun/${commit}/${src.file}#L${src.line}`,
+        source_link: `https://raw.githubusercontent.com/oven-sh/bun/${commit}/${src.file}#L${src.line}`,
       };
     }
   }
 
   return {
     module: object,
+    function: address.function! || "<anonymous>",
     in_app: object === "bun",
   };
 }
@@ -73,17 +74,18 @@ function getOSContext(os: string): Sentry.OsContext {
     case "windows":
       return {
         name: "Windows",
-        type: "os",
       };
     case "macos":
       return {
         name: "macOS",
-        type: "os",
+        // This information is just a placeholder to make Sentry happy
+        kernel_version: "23.4.0",
+        version: "14.4.1",
+        build: "23E224",
       };
     case "linux":
       return {
         name: "Linux",
-        type: "os",
       };
   }
 
@@ -109,14 +111,14 @@ function toEvent(
       environment: process.env.NODE_ENV,
       public_key: process.env.SENTRY_PUBLIC_KEY!,
     },
-    platform: `${os}-${arch}`,
+    platform: "javascript",
     tags: {
       command,
       ...features.reduce((acc, feature) => {
-        acc[feature] = true;
+        acc[feature] = "1";
         return acc;
       }, {} as any),
-      version,
+      platform: `${os}-${arch}`,
     },
     // version: version,
     // release: version,
@@ -134,6 +136,12 @@ function toEvent(
     },
     contexts: {
       os: getOSContext(os),
+      runtime: {
+        name: "bun",
+        version: version,
+      },
+      culture: {},
+      cloud_resource: {},
       state: {
         state: {
           type: "Command",
@@ -185,6 +193,7 @@ export async function sendToSentry(
     JSON.stringify(type) +
     "\n" +
     JSON.stringify(exception);
+
   const url = process.env.SENTRY_DSN!;
 
   await fetch(url, {
