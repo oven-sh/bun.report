@@ -35,9 +35,7 @@ export async function build(mode: string) {
     [Symbol.dispose]: () => {
       try {
         rmSync(temp_path)
-      } catch (e) {
-        console.log(e);
-      }
+      } catch (e) { }
     }
   };
 

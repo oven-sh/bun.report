@@ -47,10 +47,6 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedC
   const oid = commit.oid;
   assert(oid.length === 40);
 
-  if (process.env.NODE_ENV === 'development') {
-    console.log('fetching debug file for', os, arch, commit);
-  }
-
   const store_suffix = os === 'windows' ? '.pdb' : '';
 
   const root = storeRoot(os, arch);

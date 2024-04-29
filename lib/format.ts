@@ -14,7 +14,7 @@ export function formatMarkdown(remap: Remap, internal?: { source: string }): str
     '',
     remap.features.length > 0 ? `Features: ${remap.features.join(', ')}` : '',
     '',
-    ...internal ? [`[trace](https://bun.report/${internal.source.replace(/^\/+/, '')}/view)`] : [],
+    ...internal ? [`[(see trace)](https://bun.report/${internal.source.replace(/^\/+/, '')}/view)`] : [],
   ].join('\n').trim().replace(/\n\n+/g, '\n\n');
 }
 

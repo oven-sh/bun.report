@@ -37,7 +37,7 @@ const command_map: { [key: string]: string } = {
 /** This map serves as a sort of "mutex" */
 const in_progress_remaps = new Map<string, Promise<Remap>>();
 
-export async function remap(parse: Parse): Promise<Remap> {
+export async function remap(parsed_string: string, parse: Parse): Promise<Remap> {
   const key = parseCacheKey(parse);
   const cached = getCachedRemap(key);
   parse.cache_key = key;
@@ -52,10 +52,10 @@ export async function remap(parse: Parse): Promise<Remap> {
 
   const { promise, resolve, reject } = Promise.withResolvers<Remap>();
   in_progress_remaps.set(key, promise);
-  promise.catch(() => {}); // mark as handled
+  promise.catch(() => { }); // mark as handled
 
   try {
-    const remap = await remapUncached(parse);
+    const remap = await remapUncached(parsed_string, parse);
     resolve(remap);
     return remap;
   } catch (e) {
@@ -67,6 +67,7 @@ export async function remap(parse: Parse): Promise<Remap> {
 const macho_first_offset = 0x100000000;
 
 export async function remapUncached(
+  parsed_string: string,
   parse: Parse,
   opts: { exe?: string } = {}
 ): Promise<Remap> {
@@ -81,9 +82,9 @@ export async function remapUncached(
 
   const debug_info = opts.exe
     ? {
-        file_path: opts.exe,
-        feature_config: null,
-      }
+      file_path: opts.exe,
+      feature_config: null,
+    }
     : await fetchDebugFile(parse.os, parse.arch, commit);
 
   if (!debug_info) {
@@ -128,7 +129,7 @@ export async function remapUncached(
     if ((await subproc.exited) !== 0) {
       const e: any = new Error(
         "pdb-addr2line failed: " +
-          (await Bun.readableStreamToText(subproc.stderr))
+        (await Bun.readableStreamToText(subproc.stderr))
       );
       e.code = "PdbAddr2LineFailed";
     }
@@ -148,9 +149,9 @@ export async function remapUncached(
           remapped: true,
           src: parsed_line
             ? {
-                file: parsed_line.file,
-                line: parsed_line.line,
-              }
+              file: parsed_line.file,
+              line: parsed_line.line,
+            }
             : null,
           function: cleanFunctionName(fn_line),
           object: "bun",
@@ -181,7 +182,7 @@ export async function remapUncached(
   putCachedRemap(key, remap);
 
   if (process.env.DISCORD_WEBHOOK_URL) {
-    const markdown = formatMarkdown(remap);
+    const markdown = formatMarkdown(remap, { source: parsed_string });
     const markdown_no_links = markdown.replaceAll(
       /\((https?:[^\)]*?)\)/g,
       "(<$1>)"

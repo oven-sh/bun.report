@@ -39,7 +39,7 @@ function transition(state: UIState, data?: any) {
 }
 
 // Data fetching framework
-async function fetchRemap(parse: Parse): Promise<RemapAPIResponse | null> {
+async function fetchRemap(parse_text: string, parse: Parse): Promise<RemapAPIResponse | null> {
   // One remap fetch may be in progress. If there are two, cancel the first
   if (pending_fetch_ctrl) {
     pending_fetch_ctrl.abort();
@@ -57,7 +57,7 @@ async function fetchRemap(parse: Parse): Promise<RemapAPIResponse | null> {
   pending_fetch_ctrl = new AbortController();
   const response = await fetch("/remap", {
     method: "POST",
-    body: JSON.stringify(parse),
+    body: parse_text,
     headers: {
       "Content-Type": "application/json",
     },
@@ -160,7 +160,7 @@ const screens: Record<UIState, () => void> = {
     fetched = null;
 
     let fetched_fast = false;
-    fetchRemap(parsed)
+    fetchRemap(input.value, parsed)
       .then((remap) => {
         if (!remap) return;
         fetched = remap;

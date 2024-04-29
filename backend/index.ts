@@ -118,7 +118,8 @@ export default {
     }
 
     if (pathname.endsWith("/ack")) {
-      return parse(pathname.slice(1, -4)).then(async (parsed) => {
+      const str = pathname.slice(1, -4);
+      return parse(str).then(async (parsed) => {
         if (!parsed) {
           if (process.env.NODE_ENV === "development") {
             console.log("Invalid trace string sent for ack");
@@ -127,7 +128,7 @@ export default {
           return new Response("Not found", { status: 404 });
         }
 
-        remap(parsed)
+        remap(str, parsed)
           .then((remap) => {
             return sendToSentry(
               remap,
@@ -147,7 +148,8 @@ export default {
       });
     }
 
-    return parse(pathname.slice(1)).then(async (parsed) => {
+    const str = pathname.slice(1);
+    return parse(str).then(async (parsed) => {
       if (!parsed) {
         return new Response("Not found", { status: 404 });
       }
@@ -156,6 +158,7 @@ export default {
         request.headers.get("user-agent")?.includes("discord") ?? false;
 
       return remapAndRedirect(
+        str,
         parsed,
         is_discord_bot,
         request.headers,
@@ -182,77 +185,19 @@ function postRequest(request: Request, server: Server) {
 
 async function postRemap(request: Request, server: Server) {
   // Validate input body request
-  let addresses: ParsedAddress[] = [];
-  let os: "windows" | "macos" | "linux";
-  let arch: "x86_64" | "aarch64";
-  let version: string;
-  let commitish: string;
-  let message: string;
-  let command: string;
-  let features: [number, number];
+  let parsed: Parse;
 
-  const body: unknown = await request.json();
+  const body = await request.text();
   try {
-    assert(typeof body === "object" && body && !Array.isArray(body));
-
-    assert("addresses" in body);
-    assert(Array.isArray(body.addresses));
-    for (const addr of body.addresses) {
-      assert("address" in addr);
-      assert(typeof addr.address === "number");
-      assert(Number.isFinite(addr.address) && addr.address >= 0);
-      assert("object" in addr);
-      assert(typeof addr.object === "string");
-      addresses.push({ address: addr.address, object: addr.object });
-    }
-
-    assert("os" in body);
-    assert(body.os === "macos" || body.os === "linux" || body.os === "windows");
-    os = body.os;
-
-    assert("arch" in body);
-    assert(body.arch === "x86_64" || body.arch === "aarch64");
-    arch = body.arch;
-
-    assert("version" in body);
-    assert(typeof body.version === "string");
-    assert(/^\d+\.\d+\.\d+$/.test(body.version));
-    version = body.version;
-
-    assert("commitish" in body);
-    assert(typeof body.commitish === "string");
-    assert(body.commitish.length === 7);
-    commitish = body.commitish;
-
-    assert("message" in body);
-    assert(typeof body.message === "string");
-    message = body.message;
-
-    assert("command" in body);
-    assert(typeof body.command === "string");
-    command = body.command;
-
-    assert("features" in body);
-    assert(Array.isArray(body.features));
-    assert(body.features.length === 2);
-    assert(body.features.every((x) => typeof x === "number"));
-    features = body.features as [number, number];
+    parsed = (await parse(body))!;
+    if (!parsed) throw new Error("Invalid trace string");
   } catch (e) {
     return new Response("Invalid request", { status: 400 });
   }
 
   // Do the remapping
   try {
-    const remapped = await remap({
-      addresses,
-      os,
-      arch,
-      version,
-      commitish,
-      message,
-      command,
-      features,
-    });
+    const remapped = await remap(body, parsed);
 
     return Response.json({
       commit: remapped.commit,
@@ -302,13 +247,14 @@ async function postGithubWebhook(request: Request, server: Server) {
 const template = "6-crash-report.yml";
 
 async function remapAndRedirect(
+  parsed_str: string,
   parsed: Parse,
   is_discord_bot: boolean,
   headers: Headers,
   request_ip: string
 ) {
   try {
-    const remapped = await remap(parsed);
+    const remapped = await remap(parsed_str, parsed);
 
     if (!remapped) {
       return new Response("Failed to remap", { status: 500 });
