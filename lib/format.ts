@@ -1,9 +1,9 @@
 import type { Address, ResolvedCommit } from "./parser";
-import { basename, escmdcode } from "./util";
+import { basename, escmd, escmdcode } from "./util";
 
 import type { Remap } from "./parser";
 
-export function formatMarkdown(remap: Remap): string {
+export function formatMarkdown(remap: Remap, internal?: { source: string }): string {
   return [
     `Bun v${remap.version} (${treeURLMD(remap.commit)}) on ${remap.os} ${remap.arch} [${remap.command}]`,
     '',
@@ -13,13 +13,15 @@ export function formatMarkdown(remap: Remap): string {
       .map(l => `- ${l}`),
     '',
     remap.features.length > 0 ? `Features: ${remap.features.join(', ')}` : '',
+    '',
+    ...internal ? [`[trace](https://bun.report/${internal.source.replace(/^\/+/, '')}/view)`] : [],
   ].join('\n').trim().replace(/\n\n+/g, '\n\n');
 }
 
 function treeURLMD(commit: ResolvedCommit) {
-  if (commit.pr) {
-    return `[#${commit.pr.number}](https://github.com/oven-sh/bun/pull/${commit.pr.number})`;
-  }
+  // if (commit.pr) {
+  //   return `[#${commit.pr.number}](https://github.com/oven-sh/bun/pull/${commit.pr.number})`;
+  // }
 
   return `[\`${commit.oid.slice(0, 7)}\`](https://github.com/oven-sh/bun/tree/${commit.oid})`
 }

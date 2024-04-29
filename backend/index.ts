@@ -389,3 +389,13 @@ function handleError(e: any, visual: boolean) {
 setInterval(() => {
   garbageCollect();
 }, 1000 * 60 * 60 * 24 * 7);
+
+console.log('bun.report');
+console.log('Discord Webhook: ' + (process.env.DISCORD_WEBHOOK_URL ? 'enabled' : 'disabled'));
+console.log('Sentry: ' + (process.env.SENTRY_DSN ? 'enabled' : 'disabled'));
+console.log('GitHub Webhook: ' + (process.env.GITHUB_WEBHOOK_SECRET ? 'enabled' : 'disabled'));
+
+if (!process.env.BUN_DOWNLOAD_BASE) {
+  console.error('BUN_DOWNLOAD_BASE is not set');
+  process.exit(1);
+}

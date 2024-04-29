@@ -94,7 +94,7 @@ async function fetchRemap(parse: Parse): Promise<RemapAPIResponse | null> {
 
 // Event Handlers
 const onInputChange = debounce(async () => {
-  const value = input.value;
+  const value = input.value.trim();
   if (!value) {
     transition(UIState.None);
     localStorage.removeItem("bun-remap.input");

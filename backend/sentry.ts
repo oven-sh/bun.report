@@ -1,4 +1,4 @@
-import { MD5, SHA1, SHA256 } from "bun";
+import { MD5, SHA256 } from "bun";
 import type { Address, Remap } from "../lib";
 import type * as Sentry from "@sentry/types";
 
@@ -22,7 +22,7 @@ function toStackFrame(address: Address, commit: string): Sentry.StackFrame {
 
   return {
     module: object,
-    function: address.function! || "<anonymous>",
+    function: "<anonymous>",
     in_app: object === "bun",
   };
 }
@@ -105,6 +105,7 @@ function toEvent(
   );
   return {
     event_id: event_id,
+    // @ts-expect-error
     sent_at: new Date().toISOString(),
     sdk: { name: "sentry.javascript.bun", version: "7.112.2" },
     trace: {
@@ -174,6 +175,10 @@ export async function sendToSentry(
   cache_key: string,
   request_ip: string
 ) {
+  const url = process.env.SENTRY_DSN;
+  if (!url) {
+    return;
+  }
   const event = toEvent(
     remap,
     SHA256.hash(cache_key, "hex"),
@@ -194,7 +199,6 @@ export async function sendToSentry(
     "\n" +
     JSON.stringify(exception);
 
-  const url = process.env.SENTRY_DSN!;
 
   await fetch(url, {
     method: "POST",

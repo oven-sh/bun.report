@@ -6,7 +6,7 @@ if (typeof DEBUG === "undefined") {
   (globalThis as any).DEBUG = process.env.NODE_ENV !== "production";
 }
 
-const debug = process.env.NODE_ENV === "production" ? () => {} : console.log;
+const debug = process.env.NODE_ENV === "production" ? () => { } : console.log;
 
 const platform_map: { [key: string]: [Platform, Arch] } = {
   w: ["windows", "x86_64"],
@@ -23,18 +23,18 @@ const platform_map: { [key: string]: [Platform, Arch] } = {
 };
 
 const reasons: { [key: string]: (input: string) => string | Promise<string> } =
-  {
-    "0": parsePanicMessage,
-    "1": () => "panic: reached unreachable code",
-    "2": (addr) => `Segmentation fault at ${parseVlqAddr(addr)}`,
-    "3": (addr) => `Illegal instruction at ${parseVlqAddr(addr)}`,
-    "4": (addr) => `Bus error at ${parseVlqAddr(addr)}`,
-    "5": (addr) => `Floating point exception at ${parseVlqAddr(addr)}`,
-    "6": () => `Unaligned memory access`,
-    "7": () => `Stack overflow`,
-    "8": (rest) => "error: " + rest,
-    "9": () => `Bun ran out of memory`,
-  };
+{
+  "0": parsePanicMessage,
+  "1": () => "panic: reached unreachable code",
+  "2": (addr) => `Segmentation fault at ${parseVlqAddr(addr)}`,
+  "3": (addr) => `Illegal instruction at ${parseVlqAddr(addr)}`,
+  "4": (addr) => `Bus error at ${parseVlqAddr(addr)}`,
+  "5": (addr) => `Floating point exception at ${parseVlqAddr(addr)}`,
+  "6": () => `Unaligned memory access`,
+  "7": () => `Stack overflow`,
+  "8": (rest) => "error: " + rest,
+  "9": () => `Bun ran out of memory`,
+};
 
 export interface Parse {
   version: string;
@@ -45,6 +45,7 @@ export interface Parse {
   addresses: ParsedAddress[];
   command: string;
   features: [number, number];
+  /** lazily computed by parseCacheKey */
   cache_key?: string;
 }
 

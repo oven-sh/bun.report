@@ -38,5 +38,6 @@ export async function remap(parse: Parse, signal?: AbortSignal): Promise<Remap> 
     commit: remap.commit,
     addresses: remap.addresses,
     command: remap.command,
+    features: remap.features,
   }
 }
