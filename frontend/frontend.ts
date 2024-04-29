@@ -253,9 +253,9 @@ function cardFooter() {
 
   let { pr, oid } = fetched?.commit ?? {};
 
-  const commit = pr
+  const commit = /* pr
     ? `<a href="https://github.com/oven-sh/bun/pull/${pr.number}" target="_blank">#${pr.number}</a>`
-    : oid
+    : */ oid
       ? `<a href="https://github.com/oven-sh/bun/commit/${oid}" target="_blank">${parsed.commitish}</a>`
       : parsed.commitish;
 
