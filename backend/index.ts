@@ -131,10 +131,8 @@ export default {
         remap(str, parsed)
           .then((remap) => {
             return sendToSentry(
+              parsed,
               remap,
-              request.headers,
-              parsed.cache_key!,
-              server.requestIP(request)?.address ?? ""
             );
           })
           .catch((e) => {
@@ -162,7 +160,6 @@ export default {
         parsed,
         is_discord_bot,
         request.headers,
-        server.requestIP(request)?.address || ""
       );
     });
   },
@@ -251,7 +248,6 @@ async function remapAndRedirect(
   parsed: Parse,
   is_discord_bot: boolean,
   headers: Headers,
-  request_ip: string
 ) {
   try {
     const remapped = await remap(parsed_str, parsed);
@@ -261,7 +257,7 @@ async function remapAndRedirect(
     }
 
     if (!is_discord_bot) {
-      sendToSentry(remapped, headers, parsed.cache_key!, request_ip).catch(
+      sendToSentry(parsed, remapped).catch(
         (e) => {
           console.error("Failed to send to sentry", e);
         }

@@ -12,7 +12,7 @@ export function formatMarkdown(remap: Remap, internal?: { source: string }): str
     ...addrsToMarkdown(remap.commit.oid, remap.addresses)
       .map(l => `- ${l}`),
     '',
-    remap.features.length > 0 ? `Features: ${remap.features.join(', ')}` : '',
+    remap.features.length > 0 ? `Features: ${remap.features.map(escmd).join(', ')}` : '',
     '',
     ...internal ? [`[(see trace)](https://bun.report/${internal.source.replace(/^\/+/, '')}/view)`] : [],
   ].join('\n').trim().replace(/\n\n+/g, '\n\n');

@@ -6,7 +6,7 @@ import { parseCacheKey } from "../lib/util";
 import { llvm_symbolizer, pdb_addr2line } from "./system-deps";
 import { formatMarkdown } from "../lib";
 import { decodeFeatures } from "./feature";
-import { sendToSentry } from "./sentry";
+
 
 const command_map: { [key: string]: string } = {
   I: "AddCommand",

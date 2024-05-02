@@ -1,21 +1,177 @@
-import { MD5, SHA256 } from "bun";
-import type { Address, Remap } from "../lib";
-import type * as Sentry from "@sentry/types";
+import { MD5 } from "bun";
+import type { Address, Parse, Remap } from "../lib";
+import { type Platform, type Arch, parseCacheKey } from "../lib/util";
+import type * as Sentry from "./sentry-types";
+import assert from "node:assert";
+import { getCodeView } from "./code-view";
 
-function toStackFrame(address: Address, commit: string): Sentry.StackFrame {
+async function remapToPayload(parse: Parse, remap: Remap): Promise<Sentry.Payload> {
+  assert(parse.cache_key);
+
+  const event_id = MD5.hash(parse.cache_key, "hex");
+
+  return [
+    {
+      event_id,
+      sent_at: new Date().toISOString(),
+      sdk: { name: "sentry.javascript.bun", version: Bun.version },
+      trace: {
+        environment: process.env.NODE_ENV! as Sentry.NodeEnv,
+        public_key: process.env.SENTRY_PUBLIC_KEY!,
+      },
+    },
+    { type: "event" },
+    {
+      exception: {
+        values: [
+          await remapToException(parse, remap),
+        ],
+      },
+      event_id,
+      platform: 'bun',
+      tags: getTags(parse, remap),
+      contexts: {
+        runtime: {
+          name: 'bun',
+          version: remap.version + '+' + remap.commit.oid.slice(0, 9),
+        },
+        os: getOSContext(parse.os),
+        device: getOSDeviceContext(parse.arch),
+      },
+      timestamp: new Date().getTime() / 1000,
+      environment: 'production',
+      sdk: {
+        integrations: [],
+        name: 'bun',
+        version: Bun.version,
+        packages: [],
+      },
+    }
+  ];
+}
+
+function getTags(parse: Parse, remap: Remap): any {
+  const tags: any = {};
+
+  tags.version = remap.version;
+  tags.os = parse.os;
+  tags.arch = parse.arch.replace(/_baseline$/, '');
+
+  tags.command = remap.command;
+
+  for (const feature of remap.features) {
+    tags[feature] = true;
+  }
+
+  if (parse.arch.endsWith('_baseline')) {
+    tags.baseline = true;
+  }
+
+  return tags;
+}
+
+function getOSContext(os: Platform): Sentry.OS {
+  switch (os) {
+    case 'windows':
+      return {
+        name: 'Windows',
+      };
+    case 'macos':
+      return {
+        name: 'macOS',
+      };
+    case 'linux':
+      return {
+        name: 'Linux',
+      };
+  }
+}
+
+function getOSDeviceContext(arch: Arch): Sentry.PayloadEventContexts['device'] {
+  return {
+    arch
+  }
+}
+
+function remapToExceptionType(message: string) {
+  if (message.startsWith('panic:')) {
+    return {
+      type: 'Panic',
+      value: message.slice('panic:'.length).trim(),
+    }
+  }
+  if (message.startsWith('error:')) {
+    return {
+      type: 'ZigError',
+      value: message.slice('error:'.length).trim(),
+    }
+  }
+  if (message == 'Stack overflow') {
+    return {
+      type: 'StackOverflow',
+      value: 'Stack overflow',
+    }
+  }
+  if (message == 'Bun ran out of memory') {
+    return {
+      type: 'OutOfMemory',
+      value: 'Bun ran out of memory',
+    }
+  }
+  if (message == 'Unaligned memory access') {
+    return {
+      type: 'UnalignedMemoryAccess',
+      value: 'Unaligned memory access',
+    }
+  }
+
+  let type = message.split(' at ')[0];
+  if (type.toLowerCase() === 'segmentation fault') {
+    type = 'Segfault';
+  } else {
+    type = type.split(' ').map(x => x.charAt(0).toUpperCase() + x.slice(1)).join('');
+  }
+
+  return {
+    type,
+    value: message,
+  };
+}
+
+async function remapToException(parse: Parse, remap: Remap): Promise<Sentry.PayloadException> {
+  const { type, value } = remapToExceptionType(parse.message);
+  return {
+    type,
+    value,
+    stacktrace: {
+      frames: await Promise.all(remap.addresses.map(x => toStackFrame(x, remap.commit.oid)).reverse()),
+      mechanism: {
+        type: "generic",
+        handled: true,
+      },
+    }
+  };
+}
+
+async function toStackFrame(address: Address, commit: string): Promise<Sentry.StackTraceFrame> {
   const { object, remapped } = address;
   if (remapped) {
     const { src, function: fn } = address;
     if (src) {
       const filename = src.file.replaceAll("\\", "/");
+      const code_view = await getCodeView(commit, src.file, src.line);
       return {
         filename,
         lineno: src.line,
         in_app: object === "bun" && !filename.includes("src/deps/zig"),
         function: fn,
         module: object,
-        // @ts-ignore - https://develop.sentry.dev/sdk/event-payloads/stacktrace/
         source_link: `https://raw.githubusercontent.com/oven-sh/bun/${commit}/${src.file}#L${src.line}`,
+        ...code_view ? {
+          pre_context: code_view.above,
+          context_line: code_view.line,
+          post_context: code_view.below,
+        } : {},
       };
     }
   }
@@ -27,178 +183,16 @@ function toStackFrame(address: Address, commit: string): Sentry.StackFrame {
   };
 }
 
-function toStackTrace(remap: Remap): Sentry.Stacktrace {
-  const {
-    addresses,
-    commit: { oid: commit },
-    os,
-    arch,
-  } = remap;
-  const frames = new Array(addresses.length);
-  for (let i = addresses.length - 1; i >= 0; i--) {
-    const address = addresses[i];
-    frames[i] = toStackFrame(address, commit);
-  }
-
-  return {
-    frames,
-  };
-}
-
-function toException(remap: Remap): Sentry.Exception {
-  const {
-    addresses,
-    commit: { oid: commit },
-    message,
-    os,
-    version,
-    arch,
-    command,
-    features,
-    issue,
-  } = remap;
-
-  return {
-    type: "Error",
-    value: message,
-    stacktrace: toStackTrace(remap),
-
-    // mechanism: {
-    //   type: "instrument",
-    // },
-  };
-}
-
-function getOSContext(os: string): Sentry.OsContext {
-  switch (os) {
-    case "windows":
-      return {
-        name: "Windows",
-      };
-    case "macos":
-      return {
-        name: "macOS",
-        // This information is just a placeholder to make Sentry happy
-        kernel_version: "23.4.0",
-        version: "14.4.1",
-        build: "23E224",
-      };
-    case "linux":
-      return {
-        name: "Linux",
-      };
-  }
-
-  return {};
-}
-
-function toEvent(
-  remap: Remap,
-  cache_key: string,
-  headers: Headers,
-  request_ip: string
-): Sentry.Event {
-  const { os, arch, version, command, features, issue, message } = remap;
-  const event_id = MD5.hash(
-    new Float64Array([Math.random(), ...Buffer.from(cache_key)]),
-    "hex"
-  );
-  return {
-    event_id: event_id,
-    // @ts-expect-error
-    sent_at: new Date().toISOString(),
-    sdk: { name: "sentry.javascript.bun", version: "7.112.2" },
-    trace: {
-      environment: process.env.NODE_ENV,
-      public_key: process.env.SENTRY_PUBLIC_KEY!,
-    },
-    platform: "javascript",
-    tags: {
-      command,
-      ...features.reduce((acc, feature) => {
-        acc[feature] = "1";
-        return acc;
-      }, {} as any),
-      platform: `${os}-${arch}`,
-    },
-    // version: version,
-    // release: version,
-    environment: process.env.NODE_ENV,
-    timestamp: new Date().getTime(),
-    level: "error",
-    message: message,
-    extra: {
-      issue,
-      command,
-      ...features.reduce((acc, feature) => {
-        acc[feature] = true;
-        return acc;
-      }, {} as any),
-    },
-    contexts: {
-      os: getOSContext(os),
-      runtime: {
-        name: "bun",
-        version: version,
-      },
-      culture: {},
-      cloud_resource: {},
-      state: {
-        state: {
-          type: "Command",
-          value: {
-            command,
-            ...features.reduce((acc, feature) => {
-              acc[feature] = true;
-              return acc;
-            }, {} as any),
-          },
-        },
-      },
-    },
-    // user: request_ip
-    //   ? {
-    //       ip_address: request_ip,
-    //     }
-    //   : undefined,
-    // request: headers
-    //   ? {
-    //       headers: { ...(headers.entries() as any) },
-    //     }
-    //   : undefined,
-  };
-}
-
-export async function sendToSentry(
-  remap: Remap,
-  headers: Headers,
-  cache_key: string,
-  request_ip: string
-) {
+export async function sendToSentry(parse: Parse, remap: Remap) {
   const url = process.env.SENTRY_DSN;
   if (!url) {
     return;
   }
-  const event = toEvent(
-    remap,
-    SHA256.hash(cache_key, "hex"),
-    headers,
-    request_ip
-  );
-  const type = { type: "event" };
-  const exception = {
-    exception: {
-      values: [toException(remap)],
-    },
-  };
+  parse.cache_key ??= parseCacheKey(parse);
+  const event = await remapToPayload(parse, remap);
+  const body = event.map((x) => JSON.stringify(x)).join("\n");
 
-  const body =
-    JSON.stringify(event) +
-    "\n" +
-    JSON.stringify(type) +
-    "\n" +
-    JSON.stringify(exception);
-
+  console.log(body)
 
   await fetch(url, {
     method: "POST",

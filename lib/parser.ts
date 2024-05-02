@@ -182,7 +182,7 @@ export async function parse(str: string): Promise<Parse | null> {
         }
         i += inc;
 
-        object = str.slice(i, i + c);
+        object = str.slice(i, i + c).replace(/^\//, '');
         i += c;
 
         [address, inc] = decodePart(str.slice(i));
