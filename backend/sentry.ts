@@ -54,7 +54,6 @@ function getTags(parse: Parse, remap: Remap): any {
   const tags: any = {};
 
   tags.version = remap.version;
-  tags.os = parse.os;
   tags.arch = parse.arch.replace(/_baseline$/, '');
 
   tags.command = remap.command;
