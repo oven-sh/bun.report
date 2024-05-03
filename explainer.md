@@ -2,7 +2,7 @@
 
 ### What is this?
 
-We made this little tool to help to help debug panics and crashes in [Bun](https://bun.sh).
+We made this little tool to help debug panics and crashes in [Bun](https://bun.sh).
 
 Instead of bloating Bun's binary with hundreds of megabytes of debug symbols, we put the version, platform, and stack addresses into a VLQ-encoded URL.
 
