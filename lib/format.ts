@@ -14,7 +14,7 @@ export function formatMarkdown(remap: Remap, internal?: { source: string }): str
     '',
     remap.features.length > 0 ? `Features: ${remap.features.map(escmd).join(', ')}` : '',
     '',
-    ...internal ? [`[(see trace)](https://bun.report/${internal.source.replace(/^\/+/, '')}/view)`] : [],
+    ...internal ? [`[(see trace)](<https://bun.report/${internal.source.replace(/^\/+/, '')}/view>)`] : [],
   ].join('\n').trim().replace(/\n\n+/g, '\n\n');
 }
 
@@ -23,7 +23,7 @@ function treeURLMD(commit: ResolvedCommit) {
   //   return `[#${commit.pr.number}](https://github.com/oven-sh/bun/pull/${commit.pr.number})`;
   // }
 
-  return `[\`${commit.oid.slice(0, 7)}\`](https://github.com/oven-sh/bun/tree/${commit.oid})`
+  return `[\`${commit.oid.slice(0, 7)}\`](<https://github.com/oven-sh/bun/tree/${commit.oid}>)`
 }
 
 export function addrsToMarkdown(commit: string, addrs: Address[]): string[] {
@@ -47,7 +47,7 @@ export function addrsToMarkdown(commit: string, addrs: Address[]): string[] {
 
     if (addr.remapped) {
       lines.push(`${addr.src ?
-        `[\`${escmdcode(basename(addr.src.file))}:${addr.src.line}\`](https://github.com/oven-sh/bun/blob/${commit}/${addr.src.file}#L${addr.src.line}): `
+        `[\`${escmdcode(basename(addr.src.file))}:${addr.src.line}\`](<https://github.com/oven-sh/bun/blob/${commit}/${addr.src.file}#L${addr.src.line}>): `
         : ''
         }\`${escmdcode(addr.function)}\`${addr.object !== 'bun' ? ` in ${addr.object}` : ''}`);
     } else {
