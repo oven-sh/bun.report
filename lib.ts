@@ -1,4 +1,9 @@
-import { parse, type Parse, type Remap } from "./lib/parser";
+import {
+  parse,
+  type Parse,
+  type Remap,
+  type RemapAPIResponse,
+} from "./lib/parser";
 
 export * from "./lib/parser";
 export * from "./lib/format";
@@ -23,14 +28,14 @@ export async function remap(
     );
   }
 
-  const remap = await response.json();
+  const remap = (await response.json()) as RemapAPIResponse | { error: string };
 
-  if (remap.error) {
+  if ("error" in remap) {
     throw new Error(`${remap.error}`);
   }
 
   return {
-    version: parse.version,
+    version: remap.version,
     message: parse.message,
     os: parse.os,
     arch: parse.arch,

@@ -102,6 +102,8 @@ export interface RemapAPIResponse {
   addresses: Address[];
   issue: number | null;
   command: string;
+  version: string;
+  features: string[];
 }
 
 function validateSemver(version: string): boolean {

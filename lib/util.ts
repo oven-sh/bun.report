@@ -60,7 +60,6 @@ export function parseCacheKey(parse: Parse) {
     parse.commitish,
     parse.arch,
     parse.os,
-    parse.version,
     !!parse.is_canary,
     ...parse.addresses.map((a) => a.address.toString(16)),
   ].join("_");

@@ -193,6 +193,8 @@ async function postRemap(request: Request, server: Server) {
       addresses: remapped.addresses,
       issue: remapped.issue ?? null,
       command: remapped.command,
+      version: remapped.version,
+      features: remapped.features,
     } satisfies RemapAPIResponse);
   } catch (e) {
     return handleError(e, false);
