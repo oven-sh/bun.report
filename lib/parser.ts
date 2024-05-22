@@ -37,6 +37,10 @@ const reasons: { [key: string]: (input: string) => string | Promise<string> } =
   };
 
 export interface Parse {
+  /**
+   * This version is the *specified* version, not the actual version this remaps
+   * to. It should not be trusted as factual.
+   */
   version: string;
   message: string;
   os: Platform;
