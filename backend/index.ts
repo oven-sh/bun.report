@@ -62,16 +62,16 @@ export default {
                   "%md%",
                   require("marked").parse(
                     await Bun.file(
-                      join(import.meta.dir, "../explainer.md")
-                    ).text()
-                  )
+                      join(import.meta.dir, "../explainer.md"),
+                    ).text(),
+                  ),
                 ),
                 {
                   headers: {
                     "Content-Type": "text/html; charset=utf-8",
                   },
-                }
-              )
+                },
+              ),
           );
       }
 
@@ -83,7 +83,7 @@ export default {
 
       if (pathname === "/style.css") {
         return new Response(
-          Bun.file(join(import.meta.dir, "../frontend/style.css"))
+          Bun.file(join(import.meta.dir, "../frontend/style.css")),
         );
       }
     }
@@ -104,9 +104,9 @@ export default {
             import.meta.dir,
             process.env.NODE_ENV === "production"
               ? "favicon.ico"
-              : "../frontend/favicon.ico"
-          )
-        )
+              : "../frontend/favicon.ico",
+          ),
+        ),
       );
     }
 
@@ -130,10 +130,7 @@ export default {
 
         remap(str, parsed)
           .then((remap) => {
-            return sendToSentry(
-              parsed,
-              remap,
-            );
+            return sendToSentry(parsed, remap);
           })
           .catch((e) => {
             if (process.env.NODE_ENV === "development") {
@@ -155,12 +152,7 @@ export default {
       const is_discord_bot =
         request.headers.get("user-agent")?.includes("discord") ?? false;
 
-      return remapAndRedirect(
-        str,
-        parsed,
-        is_discord_bot,
-        request.headers,
-      );
+      return remapAndRedirect(str, parsed, is_discord_bot, request.headers);
     });
   },
 } satisfies ServeOptions;
@@ -257,17 +249,15 @@ async function remapAndRedirect(
     }
 
     if (!is_discord_bot) {
-      sendToSentry(parsed, remapped).catch(
-        (e) => {
-          console.error("Failed to send to sentry", e);
-        }
-      );
+      sendToSentry(parsed, remapped).catch((e) => {
+        console.error("Failed to send to sentry", e);
+      });
     }
 
     if (remapped.issue) {
       return Response.redirect(
         `https://github.com/oven-sh/bun/issues/${remapped.issue}`,
-        307
+        307,
       );
     }
 
@@ -275,7 +265,7 @@ async function remapAndRedirect(
       const embed_title = remapped.message;
       const embed_description = addrsToPlainText(
         remapped.commit.oid,
-        remapped.addresses
+        remapped.addresses,
       ).join("\n");
 
       return new Response(
@@ -286,7 +276,7 @@ async function remapAndRedirect(
           headers: {
             "Content-Type": "text/html; charset=utf-8",
           },
-        }
+        },
       );
     }
 
@@ -297,7 +287,7 @@ async function remapAndRedirect(
       remapCacheKey(remapped) +
       " -->";
     const url = `https://github.com/oven-sh/bun/issues/new?labels=bug,crash&template=${template}&remapped_trace=${encodeURIComponent(
-      report
+      report,
     )}`;
 
     return Response.redirect(url, 307);
@@ -328,16 +318,25 @@ function handleError(e: any, visual: boolean) {
   }
 }
 
-setInterval(() => {
-  garbageCollect();
-}, 1000 * 60 * 60 * 24 * 7);
+setInterval(
+  () => {
+    garbageCollect();
+  },
+  1000 * 60 * 60 * 24 * 7,
+);
 
-console.log('bun.report');
-console.log('Discord Webhook: ' + (process.env.DISCORD_WEBHOOK_URL ? 'enabled' : 'disabled'));
-console.log('Sentry: ' + (process.env.SENTRY_DSN ? 'enabled' : 'disabled'));
-console.log('GitHub Webhook: ' + (process.env.GITHUB_WEBHOOK_SECRET ? 'enabled' : 'disabled'));
+console.log("bun.report");
+console.log(
+  "Discord Webhook: " +
+    (process.env.DISCORD_WEBHOOK_URL ? "enabled" : "disabled"),
+);
+console.log("Sentry: " + (process.env.SENTRY_DSN ? "enabled" : "disabled"));
+console.log(
+  "GitHub Webhook: " +
+    (process.env.GITHUB_WEBHOOK_SECRET ? "enabled" : "disabled"),
+);
 
 if (!process.env.BUN_DOWNLOAD_BASE) {
-  console.error('BUN_DOWNLOAD_BASE is not set');
+  console.error("BUN_DOWNLOAD_BASE is not set");
   process.exit(1);
 }

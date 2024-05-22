@@ -5,7 +5,10 @@ import type * as Sentry from "./sentry-types";
 import assert from "node:assert";
 import { getCodeView } from "./code-view";
 
-async function remapToPayload(parse: Parse, remap: Remap): Promise<Sentry.Payload> {
+async function remapToPayload(
+  parse: Parse,
+  remap: Remap,
+): Promise<Sentry.Payload> {
   assert(parse.cache_key);
 
   const event_id = MD5.hash(parse.cache_key, "hex");
@@ -23,30 +26,28 @@ async function remapToPayload(parse: Parse, remap: Remap): Promise<Sentry.Payloa
     { type: "event" },
     {
       exception: {
-        values: [
-          await remapToException(parse, remap),
-        ],
+        values: [await remapToException(parse, remap)],
       },
       event_id,
-      platform: 'bun',
+      platform: "bun",
       tags: getTags(parse, remap),
       contexts: {
         runtime: {
-          name: 'bun',
-          version: remap.version + '+' + remap.commit.oid.slice(0, 9),
+          name: "bun",
+          version: remap.version + "+" + remap.commit.oid.slice(0, 9),
         },
         os: getOSContext(parse.os),
         device: getOSDeviceContext(parse.arch),
       },
       timestamp: new Date().getTime() / 1000,
-      environment: 'production',
+      environment: "production",
       sdk: {
         integrations: [],
-        name: 'bun',
+        name: "bun",
         version: Bun.version,
         packages: [],
       },
-    }
+    },
   ];
 }
 
@@ -54,7 +55,7 @@ function getTags(parse: Parse, remap: Remap): any {
   const tags: any = {};
 
   tags.version = remap.version;
-  tags.arch = parse.arch.replace(/_baseline$/, '');
+  tags.arch = parse.arch.replace(/_baseline$/, "");
 
   tags.command = remap.command;
 
@@ -62,7 +63,7 @@ function getTags(parse: Parse, remap: Remap): any {
     tags[feature] = true;
   }
 
-  if (parse.arch.endsWith('_baseline')) {
+  if (parse.arch.endsWith("_baseline")) {
     tags.baseline = true;
   }
 
@@ -71,64 +72,67 @@ function getTags(parse: Parse, remap: Remap): any {
 
 function getOSContext(os: Platform): Sentry.OS {
   switch (os) {
-    case 'windows':
+    case "windows":
       return {
-        name: 'Windows',
+        name: "Windows",
       };
-    case 'macos':
+    case "macos":
       return {
-        name: 'macOS',
+        name: "macOS",
       };
-    case 'linux':
+    case "linux":
       return {
-        name: 'Linux',
+        name: "Linux",
       };
   }
 }
 
-function getOSDeviceContext(arch: Arch): Sentry.PayloadEventContexts['device'] {
+function getOSDeviceContext(arch: Arch): Sentry.PayloadEventContexts["device"] {
   return {
-    arch
-  }
+    arch,
+  };
 }
 
 function remapToExceptionType(message: string) {
-  if (message.startsWith('panic:')) {
+  if (message.startsWith("panic:")) {
     return {
-      type: 'Panic',
-      value: message.slice('panic:'.length).trim(),
-    }
+      type: "Panic",
+      value: message.slice("panic:".length).trim(),
+    };
   }
-  if (message.startsWith('error:')) {
+  if (message.startsWith("error:")) {
     return {
-      type: 'ZigError',
-      value: message.slice('error:'.length).trim(),
-    }
+      type: "ZigError",
+      value: message.slice("error:".length).trim(),
+    };
   }
-  if (message == 'Stack overflow') {
+  if (message == "Stack overflow") {
     return {
-      type: 'StackOverflow',
-      value: 'Stack overflow',
-    }
+      type: "StackOverflow",
+      value: "Stack overflow",
+    };
   }
-  if (message == 'Bun ran out of memory') {
+  if (message == "Bun ran out of memory") {
     return {
-      type: 'OutOfMemory',
-      value: 'Bun ran out of memory',
-    }
+      type: "OutOfMemory",
+      value: "Bun ran out of memory",
+    };
   }
-  if (message == 'Unaligned memory access') {
+  if (message == "Unaligned memory access") {
     return {
-      type: 'UnalignedMemoryAccess',
-      value: 'Unaligned memory access',
-    }
+      type: "UnalignedMemoryAccess",
+      value: "Unaligned memory access",
+    };
   }
 
-  let type = message.split(' at ')[0];
-  if (type.toLowerCase() === 'segmentation fault') {
-    type = 'Segfault';
+  let type = message.split(" at ")[0];
+  if (type.toLowerCase() === "segmentation fault") {
+    type = "Segfault";
   } else {
-    type = type.split(' ').map(x => x.charAt(0).toUpperCase() + x.slice(1)).join('');
+    type = type
+      .split(" ")
+      .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
+      .join("");
   }
 
   return {
@@ -137,22 +141,30 @@ function remapToExceptionType(message: string) {
   };
 }
 
-async function remapToException(parse: Parse, remap: Remap): Promise<Sentry.PayloadException> {
+async function remapToException(
+  parse: Parse,
+  remap: Remap,
+): Promise<Sentry.PayloadException> {
   const { type, value } = remapToExceptionType(parse.message);
   return {
     type,
     value,
     stacktrace: {
-      frames: await Promise.all(remap.addresses.map(x => toStackFrame(x, remap.commit.oid)).reverse()),
+      frames: await Promise.all(
+        remap.addresses.map((x) => toStackFrame(x, remap.commit.oid)).reverse(),
+      ),
       mechanism: {
         type: "generic",
         handled: true,
       },
-    }
+    },
   };
 }
 
-async function toStackFrame(address: Address, commit: string): Promise<Sentry.StackTraceFrame> {
+async function toStackFrame(
+  address: Address,
+  commit: string,
+): Promise<Sentry.StackTraceFrame> {
   const { object, remapped } = address;
   if (remapped) {
     const { src, function: fn } = address;
@@ -166,11 +178,13 @@ async function toStackFrame(address: Address, commit: string): Promise<Sentry.St
         function: fn,
         module: object,
         source_link: `https://raw.githubusercontent.com/oven-sh/bun/${commit}/${src.file}#L${src.line}`,
-        ...code_view ? {
-          pre_context: code_view.above,
-          context_line: code_view.line,
-          post_context: code_view.below,
-        } : {},
+        ...(code_view
+          ? {
+              pre_context: code_view.above,
+              context_line: code_view.line,
+              post_context: code_view.below,
+            }
+          : {}),
       };
     }
   }
@@ -191,7 +205,7 @@ export async function sendToSentry(parse: Parse, remap: Remap) {
   const event = await remapToPayload(parse, remap);
   const body = event.map((x) => JSON.stringify(x)).join("\n");
 
-  console.log(body)
+  console.log(body);
 
   await fetch(url, {
     method: "POST",

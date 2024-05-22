@@ -1,30 +1,35 @@
-import { join, relative, dirname } from 'node:path';
-import type { Platform, Arch } from '../lib/util';
-import assert from 'node:assert';
-import { exists, rm, mkdir, rename } from 'node:fs/promises';
-import { unzip } from './system-deps';
-import { getCachedDebugFile, getCachedFeatureData, putCachedDebugFile, putCachedFeatureData } from './db';
-import type { ResolvedCommit } from '../lib';
-import { octokit } from './git';
-import type { FeatureConfig } from './feature';
+import { join, relative, dirname } from "node:path";
+import type { Platform, Arch } from "../lib/util";
+import assert from "node:assert";
+import { exists, rm, mkdir, rename } from "node:fs/promises";
+import { unzip } from "./system-deps";
+import {
+  getCachedDebugFile,
+  getCachedFeatureData,
+  putCachedDebugFile,
+  putCachedFeatureData,
+} from "./db";
+import type { ResolvedCommit } from "../lib";
+import { octokit } from "./git";
+import type { FeatureConfig } from "./feature";
 
-const cache_root = join(import.meta.dir, '..', '.cache');
+const cache_root = join(import.meta.dir, "..", ".cache");
 
 interface DebugInfo {
   file_path: string;
   feature_config: FeatureConfig;
 }
 
-export function storeRoot(platform: Platform, arch: Arch) {
-  return join(cache_root, platform + '-' + arch);
+export function storeRoot(platform: Platform, arch: Arch, is_canary: boolean) {
+  return join(cache_root, platform + "-" + arch + (is_canary ? "-canary" : ""));
 }
 
 export async function temp() {
-  const path = join(cache_root, 'temp', Math.random().toString(36).slice(2));
+  const path = join(cache_root, "temp", Math.random().toString(36).slice(2));
   await mkdir(path, { recursive: true });
   return {
     path,
-    [Symbol.dispose]: () => void rm(path, { force: true }).catch(() => { }),
+    [Symbol.dispose]: () => void rm(path, { force: true }).catch(() => {}),
   };
 }
 
@@ -32,24 +37,29 @@ export async function temp() {
 const in_progress_downloads = new Map<string, Promise<DebugInfo>>();
 
 const map_download_arch = {
-  'x86_64': 'x64',
-  'x86_64_baseline': 'x64',
-  'aarch64': 'aarch64',
+  x86_64: "x64",
+  x86_64_baseline: "x64",
+  aarch64: "aarch64",
 } as const;
 
 const map_download_os = {
-  'windows': 'windows',
-  'macos': 'darwin',
-  'linux': 'linux',
+  windows: "windows",
+  macos: "darwin",
+  linux: "linux",
 } as const;
 
-export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedCommit): Promise<DebugInfo> {
+export async function fetchDebugFile(
+  os: Platform,
+  arch: Arch,
+  commit: ResolvedCommit,
+  is_canary: boolean,
+): Promise<DebugInfo> {
   const oid = commit.oid;
   assert(oid.length === 40);
 
-  const store_suffix = os === 'windows' ? '.pdb' : '';
+  const store_suffix = os === "windows" ? ".pdb" : "";
 
-  const root = storeRoot(os, arch);
+  const root = storeRoot(os, arch, is_canary);
   const path = join(root, oid[0], oid + store_suffix);
 
   if (in_progress_downloads.has(path)) {
@@ -70,20 +80,20 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedC
   }
 
   if (!process.env.BUN_DOWNLOAD_BASE) {
-    const e: any = new Error('BUN_DOWNLOAD_BASE is not set');
-    e.code = 'MissingToken';
+    const e: any = new Error("BUN_DOWNLOAD_BASE is not set");
+    e.code = "MissingToken";
     throw e;
   }
 
   const { promise, resolve, reject } = Promise.withResolvers<DebugInfo>();
   in_progress_downloads.set(path, promise);
-  promise.catch(() => { }); // mark as handled
+  promise.catch(() => {}); // mark as handled
 
   let feature_config: FeatureConfig;
 
   try {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('fetching debug file for', os, arch, oid);
+    if (process.env.NODE_ENV === "development") {
+      console.log("fetching debug file for", os, arch, oid);
     }
 
     const download_os = map_download_os[os];
@@ -91,21 +101,30 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedC
 
     using tmp = await temp();
     const dir = `bun-${download_os}-${download_arch}-profile`;
-    const url = `${process.env.BUN_DOWNLOAD_BASE}/${commit.oid}/${dir}.zip`;
+    const url = `${process.env.BUN_DOWNLOAD_BASE}/${commit.oid}${is_canary ? "-canary" : ""}/${dir}.zip`;
 
     const response = await fetch(url);
     if (response.status === 404) {
       const pr = commit.pr;
       if (pr) {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('fetching debug file for', os, arch, oid, 'from PR', pr.number);
+        if (process.env.NODE_ENV === "development") {
+          console.log(
+            "fetching debug file for",
+            os,
+            arch,
+            oid,
+            "from PR",
+            pr.number,
+          );
         }
         try {
           let success = await tryFromPR(os, arch, commit, tmp.path);
           if (!success) {
             in_progress_downloads.delete(path);
-            const err: any = new Error(`Failed to fetch debug file for ${os}-${arch} for PR ${pr.number}`);
-            err.code = 'DebugInfoUnavailable';
+            const err: any = new Error(
+              `Failed to fetch debug file for ${os}-${arch} for PR ${pr.number}`,
+            );
+            err.code = "DebugInfoUnavailable";
             reject(err);
             throw err;
           }
@@ -116,8 +135,10 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedC
         }
       } else {
         in_progress_downloads.delete(path);
-        const err: any = new Error(`Failed to fetch debug file for ${os}-${arch} for commit ${commit.oid}`);
-        err.code = 'DebugInfoUnavailable';
+        const err: any = new Error(
+          `Failed to fetch debug file for ${os}-${arch} for commit ${commit.oid}`,
+        );
+        err.code = "DebugInfoUnavailable";
         reject(err);
         throw err;
       }
@@ -125,32 +146,37 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedC
       if (response.status !== 200) {
         throw new Error(`Failed to fetch ${url}: ${response.status}`);
       }
-      await Bun.write(join(tmp.path, dir + '.zip'), response);
+      await Bun.write(join(tmp.path, dir + ".zip"), response);
     }
 
     const subproc = Bun.spawn({
-      cmd: [unzip, join(tmp.path, dir + '.zip')],
-      stdio: ['ignore', 'pipe', 'pipe'],
+      cmd: [unzip, join(tmp.path, dir + ".zip")],
+      stdio: ["ignore", "pipe", "pipe"],
       cwd: tmp.path,
     });
     if ((await subproc.exited) !== 0) {
       const e: any = new Error(
-        'unzip failed: '
-        + await Bun.readableStreamToText(subproc.stderr)
+        "unzip failed: " + (await Bun.readableStreamToText(subproc.stderr)),
       );
-      e.code = 'UnzipFailed';
+      e.code = "UnzipFailed";
       throw e;
     }
 
-    const desired_file = join(tmp.path, dir, 'bun' + store_suffix + (os !== 'windows' ? '-profile' : ''));
-    if (!await exists(desired_file)) {
-      throw new Error(`Failed to find ${relative(tmp.path, desired_file)} in extraction`);
+    const desired_file = join(
+      tmp.path,
+      dir,
+      "bun" + store_suffix + (os !== "windows" ? "-profile" : ""),
+    );
+    if (!(await exists(desired_file))) {
+      throw new Error(
+        `Failed to find ${relative(tmp.path, desired_file)} in extraction`,
+      );
     }
 
     await mkdir(dirname(path), { recursive: true });
     await rename(desired_file, path);
 
-    feature_config = getCachedFeatureData(oid) ?? await fetchFeatureData(oid);
+    feature_config = getCachedFeatureData(oid) ?? (await fetchFeatureData(oid));
 
     putCachedDebugFile(os, arch, oid, path);
   } catch (e) {
@@ -158,7 +184,6 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedC
     reject(e);
     throw e;
   }
-
 
   in_progress_downloads.delete(path);
   const result = {
@@ -169,7 +194,12 @@ export async function fetchDebugFile(os: Platform, arch: Arch, commit: ResolvedC
   return result;
 }
 
-export async function tryFromPR(os: Platform, arch: Arch, commit: ResolvedCommit, temp: string): Promise<boolean> {
+export async function tryFromPR(
+  os: Platform,
+  arch: Arch,
+  commit: ResolvedCommit,
+  temp: string,
+): Promise<boolean> {
   const oid = commit.oid;
   const pr = commit.pr;
   assert(oid.length === 40);
@@ -194,18 +224,16 @@ export async function tryFromPR(os: Platform, arch: Arch, commit: ResolvedCommit
     branch: pr.ref, // Filter by branch associated with the PR
     per_page: 100, // Fetch up to 100 workflow runs
   });
-  const run = (
-    data_1.data.workflow_runs
-      .concat(data_2.data.workflow_runs)
-  )
+  const run = data_1.data.workflow_runs
+    .concat(data_2.data.workflow_runs)
     .filter((run) => run.head_sha === oid)
-    .filter((run) => run.path === '.github/workflows/ci.yml')[0];
+    .filter((run) => run.path === ".github/workflows/ci.yml")[0];
 
   if (!run) {
     return false;
   }
 
-  console.log('found run', run.id);
+  console.log("found run", run.id);
 
   const artifacts = await octokit.rest.actions.listWorkflowRunArtifacts({
     owner: "oven-sh",
@@ -217,12 +245,14 @@ export async function tryFromPR(os: Platform, arch: Arch, commit: ResolvedCommit
   const dir = `bun-${download_os}-${download_arch}-profile`;
 
   {
-    const artifact = artifacts.data.artifacts.find((artifact) => artifact.name === dir);
+    const artifact = artifacts.data.artifacts.find(
+      (artifact) => artifact.name === dir,
+    );
 
     if (!artifact) {
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NODE_ENV === "development") {
         console.log(`no artifact ${dir}`);
-        console.log(artifacts.data.artifacts.map(a => a.name));
+        console.log(artifacts.data.artifacts.map((a) => a.name));
       }
       return false;
     }
@@ -231,52 +261,61 @@ export async function tryFromPR(os: Platform, arch: Arch, commit: ResolvedCommit
       owner: "oven-sh",
       repo: "bun",
       artifact_id: artifact.id,
-      archive_format: 'zip',
+      archive_format: "zip",
     });
 
-    await Bun.write(join(temp, 'artifact-download.zip'), downloaded_artifact.data as any);
+    await Bun.write(
+      join(temp, "artifact-download.zip"),
+      downloaded_artifact.data as any,
+    );
 
     const subproc = Bun.spawn({
-      cmd: [unzip, join(temp, 'artifact-download.zip')],
-      stdio: ['ignore', 'pipe', 'pipe'],
+      cmd: [unzip, join(temp, "artifact-download.zip")],
+      stdio: ["ignore", "pipe", "pipe"],
       cwd: temp,
     });
 
     if ((await subproc.exited) !== 0) {
       const e: any = new Error(
-        'unzip failed: '
-        + await Bun.readableStreamToText(subproc.stderr)
+        "unzip failed: " + (await Bun.readableStreamToText(subproc.stderr)),
       );
-      e.code = 'UnzipFailed';
+      e.code = "UnzipFailed";
       throw e;
     }
   }
 
   get_features: {
-    const artifact = artifacts.data.artifacts.find((artifact) => artifact.name === 'bun-feature-data');
+    const artifact = artifacts.data.artifacts.find(
+      (artifact) => artifact.name === "bun-feature-data",
+    );
     if (!artifact) break get_features;
 
     const downloaded_artifact = await octokit.rest.actions.downloadArtifact({
       owner: "oven-sh",
       repo: "bun",
       artifact_id: artifact.id,
-      archive_format: 'zip',
+      archive_format: "zip",
     });
 
-    await Bun.write(join(temp, 'artifact-download-2.zip'), downloaded_artifact.data as any);
+    await Bun.write(
+      join(temp, "artifact-download-2.zip"),
+      downloaded_artifact.data as any,
+    );
 
     const subproc = Bun.spawn({
-      cmd: [unzip, join(temp, 'artifact-download-2.zip')],
-      stdio: ['ignore', 'pipe', 'pipe'],
+      cmd: [unzip, join(temp, "artifact-download-2.zip")],
+      stdio: ["ignore", "pipe", "pipe"],
       cwd: temp,
     });
     await subproc.exited;
 
     try {
-      const features = migrateFeatureData(await Bun.file(join(temp, 'features.json')).json());
+      const features = migrateFeatureData(
+        await Bun.file(join(temp, "features.json")).json(),
+      );
       features.is_pr = true;
       putCachedFeatureData(oid, features);
-    } catch { }
+    } catch {}
   }
 
   return true;

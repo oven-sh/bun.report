@@ -6,7 +6,7 @@ if (typeof DEBUG === "undefined") {
   (globalThis as any).DEBUG = process.env.NODE_ENV !== "production";
 }
 
-const debug = process.env.NODE_ENV === "production" ? () => { } : console.log;
+const debug = process.env.NODE_ENV === "production" ? () => {} : console.log;
 
 const platform_map: { [key: string]: [Platform, Arch] } = {
   w: ["windows", "x86_64"],
@@ -23,18 +23,18 @@ const platform_map: { [key: string]: [Platform, Arch] } = {
 };
 
 const reasons: { [key: string]: (input: string) => string | Promise<string> } =
-{
-  "0": parsePanicMessage,
-  "1": () => "panic: reached unreachable code",
-  "2": (addr) => `Segmentation fault at ${parseVlqAddr(addr)}`,
-  "3": (addr) => `Illegal instruction at ${parseVlqAddr(addr)}`,
-  "4": (addr) => `Bus error at ${parseVlqAddr(addr)}`,
-  "5": (addr) => `Floating point exception at ${parseVlqAddr(addr)}`,
-  "6": () => `Unaligned memory access`,
-  "7": () => `Stack overflow`,
-  "8": (rest) => "error: " + rest,
-  "9": () => `Bun ran out of memory`,
-};
+  {
+    "0": parsePanicMessage,
+    "1": () => "panic: reached unreachable code",
+    "2": (addr) => `Segmentation fault at ${parseVlqAddr(addr)}`,
+    "3": (addr) => `Illegal instruction at ${parseVlqAddr(addr)}`,
+    "4": (addr) => `Bus error at ${parseVlqAddr(addr)}`,
+    "5": (addr) => `Floating point exception at ${parseVlqAddr(addr)}`,
+    "6": () => `Unaligned memory access`,
+    "7": () => `Stack overflow`,
+    "8": (rest) => "error: " + rest,
+    "9": () => `Bun ran out of memory`,
+  };
 
 export interface Parse {
   version: string;
@@ -45,6 +45,13 @@ export interface Parse {
   addresses: ParsedAddress[];
   command: string;
   features: [number, number];
+  /**
+   * Always false before v1.1.10. Afterwards, this reflects if this was a canary
+   * build or not. Due to the setup of Bun's CI, a single commit can have both a
+   * canary build *and* a release build, so inferring that off of the commit is
+   * not enough.
+   */
+  is_canary?: boolean;
   /** lazily computed by parseCacheKey */
   cache_key?: string;
 }
@@ -120,7 +127,13 @@ export async function parse(str: string): Promise<Parse | null> {
     const command = str[first_slash + 2];
     const trace_version = str[first_slash + 3];
 
-    if (trace_version !== "1") {
+    let is_canary = false;
+    if (trace_version === "1") {
+      // '1' - original. uses 7 char hash with VLQ encoded stack-frames
+    } else if (trace_version === "2") {
+      // '2' - same as '1' but this build is known to be a canary build
+      is_canary = true;
+    } else {
       DEBUG && debug("invalid version '%s'", trace_version);
       return null;
     }
@@ -182,7 +195,7 @@ export async function parse(str: string): Promise<Parse | null> {
         }
         i += inc;
 
-        object = str.slice(i, i + c).replace(/^\//, '');
+        object = str.slice(i, i + c).replace(/^\//, "");
         i += c;
 
         [address, inc] = decodePart(str.slice(i));
@@ -212,9 +225,10 @@ export async function parse(str: string): Promise<Parse | null> {
       arch,
       commitish,
       addresses,
-      message: message!,
+      message,
       command,
       features: features_data,
+      is_canary,
     };
   } catch (e) {
     DEBUG && debug(e);
@@ -223,20 +237,20 @@ export async function parse(str: string): Promise<Parse | null> {
 }
 
 function parsePanicMessage(
-  message_compressed: string
+  message_compressed: string,
 ): Promise<string> | string {
   if (typeof Bun !== "undefined") {
     return (
       "panic: " +
       new TextDecoder().decode(
-        Bun.gunzipSync(Buffer.from(message_compressed, "base64url"))
+        Bun.gunzipSync(Buffer.from(message_compressed, "base64url")),
       )
     );
   } else {
     const stream = new DecompressionStream("deflate");
     const writer = stream.writable.getWriter();
     const write_promise = writer.write(
-      Uint8Array.from(atob(message_compressed), (c) => c.charCodeAt(0))
+      Uint8Array.from(atob(message_compressed), (c) => c.charCodeAt(0)),
     );
     writer.close();
     const reader = stream.readable.getReader();
@@ -255,7 +269,7 @@ function parsePanicMessage(
       })(),
     ]).then(
       (x) => x[1],
-      () => ""
+      () => "",
     );
   }
 }

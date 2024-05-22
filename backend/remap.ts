@@ -36,7 +36,10 @@ const command_map: { [key: string]: string } = {
 /** This map serves as a sort of "mutex" */
 const in_progress_remaps = new Map<string, Promise<Remap>>();
 
-export async function remap(parsed_string: string, parse: Parse): Promise<Remap> {
+export async function remap(
+  parsed_string: string,
+  parse: Parse,
+): Promise<Remap> {
   const key = parseCacheKey(parse);
   const cached = getCachedRemap(key);
   parse.cache_key = key;
@@ -51,7 +54,7 @@ export async function remap(parsed_string: string, parse: Parse): Promise<Remap>
 
   const { promise, resolve, reject } = Promise.withResolvers<Remap>();
   in_progress_remaps.set(key, promise);
-  promise.catch(() => { }); // mark as handled
+  promise.catch(() => {}); // mark as handled
 
   try {
     const remap = await remapUncached(parsed_string, parse);
@@ -68,7 +71,7 @@ const macho_first_offset = 0x100000000;
 export async function remapUncached(
   parsed_string: string,
   parse: Parse,
-  opts: { exe?: string } = {}
+  opts: { exe?: string } = {},
 ): Promise<Remap> {
   const commit: ResolvedCommit | null = opts.exe
     ? { oid: "unknown", pr: null }
@@ -81,14 +84,14 @@ export async function remapUncached(
 
   const debug_info = opts.exe
     ? {
-      file_path: opts.exe,
-      feature_config: null,
-    }
+        file_path: opts.exe,
+        feature_config: null,
+      }
     : await fetchDebugFile(parse.os, parse.arch, commit);
 
   if (!debug_info) {
     const e: any = new Error(
-      `Could not find debug file for ${parse.os}-${parse.arch} for commit ${parse.commitish}`
+      `Could not find debug file for ${parse.os}-${parse.arch} for commit ${parse.commitish}`,
     );
     e.code = "DebugInfoUnavailable";
     throw e;
@@ -104,7 +107,7 @@ export async function remapUncached(
         (parse.os === "macos"
           ? macho_first_offset + a.address
           : a.address
-        ).toString(16)
+        ).toString(16),
     );
   if (bun_addrs.length > 0) {
     const cmd = [
@@ -128,7 +131,7 @@ export async function remapUncached(
     if ((await subproc.exited) !== 0) {
       const e: any = new Error(
         "pdb-addr2line failed: " +
-        (await Bun.readableStreamToText(subproc.stderr))
+          (await Bun.readableStreamToText(subproc.stderr)),
       );
       e.code = "PdbAddr2LineFailed";
     }
@@ -148,9 +151,9 @@ export async function remapUncached(
           remapped: true,
           src: parsed_line
             ? {
-              file: parsed_line.file,
-              line: parsed_line.line,
-            }
+                file: parsed_line.file,
+                line: parsed_line.line,
+              }
             : null,
           function: cleanFunctionName(fn_line),
           object: "bun",
@@ -167,7 +170,10 @@ export async function remapUncached(
 
   const key = parseCacheKey(parse);
   let display_version = debug_info.feature_config?.version ?? parse.version;
-  if (debug_info.feature_config?.is_canary && !display_version.includes("canary")) {
+  if (
+    debug_info.feature_config?.is_canary &&
+    !display_version.includes("canary")
+  ) {
     display_version += "-canary";
   }
   const remap = {
@@ -188,7 +194,7 @@ export async function remapUncached(
     const markdown = formatMarkdown(remap, { source: parsed_string });
     const markdown_no_links = markdown.replaceAll(
       /\((https?:[^\)]*?)\)/g,
-      "(<$1>)"
+      "(<$1>)",
     );
     const body = JSON.stringify({
       content: markdown_no_links,
@@ -233,7 +239,7 @@ export function cleanFunctionName(str: string): string {
 }
 
 export function parsePdb2AddrLineFile(
-  str: string
+  str: string,
 ): { file: string; line: number } | null {
   if (str.startsWith("??:")) return null;
 

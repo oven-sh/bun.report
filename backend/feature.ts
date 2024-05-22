@@ -9,11 +9,14 @@ export interface FeatureConfig {
   is_pr: boolean;
 }
 
-export function decodeFeatures([high, low]: EncodedFeatureList, config: FeatureConfig): string[] {
+export function decodeFeatures(
+  [high, low]: EncodedFeatureList,
+  config: FeatureConfig,
+): string[] {
   return extractBits(high)
-    .map(i => i + 32)
+    .map((i) => i + 32)
     .concat(extractBits(low))
-    .map(i => config.features[i]);
+    .map((i) => config.features[i]);
 }
 
 function extractBits(int: number): number[] {

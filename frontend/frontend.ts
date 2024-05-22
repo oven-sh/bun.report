@@ -38,7 +38,10 @@ function transition(state: UIState, data?: any) {
 }
 
 // Data fetching framework
-async function fetchRemap(parse_text: string, parse: Parse): Promise<RemapAPIResponse | null> {
+async function fetchRemap(
+  parse_text: string,
+  parse: Parse,
+): Promise<RemapAPIResponse | null> {
   // One remap fetch may be in progress. If there are two, cancel the first
   if (pending_fetch_ctrl) {
     pending_fetch_ctrl.abort();
@@ -59,7 +62,7 @@ async function fetchRemap(parse_text: string, parse: Parse): Promise<RemapAPIRes
   if (fetch_id !== current_fetch_id) return null;
   if (!response.ok) {
     throw new Error(
-      `${response.status} ${response.statusText}\nPlease try again later.`
+      `${response.status} ${response.statusText}\nPlease try again later.`,
     );
   }
 
@@ -95,7 +98,7 @@ const onInputChange = debounce(async () => {
 
   localStorage.setItem(
     "bun-remap.input",
-    JSON.stringify([Date.now() + 1000 * 60 * 60 * 24 * 3, input.value])
+    JSON.stringify([Date.now() + 1000 * 60 * 60 * 24 * 3, input.value]),
   );
 
   transition(UIState.Loading, value);
@@ -219,9 +222,9 @@ function cardHead() {
 
   return /* html */ `
     <p><code>${eschtml(parsed.message).replace(
-    /^panic: /,
-    "<strong>panic</strong>: "
-  )}</code></p>
+      /^panic: /,
+      "<strong>panic</strong>: ",
+    )}</code></p>
   `;
 }
 
@@ -234,13 +237,13 @@ const os_names: { [key: string]: string } = {
 function cardFooter() {
   parsed = parsed!;
 
-  let { pr, oid } = fetched?.commit ?? {};
+  let { oid } = fetched?.commit ?? {};
 
   const commit = /* pr
     ? `<a href="https://github.com/oven-sh/bun/pull/${pr.number}" target="_blank">#${pr.number}</a>`
     : */ oid
-      ? `<a href="https://github.com/oven-sh/bun/commit/${oid}" target="_blank">${parsed.commitish}</a>`
-      : parsed.commitish;
+    ? `<a href="https://github.com/oven-sh/bun/commit/${oid}" target="_blank">${parsed.commitish}</a>`
+    : parsed.commitish;
 
   const arch = parsed.arch.split("_baseline");
 

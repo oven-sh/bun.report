@@ -1,20 +1,26 @@
-import { parse, type Parse, type Remap } from './lib/parser';
+import { parse, type Parse, type Remap } from "./lib/parser";
 
-export * from './lib/parser';
-export * from './lib/format';
+export * from "./lib/parser";
+export * from "./lib/format";
 
-export async function remap(key: string, parse: Parse, signal?: AbortSignal): Promise<Remap> {
-  const response = await fetch('https://bun.report/remap', {
-    method: 'POST',
+export async function remap(
+  key: string,
+  parse: Parse,
+  signal?: AbortSignal,
+): Promise<Remap> {
+  const response = await fetch("https://bun.report/remap", {
+    method: "POST",
     body: key,
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     signal,
   });
 
   if (response.status !== 200) {
-    throw new Error(`${response.status} ${response.statusText}\nPlease try again later.`);
+    throw new Error(
+      `${response.status} ${response.statusText}\nPlease try again later.`,
+    );
   }
 
   const remap = await response.json();
@@ -32,7 +38,7 @@ export async function remap(key: string, parse: Parse, signal?: AbortSignal): Pr
     addresses: remap.addresses,
     command: remap.command,
     features: remap.features,
-  }
+  };
 }
 
 export async function parseAndRemap(str: string): Promise<Remap | null> {
