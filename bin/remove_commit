@@ -1,0 +1,11 @@
+#!/usr/bin/env bun
+import { removeAllDataRelatedToCommit } from "../backend/db";
+
+const oid = process.argv[2];
+if (!oid) {
+  console.error('Usage: remove_invalid <oid>');
+  process.exit(1);
+}
+
+removeAllDataRelatedToCommit(oid);
+console.log('Removed all data related to commit', oid);

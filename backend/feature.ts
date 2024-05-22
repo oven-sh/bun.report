@@ -2,6 +2,10 @@ export type EncodedFeatureList = [number, number];
 
 export interface FeatureConfig {
   features: string[];
+  version?: string;
+  is_canary?: boolean;
+  revision?: string;
+  generated_at?: number;
   is_pr: boolean;
 }
 

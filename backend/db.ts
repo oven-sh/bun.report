@@ -6,6 +6,7 @@ import { remapCacheKey, type Arch, type Platform } from '../lib/util';
 import { rm } from 'node:fs/promises';
 import { relative } from 'node:path';
 import type { FeatureConfig } from './feature';
+import assert from 'node:assert';
 
 const db = new Database('bun-remap.db');
 
@@ -118,4 +119,22 @@ export function getIssueForRemap(cache_key: string) {
   if (obj) {
     return obj.issue;
   }
+}
+
+export async function removeAllDataRelatedToCommit(commit: string) {
+  assert(commit.length === 40);
+  const all_remaps = db.query('SELECT * FROM remap').all() as { cache_key: string, remapped_data: string }[];
+  for (const { cache_key, remapped_data } of all_remaps) {
+    const remap = JSON.parse(remapped_data);
+    if (remap.commit.oid === commit) {
+      db.run('DELETE FROM remap WHERE cache_key = ?', [cache_key]);
+    }
+  }
+  const all_debug_files = db.query('SELECT * FROM debug_file').all() as { cache_key: string, file_path: string }[];
+  for (const { cache_key, file_path } of all_debug_files) {
+    if (file_path.includes(commit)) {
+      db.run('DELETE FROM debug_file WHERE cache_key = ?', [cache_key]);
+    }
+  }
+  db.run('DELETE FROM feature_data WHERE id = ?', [commit]);
 }

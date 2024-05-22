@@ -7,7 +7,6 @@ import { llvm_symbolizer, pdb_addr2line } from "./system-deps";
 import { formatMarkdown } from "../lib";
 import { decodeFeatures } from "./feature";
 
-
 const command_map: { [key: string]: string } = {
   I: "AddCommand",
   a: "AutoCommand",
@@ -167,8 +166,12 @@ export async function remapUncached(
   });
 
   const key = parseCacheKey(parse);
+  let display_version = debug_info.feature_config?.version ?? parse.version;
+  if (debug_info.feature_config?.is_canary && !display_version.includes("canary")) {
+    display_version += "-canary";
+  }
   const remap = {
-    version: parse.version,
+    version: display_version,
     message: parse.message,
     os: parse.os,
     arch: parse.arch,
