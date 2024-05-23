@@ -17,8 +17,8 @@ function initTable(name: string, query: string) {
   const existing_table = db
     .query(
       "SELECT name FROM sqlite_master WHERE type='table' AND name='" +
-        name +
-        "';",
+      name +
+      "';",
     )
     .all();
   if (existing_table.length === 0) {
@@ -131,7 +131,10 @@ export function putCachedDebugFile(
   insert_debug_file_stmt.run(`${os}-${arch}-${commit}`, file_path, Date.now());
 }
 
-export function getCachedFeatureData(commit: string): FeatureConfig | null {
+export function getCachedFeatureData(commit: string, is_canary: boolean | undefined): FeatureConfig | null {
+  if (is_canary) {
+    commit = commit + "-canary";
+  }
   const result = get_feature_data_stmt.get(commit) as { data: string } | null;
   if (result) {
     return JSON.parse(result.data);
@@ -139,7 +142,10 @@ export function getCachedFeatureData(commit: string): FeatureConfig | null {
   return null;
 }
 
-export function putCachedFeatureData(commit: string, data: FeatureConfig) {
+export function putCachedFeatureData(commit: string, is_canary: boolean | undefined, data: FeatureConfig) {
+  if (is_canary) {
+    commit = commit + "-canary";
+  }
   insert_feature_data_stmt.run(commit, JSON.stringify(data));
 }
 
@@ -149,9 +155,9 @@ export async function garbageCollect() {
   const old_files = db
     .query("SELECT * FROM debug_file WHERE last_updated < $date")
     .all({ $date: remove_date.getTime() } as any) as {
-    cache_key: string;
-    file_path: string;
-  }[];
+      cache_key: string;
+      file_path: string;
+    }[];
 
   for (const { cache_key, file_path } of old_files) {
     console.log("Remove " + relative(process.cwd(), file_path));

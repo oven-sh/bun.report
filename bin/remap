@@ -41,7 +41,7 @@ if (!parsed) {
   process.exit(1);
 }
 
-const remapped = await remapUncached(parsed, {
+const remapped = await remapUncached(trace, parsed, {
   exe: options.exe
 });
 

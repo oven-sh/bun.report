@@ -20,7 +20,7 @@ interface DebugInfo {
   feature_config: FeatureConfig;
 }
 
-export function storeRoot(platform: Platform, arch: Arch, is_canary: boolean) {
+export function storeRoot(platform: Platform, arch: Arch, is_canary: boolean | undefined) {
   return join(cache_root, platform + "-" + arch + (is_canary ? "-canary" : ""));
 }
 
@@ -29,7 +29,7 @@ export async function temp() {
   await mkdir(path, { recursive: true });
   return {
     path,
-    [Symbol.dispose]: () => void rm(path, { force: true }).catch(() => {}),
+    [Symbol.dispose]: () => void rm(path, { force: true }).catch(() => { }),
   };
 }
 
@@ -52,7 +52,7 @@ export async function fetchDebugFile(
   os: Platform,
   arch: Arch,
   commit: ResolvedCommit,
-  is_canary: boolean,
+  is_canary: boolean | undefined,
 ): Promise<DebugInfo> {
   const oid = commit.oid;
   assert(oid.length === 40);
@@ -68,7 +68,7 @@ export async function fetchDebugFile(
 
   const cached_path = getCachedDebugFile(os, arch, oid);
   if (cached_path) {
-    const feature_config = getCachedFeatureData(oid)!;
+    const feature_config = getCachedFeatureData(oid, is_canary)!;
     return {
       file_path: cached_path,
       feature_config: feature_config,
@@ -87,7 +87,7 @@ export async function fetchDebugFile(
 
   const { promise, resolve, reject } = Promise.withResolvers<DebugInfo>();
   in_progress_downloads.set(path, promise);
-  promise.catch(() => {}); // mark as handled
+  promise.catch(() => { }); // mark as handled
 
   let feature_config: FeatureConfig;
 
@@ -102,6 +102,7 @@ export async function fetchDebugFile(
     using tmp = await temp();
     const dir = `bun-${download_os}-${download_arch}-profile`;
     const url = `${process.env.BUN_DOWNLOAD_BASE}/${commit.oid}${is_canary ? "-canary" : ""}/${dir}.zip`;
+    console.log(url);
 
     const response = await fetch(url);
     if (response.status === 404) {
@@ -118,7 +119,7 @@ export async function fetchDebugFile(
           );
         }
         try {
-          let success = await tryFromPR(os, arch, commit, tmp.path);
+          let success = await tryFromPR(os, arch, commit, tmp.path, is_canary);
           if (!success) {
             in_progress_downloads.delete(path);
             const err: any = new Error(
@@ -176,7 +177,7 @@ export async function fetchDebugFile(
     await mkdir(dirname(path), { recursive: true });
     await rename(desired_file, path);
 
-    feature_config = getCachedFeatureData(oid) ?? (await fetchFeatureData(oid));
+    feature_config = getCachedFeatureData(oid, is_canary) ?? (await fetchFeatureData(oid, is_canary));
 
     putCachedDebugFile(os, arch, oid, path);
   } catch (e) {
@@ -199,6 +200,7 @@ export async function tryFromPR(
   arch: Arch,
   commit: ResolvedCommit,
   temp: string,
+  is_canary: boolean | undefined,
 ): Promise<boolean> {
   const oid = commit.oid;
   const pr = commit.pr;
@@ -314,15 +316,15 @@ export async function tryFromPR(
         await Bun.file(join(temp, "features.json")).json(),
       );
       features.is_pr = true;
-      putCachedFeatureData(oid, features);
-    } catch {}
+      putCachedFeatureData(oid, is_canary, features);
+    } catch { }
   }
 
   return true;
 }
 
-export async function fetchFeatureData(commit: string): Promise<FeatureConfig> {
-  const url = `${process.env.BUN_DOWNLOAD_BASE}/${commit}/features.json`;
+export async function fetchFeatureData(commit: string, is_canary: boolean | undefined): Promise<FeatureConfig> {
+  const url = `${process.env.BUN_DOWNLOAD_BASE}/${commit}${is_canary ? "-canary" : ""}/features.json`;
   const response = await fetch(url);
   if (response.status !== 200) {
     throw new Error(`Failed to fetch ${url}: ${response.status}`);

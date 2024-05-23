@@ -54,7 +54,7 @@ export async function remap(
 
   const { promise, resolve, reject } = Promise.withResolvers<Remap>();
   in_progress_remaps.set(key, promise);
-  promise.catch(() => {}); // mark as handled
+  promise.catch(() => { }); // mark as handled
 
   try {
     const remap = await remapUncached(parsed_string, parse);
@@ -84,10 +84,10 @@ export async function remapUncached(
 
   const debug_info = opts.exe
     ? {
-        file_path: opts.exe,
-        feature_config: null,
-      }
-    : await fetchDebugFile(parse.os, parse.arch, commit);
+      file_path: opts.exe,
+      feature_config: null,
+    }
+    : await fetchDebugFile(parse.os, parse.arch, commit, parse.is_canary);
 
   if (!debug_info) {
     const e: any = new Error(
@@ -131,7 +131,7 @@ export async function remapUncached(
     if ((await subproc.exited) !== 0) {
       const e: any = new Error(
         "pdb-addr2line failed: " +
-          (await Bun.readableStreamToText(subproc.stderr)),
+        (await Bun.readableStreamToText(subproc.stderr)),
       );
       e.code = "PdbAddr2LineFailed";
     }
@@ -151,9 +151,9 @@ export async function remapUncached(
           remapped: true,
           src: parsed_line
             ? {
-                file: parsed_line.file,
-                line: parsed_line.line,
-              }
+              file: parsed_line.file,
+              line: parsed_line.line,
+            }
             : null,
           function: cleanFunctionName(fn_line),
           object: "bun",
