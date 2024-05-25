@@ -249,7 +249,7 @@ function cardFooter() {
 
   return /* html */ `
     <p>
-      Bun v${fetched ? fetched.version : parsed.version} <small>(<code>${commit}</code>)</small>
+      Bun v${addCanarySuffix(fetched ? fetched.version : parsed.version, parsed.is_canary)} <small>(<code>${commit}</code>)</small>
       on ${os_names[parsed.os[0]]} ${arch[0]} ${arch.length > 1 ? "(baseline)" : ""}
     </p>
   `;
@@ -259,4 +259,10 @@ function reportUrl(str: string) {
   const prefix = "https://bun.report/";
   if (str.startsWith(prefix)) return str;
   return prefix + str;
+}
+
+function addCanarySuffix(ver: string, add: boolean) {
+  if (!add) return ver;
+  if (ver.includes("canary")) return ver;
+  return ver + "-canary";
 }

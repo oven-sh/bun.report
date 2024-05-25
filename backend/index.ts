@@ -119,28 +119,33 @@ export default {
 
     if (pathname.endsWith("/ack")) {
       const str = pathname.slice(1, -4);
-      return parse(str).then(async (parsed) => {
-        if (!parsed) {
-          if (process.env.NODE_ENV === "development") {
-            console.log("Invalid trace string sent for ack");
-            console.error(pathname.slice(1, -4));
-          }
-          return new Response("Not found", { status: 404 });
-        }
-
-        remap(str, parsed)
-          .then((remap) => {
-            return sendToSentry(parsed, remap);
-          })
-          .catch((e) => {
+      return parse(str)
+        .then(async (parsed) => {
+          if (!parsed) {
             if (process.env.NODE_ENV === "development") {
               console.log("Invalid trace string sent for ack");
-              console.error(e);
+              console.error(pathname.slice(1, -4));
             }
-          });
+            return new Response("Not found", { status: 404 });
+          }
 
-        return new Response("ok");
-      });
+          remap(str, parsed)
+            .then((remap) => {
+              return sendToSentry(parsed, remap);
+            })
+            .catch((e) => {
+              if (process.env.NODE_ENV === "development") {
+                console.log("Invalid trace string sent for ack");
+                console.error(e);
+              }
+            });
+
+          return new Response("ok");
+        })
+        .catch((err) => {
+          console.log(err);
+          return new Response("ok");
+        });
     }
 
     const str = pathname.slice(1);
@@ -154,6 +159,10 @@ export default {
 
       return remapAndRedirect(str, parsed, is_discord_bot, request.headers);
     });
+  },
+  error(err) {
+    console.log(err);
+    return Response.json({ error: "Internal Server Error" }, { status: 500 });
   },
 } satisfies ServeOptions;
 
