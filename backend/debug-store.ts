@@ -20,7 +20,11 @@ interface DebugInfo {
   feature_config: FeatureConfig;
 }
 
-export function storeRoot(platform: Platform, arch: Arch, is_canary: boolean | undefined) {
+export function storeRoot(
+  platform: Platform,
+  arch: Arch,
+  is_canary: boolean | undefined,
+) {
   return join(cache_root, platform + "-" + arch + (is_canary ? "-canary" : ""));
 }
 
@@ -29,7 +33,7 @@ export async function temp() {
   await mkdir(path, { recursive: true });
   return {
     path,
-    [Symbol.dispose]: () => void rm(path, { force: true }).catch(() => { }),
+    [Symbol.dispose]: () => void rm(path, { force: true }).catch(() => {}),
   };
 }
 
@@ -38,7 +42,7 @@ const in_progress_downloads = new Map<string, Promise<DebugInfo>>();
 
 const map_download_arch = {
   x86_64: "x64",
-  x86_64_baseline: "x64",
+  x86_64_baseline: "x64-baseline",
   aarch64: "aarch64",
 } as const;
 
@@ -87,7 +91,7 @@ export async function fetchDebugFile(
 
   const { promise, resolve, reject } = Promise.withResolvers<DebugInfo>();
   in_progress_downloads.set(path, promise);
-  promise.catch(() => { }); // mark as handled
+  promise.catch(() => {}); // mark as handled
 
   let feature_config: FeatureConfig;
 
@@ -177,7 +181,9 @@ export async function fetchDebugFile(
     await mkdir(dirname(path), { recursive: true });
     await rename(desired_file, path);
 
-    feature_config = getCachedFeatureData(oid, is_canary) ?? (await fetchFeatureData(oid, is_canary));
+    feature_config =
+      getCachedFeatureData(oid, is_canary) ??
+      (await fetchFeatureData(oid, is_canary));
 
     putCachedDebugFile(os, arch, oid, path);
   } catch (e) {
@@ -317,13 +323,16 @@ export async function tryFromPR(
       );
       features.is_pr = true;
       putCachedFeatureData(oid, is_canary, features);
-    } catch { }
+    } catch {}
   }
 
   return true;
 }
 
-export async function fetchFeatureData(commit: string, is_canary: boolean | undefined): Promise<FeatureConfig> {
+export async function fetchFeatureData(
+  commit: string,
+  is_canary: boolean | undefined,
+): Promise<FeatureConfig> {
   const url = `${process.env.BUN_DOWNLOAD_BASE}/${commit}${is_canary ? "-canary" : ""}/features.json`;
   const response = await fetch(url);
   if (response.status !== 200) {
