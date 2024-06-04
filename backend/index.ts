@@ -244,7 +244,8 @@ async function postGithubWebhook(request: Request, server: Server) {
   }
 }
 
-const template = "6-crash-report.yml";
+const default_template = "6-crash-report.yml";
+const install_template = "7-install-crash-report.yml";
 
 async function remapAndRedirect(
   parsed_str: string,
@@ -292,6 +293,7 @@ async function remapAndRedirect(
     }
 
     const markdown = formatMarkdown(remapped);
+    const template = remapped.command === "InstallCommand" ? install_template : default_template;
     const report =
       markdown +
       "\n\n<!-- from bun.report: " +
