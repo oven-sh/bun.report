@@ -31,7 +31,9 @@ async function remapToPayload(
       event_id,
       platform: "bun",
       tags: getTags(parse, remap),
+      release: remap.version,
       contexts: {
+        release: remap.version,
         runtime: {
           name: "bun",
           version: remap.version + "+" + remap.commit.oid.slice(0, 9),
@@ -180,10 +182,10 @@ async function toStackFrame(
         source_link: `https://raw.githubusercontent.com/oven-sh/bun/${commit}/${src.file}#L${src.line}`,
         ...(code_view
           ? {
-              pre_context: code_view.above,
-              context_line: code_view.line,
-              post_context: code_view.below,
-            }
+            pre_context: code_view.above,
+            context_line: code_view.line,
+            post_context: code_view.below,
+          }
           : {}),
       };
     }

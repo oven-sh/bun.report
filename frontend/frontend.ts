@@ -222,9 +222,9 @@ function cardHead() {
 
   return /* html */ `
     <p><code>${eschtml(parsed.message).replace(
-      /^panic: /,
-      "<strong>panic</strong>: ",
-    )}</code></p>
+    /^panic: /,
+    "<strong>panic</strong>: ",
+  )}</code></p>
   `;
 }
 
@@ -242,16 +242,24 @@ function cardFooter() {
   const commit = /* pr
     ? `<a href="https://github.com/oven-sh/bun/pull/${pr.number}" target="_blank">#${pr.number}</a>`
     : */ oid
-    ? `<a href="https://github.com/oven-sh/bun/commit/${oid}" target="_blank">${parsed.commitish}</a>`
-    : parsed.commitish;
+      ? `<a href="https://github.com/oven-sh/bun/commit/${oid}" target="_blank">${parsed.commitish}</a>`
+      : parsed.commitish;
 
   const arch = parsed.arch.split("_baseline");
+
+
+  const features = fetched?.features
+    ? /* html */ `
+        <p><strong>Features:</strong> ${fetched.features.join(', ')}</p>
+      `
+    : '';
 
   return /* html */ `
     <p>
       Bun v${addCanarySuffix(fetched ? fetched.version : parsed.version, parsed.is_canary)} <small>(<code>${commit}</code>)</small>
       on ${os_names[parsed.os[0]]} ${arch[0]} ${arch.length > 1 ? "(baseline)" : ""}
     </p>
+    ${features}
   `;
 }
 
@@ -261,7 +269,7 @@ function reportUrl(str: string) {
   return prefix + str;
 }
 
-function addCanarySuffix(ver: string, add: boolean) {
+function addCanarySuffix(ver: string, add: boolean | null | undefined) {
   if (!add) return ver;
   if (ver.includes("canary")) return ver;
   return ver + "-canary";
