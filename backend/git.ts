@@ -11,7 +11,7 @@ export const octokit = new Octokit({
 });
 
 const local_clone_dir = join(cache_root, 'bun');
-const local_clone_git_dir = join(cache_root, 'bun');
+const local_clone_git_dir = join(cache_root, 'bun', '.git');
 const commitish_cache = new Map<string, ResolvedCommit>();
 
 if (!existsSync(local_clone_dir) && git) {
