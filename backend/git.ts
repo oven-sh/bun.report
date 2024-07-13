@@ -10,7 +10,8 @@ export const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
 
-const local_clone_dir = join(cache_root, 'bun', '.git');
+const local_clone_dir = join(cache_root, 'bun');
+const local_clone_git_dir = join(cache_root, 'bun');
 const commitish_cache = new Map<string, ResolvedCommit>();
 
 if (!existsSync(local_clone_dir) && git) {
@@ -38,7 +39,7 @@ export async function getCommit(
 
   let query = await queryGitCliCommitish(commitish);
   if (!query) {
-    await $`${git} --git-dir ${local_clone_dir} fetch`;
+    await $`${git} --git-dir ${local_clone_git_dir} fetch`;
     query = await queryGitCliCommitish(commitish);
   }
 
@@ -106,7 +107,7 @@ export async function getCommit(
 
 async function queryGitCliCommitish(commitish: string) {
   try {
-    return (await $`${git} --git-dir ${local_clone_dir} rev-parse ${commitish}`.text()).trim();
+    return (await $`${git} --git-dir ${local_clone_git_dir} rev-parse ${commitish}`.text()).trim();
   } catch {
     return null;
   }
@@ -115,7 +116,7 @@ async function queryGitCliCommitish(commitish: string) {
 // Fetch once per hour
 if (git) {
   const timer = setInterval(async () => {
-    await $`${git} --git-dir ${local_clone_dir} fetch`;
+    await $`${git} --git-dir ${local_clone_git_dir} fetch`;
   }, 1000 * 60 * 60);
   timer.unref();
 }
