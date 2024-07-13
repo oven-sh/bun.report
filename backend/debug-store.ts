@@ -13,7 +13,7 @@ import type { ResolvedCommit } from "../lib";
 import { octokit } from "./git";
 import type { FeatureConfig } from "./feature";
 
-const cache_root = join(import.meta.dir, "..", ".cache");
+export const cache_root = join(import.meta.dir, "..", ".cache");
 
 interface DebugInfo {
   file_path: string;
@@ -33,7 +33,7 @@ export async function temp() {
   await mkdir(path, { recursive: true });
   return {
     path,
-    [Symbol.dispose]: () => void rm(path, { force: true }).catch(() => {}),
+    [Symbol.dispose]: () => void rm(path, { force: true }).catch(() => { }),
   };
 }
 
@@ -91,7 +91,7 @@ export async function fetchDebugFile(
 
   const { promise, resolve, reject } = Promise.withResolvers<DebugInfo>();
   in_progress_downloads.set(path, promise);
-  promise.catch(() => {}); // mark as handled
+  promise.catch(() => { }); // mark as handled
 
   let feature_config: FeatureConfig;
 
@@ -323,7 +323,7 @@ export async function tryFromPR(
       );
       features.is_pr = true;
       putCachedFeatureData(oid, is_canary, features);
-    } catch {}
+    } catch { }
   }
 
   return true;

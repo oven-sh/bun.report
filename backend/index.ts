@@ -1,12 +1,10 @@
 import type { ServeOptions, Server } from "bun";
 import {
   type RemapAPIResponse,
-  type ParsedAddress,
   parse,
   type Parse,
 } from "../lib/parser";
 import { remap } from "./remap";
-import assert from "node:assert";
 import { join } from "node:path";
 import { addrsToPlainText, formatMarkdown } from "../lib/format";
 import { garbageCollect, tagIssue } from "./db";
@@ -341,12 +339,12 @@ setInterval(
 console.log("bun.report");
 console.log(
   "Discord Webhook: " +
-    (process.env.DISCORD_WEBHOOK_URL ? "enabled" : "disabled"),
+  (process.env.DISCORD_WEBHOOK_URL ? "enabled" : "disabled"),
 );
 console.log("Sentry: " + (process.env.SENTRY_DSN ? "enabled" : "disabled"));
 console.log(
   "GitHub Webhook: " +
-    (process.env.GITHUB_WEBHOOK_SECRET ? "enabled" : "disabled"),
+  (process.env.GITHUB_WEBHOOK_SECRET ? "enabled" : "disabled"),
 );
 
 if (!process.env.BUN_DOWNLOAD_BASE) {
