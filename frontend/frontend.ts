@@ -1,4 +1,5 @@
 import type { Parse, RemapAPIResponse } from "../lib/parser";
+import { os_names } from "../lib/format";
 
 import { parse } from "../lib/parser";
 import { parseCacheKey, debounce, escapeHTML as eschtml } from "../lib/util";
@@ -227,12 +228,6 @@ function cardHead() {
   )}</code></p>
   `;
 }
-
-const os_names: { [key: string]: string } = {
-  w: "Windows",
-  m: "macOS",
-  l: "Linux",
-};
 
 function cardFooter() {
   parsed = parsed!;

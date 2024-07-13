@@ -3,6 +3,12 @@ import { basename, escmd, escmdcode } from "./util";
 
 import type { Remap } from "./parser";
 
+export const os_names: { [key: string]: string } = {
+  w: "Windows",
+  m: "macOS",
+  l: "Linux",
+};
+
 export function formatMarkdown(
   remap: Remap,
   internal?: { source: string },
