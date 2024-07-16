@@ -166,12 +166,12 @@ async function toStackFrame(
   address: Address,
   commit: string,
 ): Promise<Sentry.StackTraceFrame> {
-  const { object, remapped } = address;
+  const { object, function: fn, remapped } = address;
   if (remapped) {
-    const { src, function: fn } = address;
+    const { src } = address;
     if (src) {
       const filename = src.file.replaceAll("\\", "/");
-      const code_view = await getCodeView(commit, src.file, src.line);
+      const code_view = await getCodeView(commit, src.file, src.line).catch(() => null);
       return {
         filename,
         lineno: src.line,
@@ -192,7 +192,7 @@ async function toStackFrame(
 
   return {
     module: object,
-    function: "<anonymous>",
+    function: fn ?? "<anonymous>",
     in_app: object === "bun",
   };
 }

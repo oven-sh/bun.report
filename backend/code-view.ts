@@ -10,16 +10,18 @@ const file_hash_map = new Map<string, FileHash>();
 /** hash of file -> lines of source code */
 const file_content_map = new Map<FileHash, string[]>();
 
-const get_file_content_in_progress = new Map<FileHash, Promise<string[]>>();
+const get_file_content_in_progress = new Map<FileHash, Promise<null | string[]>>();
 
 async function getFileContent(
   commit: string,
   path: string,
 ): Promise<null | string[]> {
+  path = path.replaceAll('\\', '/');
+
   if (path.includes("WebKit")) return null;
   if (path.includes("src/deps/zig")) return null;
 
-  const key = commit + ":" + path;
+  const key = commit + ":" + path.toLowerCase();
   const hash = file_hash_map.get(key);
   if (hash) {
     const content = file_content_map.get(hash);
@@ -31,15 +33,17 @@ async function getFileContent(
     return get_file_content_in_progress.get(key)!;
   }
 
-  const { promise, resolve, reject } = Promise.withResolvers<string[]>();
+  const { promise, resolve, reject } = Promise.withResolvers<null | string[]>();
   get_file_content_in_progress.set(key, promise);
-  promise.catch(() => {}); // mark as handled
+  promise.catch(() => { }); // mark as handled
 
   try {
     const res = await fetch(
       `https://raw.githubusercontent.com/oven-sh/bun/${commit}/${path}`,
     );
     if (!res.ok) {
+      get_file_content_in_progress.delete(key);
+      resolve(null);
       return null;
     }
 
