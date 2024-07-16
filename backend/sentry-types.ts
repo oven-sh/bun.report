@@ -32,7 +32,6 @@ export interface PayloadEvent {
   /** node integration sets this to "node" */
   platform: string;
   tags: any;
-  release: string;
   contexts: PayloadEventContexts;
   server_name?: string;
   /** seconds */

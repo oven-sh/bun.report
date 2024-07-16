@@ -31,7 +31,6 @@ async function remapToPayload(
       event_id,
       platform: "bun",
       tags: getTags(parse, remap),
-      release: remap.version,
       contexts: {
         release: remap.version,
         runtime: {

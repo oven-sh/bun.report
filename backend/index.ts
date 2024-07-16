@@ -172,7 +172,9 @@ function postRequest(request: Request, server: Server) {
     case "/remap":
       return postRemap(request, server);
     case "/github-webhook":
-      postGithubWebhook(request, server);
+      // postGithubWebhook(request, server).catch((err) => {
+      //   console.log(err);
+      // });
       return new Response("ok");
     default:
       return new Response("Not found", { status: 404 });
@@ -208,39 +210,40 @@ async function postRemap(request: Request, server: Server) {
   }
 }
 
-async function postGithubWebhook(request: Request, server: Server) {
-  const body = await request.text();
+// Disabled: it does not work
+// async function postGithubWebhook(request: Request, server: Server) {
+//   const body = await request.text();
 
-  const sig = request.headers.get("x-hub-signature");
-  const event = request.headers.get("x-github-event");
-  const id = request.headers.get("x-github-delivery");
+//   const sig = request.headers.get("x-hub-signature");
+//   const event = request.headers.get("x-github-event");
+//   const id = request.headers.get("x-github-delivery");
 
-  if (!sig || !event || !id) {
-    return;
-  }
+//   if (!sig || !event || !id) {
+//     return;
+//   }
 
-  if (!(await verify(process.env.GITHUB_WEBHOOK_SECRET!, sig, body))) {
-    return;
-  }
+//   if (!(await verify(process.env.GITHUB_WEBHOOK_SECRET!, sig, body))) {
+//     return;
+//   }
 
-  const payload = JSON.parse(body);
+//   const payload = JSON.parse(body);
 
-  if (event !== "issues") return;
-  if (payload.action !== "opened") return;
-  const issue = payload.issue;
-  if (!issue) return;
-  const issue_number = issue.number;
-  const issue_body = issue.body;
+//   if (event !== "issues") return;
+//   if (payload.action !== "opened") return;
+//   const issue = payload.issue;
+//   if (!issue) return;
+//   const issue_number = issue.number;
+//   const issue_body = issue.body;
 
-  if (!issue_body) return;
+//   if (!issue_body) return;
 
-  const match = issue_body.match(/bun\.report:\s*([a-z0-9_/+-]+?)\s*-/);
+//   const match = issue_body.match(/bun\.report:\s*([a-z0-9_/+-]+?)\s*-/);
 
-  if (match) {
-    const cache_key = match[1];
-    await tagIssue(cache_key, issue_number);
-  }
-}
+//   if (match) {
+//     const cache_key = match[1];
+//     await tagIssue(cache_key, issue_number);
+//   }
+// }
 
 const default_template = "6-crash-report.yml";
 const install_template = "7-install-crash-report.yml";

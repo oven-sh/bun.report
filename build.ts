@@ -27,22 +27,13 @@ export async function build(mode: string) {
     (_, item) => `\`${item.replace(/\s+/g, " ")}\``,
   );
 
-  // bundler is unable to inline enums
-  // https://github.com/oven-sh/bun/issues/2945
-  let states: string[] = [];
-  in_file = in_file.replace(/UIState\.(\w+)/g, (_, state) => {
-    if (!states.includes(state)) states.push(state);
-    return states.indexOf(state).toString();
-  });
-  in_file = in_file.replace(/enum UIState.*?}/s, "");
-
   const temp_path = join(import.meta.dir, "./frontend/frontend.tmp.ts");
   await Bun.write(temp_path, in_file);
   using disposable = {
     [Symbol.dispose]: () => {
       try {
         rmSync(temp_path);
-      } catch (e) {}
+      } catch (e) { }
     },
   };
 
@@ -51,13 +42,13 @@ export async function build(mode: string) {
     minify:
       mode === "production"
         ? {
-            syntax: true,
-            whitespace: true,
-            identifiers: true,
-          }
+          syntax: true,
+          whitespace: true,
+          identifiers: true,
+        }
         : {
-            syntax: true,
-          },
+          syntax: true,
+        },
     define: {
       "process.env.NODE_ENV": JSON.stringify(mode),
       DEBUG: mode === "development" ? "true" : "false",
