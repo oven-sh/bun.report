@@ -6,10 +6,11 @@ import {
 } from "../lib/parser";
 import { remap } from "./remap";
 import { join } from "node:path";
-import { addrsToPlainText, formatMarkdown } from "../lib/format";
+import { addrsToPlainText, formatMarkdown, os_names } from "../lib/format";
 import { garbageCollect, tagIssue } from "./db";
 import { escapeHTML, remapCacheKey } from "../lib/util";
 import { sendToSentry } from "./sentry";
+import { getCommit } from "./git";
 
 process.env.NODE_ENV ||= "development";
 
@@ -18,8 +19,8 @@ const html =
     ? await Bun.file(join(import.meta.dir, "index.html")).arrayBuffer()
     : null;
 
-function getPathname(url: string) {
-  let pathname = new URL(url).pathname;
+function getPathname(url: URL) {
+  let pathname = url.pathname;
 
   while (pathname.startsWith("//")) {
     pathname = pathname.slice(1);
@@ -45,7 +46,8 @@ export default {
       return postRequest(request, server);
     }
 
-    const pathname = getPathname(request.url);
+    const request_url = new URL(request.url);
+    const pathname = getPathname(request_url);
 
     // Development
     if (process.env.NODE_ENV === "development") {
@@ -107,6 +109,70 @@ export default {
       );
     }
 
+    // Discord bot crawling
+    if (request.headers.get("user-agent")?.includes("discord")) {
+      
+      if (pathname.endsWith("/oembed.json")) {
+        const str = pathname.slice(1, -12);
+
+        return parse(str).then(async (parsed) => {
+          if (!parsed) {
+            return new Response("Not found", { status: 404 });
+          }
+
+          const arch = parsed.arch.split("_baseline");
+          let { oid } = await getCommit(parsed.commitish).catch(_ => null) ?? {};
+
+          const oembed: { [key: string]: string } = {
+            author_name: parsed.message,
+            author_url: `${request_url.origin}/${encodeURI(str)}/view`,
+            provider_name: `Bun v${parsed.version} (${parsed.commitish}) on ${os_names[parsed.os[0]]} ${arch[0]}${arch.length > 1 ? " (baseline)" : ""}`,
+            type: "link",
+            version: "1.0"
+          };
+
+          if (oid !== undefined) {
+            oembed.provider_url = `https://github.com/oven-sh/bun/tree/${oid}`;
+          }
+
+          return Response.json(oembed);
+        });
+      }
+
+      // Respond with the same metadata if user tries to be helpful by adding "/view"
+      const str = pathname.endsWith("/view") ? pathname.slice(1, -5) : pathname.slice(1);
+
+      return parse(str).then(async (parsed) => {
+        if (!parsed) {
+          return new Response("Not found", { status: 404 });
+        }
+
+        let metadata_tags = `<meta name="theme-color" content="#f472b6">
+        <meta content="https://bun.sh/logo-square@16px.png" property="og:image">
+        <link type="application/json+oembed" href="${request_url.origin}/${encodeURI(str)}/oembed.json" />`;
+
+        try {
+          const remapped = await remap(str, parsed);
+
+          const embed_description = addrsToPlainText(
+            remapped.commit.oid,
+            remapped.addresses
+          ).join("\n");
+
+          metadata_tags += `<meta property=og:description content="${escapeHTML(embed_description)}">`;
+        } catch (e) {}
+
+        return new Response(
+          metadata_tags,
+          {
+            headers: {
+              "Content-Type": "text/html; charset=utf-8"
+            },
+          }
+        );
+      });
+    }
+
     if (pathname.endsWith("/view")) {
       return new Response("Not found", {
         status: 307,
@@ -151,10 +217,7 @@ export default {
         return new Response("Not found", { status: 404 });
       }
 
-      const is_discord_bot =
-        request.headers.get("user-agent")?.includes("discord") ?? false;
-
-      return remapAndRedirect(str, parsed, is_discord_bot, request.headers);
+      return remapAndRedirect(str, parsed, request.headers);
     });
   },
   error(err) {
@@ -165,7 +228,7 @@ export default {
 
 // Post requests
 function postRequest(request: Request, server: Server) {
-  const pathname = getPathname(request.url);
+  const pathname = getPathname(new URL(request.url));
 
   switch (pathname) {
     case "/remap":
@@ -250,7 +313,6 @@ const install_template = "7-install-crash-report.yml";
 async function remapAndRedirect(
   parsed_str: string,
   parsed: Parse,
-  is_discord_bot: boolean,
   headers: Headers,
 ) {
   try {
@@ -260,11 +322,9 @@ async function remapAndRedirect(
       return new Response("Failed to remap", { status: 500 });
     }
 
-    if (!is_discord_bot) {
-      sendToSentry(parsed, remapped).catch((e) => {
-        console.error("Failed to send to sentry", e);
-      });
-    }
+    sendToSentry(parsed, remapped).catch((e) => {
+      console.error("Failed to send to sentry", e);
+    });
 
     if (remapped.issue) {
       return Response.redirect(
@@ -273,24 +333,6 @@ async function remapAndRedirect(
       );
     }
 
-    if (is_discord_bot) {
-      const embed_title = remapped.message;
-      const embed_description = addrsToPlainText(
-        remapped.commit.oid,
-        remapped.addresses,
-      ).join("\n");
-
-      return new Response(
-        `<meta property=og:title content="${escapeHTML(embed_title)}">
-<meta property=og:description content="${escapeHTML(embed_description)}">
-`,
-        {
-          headers: {
-            "Content-Type": "text/html; charset=utf-8",
-          },
-        },
-      );
-    }
 
     const markdown = formatMarkdown(remapped);
     const template = remapped.command === "InstallCommand" ? install_template : default_template;
