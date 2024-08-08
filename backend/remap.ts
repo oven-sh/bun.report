@@ -6,6 +6,7 @@ import { parseCacheKey } from "../lib/util";
 import { llvm_symbolizer, pdb_addr2line } from "./system-deps";
 import { formatMarkdown } from "../lib";
 import { decodeFeatures } from "./feature";
+import { AsyncMutexMap } from "./mutex";
 
 const command_map: { [key: string]: string } = {
   I: "AddCommand",
@@ -36,7 +37,7 @@ const command_map: { [key: string]: string } = {
 };
 
 /** This map serves as a sort of "mutex" */
-const in_progress_remaps = new Map<string, Promise<Remap>>();
+const in_progress_remaps = new AsyncMutexMap<Remap>();
 
 export async function remap(
   parsed_string: string,
@@ -50,22 +51,7 @@ export async function remap(
     return cached;
   }
 
-  if (in_progress_remaps.has(key)) {
-    return in_progress_remaps.get(key)!;
-  }
-
-  const { promise, resolve, reject } = Promise.withResolvers<Remap>();
-  in_progress_remaps.set(key, promise);
-  promise.catch(() => {}); // mark as handled
-
-  try {
-    const remap = await remapUncached(parsed_string, parse);
-    resolve(remap);
-    return remap;
-  } catch (e) {
-    reject(e);
-    throw e;
-  }
+  return in_progress_remaps.get(key, () => remapUncached(parsed_string, parse));
 }
 
 const macho_first_offset = 0x100000000;
@@ -86,9 +72,9 @@ export async function remapUncached(
 
   const debug_info = opts.exe
     ? {
-        file_path: opts.exe,
-        feature_config: null,
-      }
+      file_path: opts.exe,
+      feature_config: null,
+    }
     : await fetchDebugFile(parse.os, parse.arch, commit, parse.is_canary);
 
   if (!debug_info) {
@@ -133,7 +119,7 @@ export async function remapUncached(
     if ((await subproc.exited) !== 0) {
       const e: any = new Error(
         "pdb-addr2line failed: " +
-          (await Bun.readableStreamToText(subproc.stderr))
+        (await Bun.readableStreamToText(subproc.stderr))
       );
       e.code = "PdbAddr2LineFailed";
     }
@@ -153,9 +139,9 @@ export async function remapUncached(
           remapped: true,
           src: parsed_line
             ? {
-                file: parsed_line.file,
-                line: parsed_line.line,
-              }
+              file: parsed_line.file,
+              line: parsed_line.line,
+            }
             : null,
           function: cleanFunctionName(fn_line),
           object: "bun",

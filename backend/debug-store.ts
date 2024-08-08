@@ -12,6 +12,7 @@ import {
 import type { ResolvedCommit } from "../lib";
 import { octokit } from "./git";
 import type { FeatureConfig } from "./feature";
+import { AsyncMutexMap } from "./mutex";
 
 export const cache_root = join(import.meta.dir, "..", ".cache");
 
@@ -37,8 +38,7 @@ export async function temp() {
   };
 }
 
-/** This map serves as a sort of "mutex" */
-const in_progress_downloads = new Map<string, Promise<DebugInfo>>();
+const in_progress_downloads = new AsyncMutexMap<DebugInfo>();
 
 const map_download_arch = {
   x86_64: "x64",
@@ -62,13 +62,21 @@ export async function fetchDebugFile(
   assert(oid.length === 40);
 
   const store_suffix = os === "windows" ? ".pdb" : "";
-
   const root = storeRoot(os, arch, is_canary);
   const path = join(root, oid[0], oid + store_suffix);
 
-  if (in_progress_downloads.has(path)) {
-    return in_progress_downloads.get(path)!;
-  }
+  return in_progress_downloads.get(path, () => fetchDebugFileWithoutCache(os, arch, commit, is_canary, store_suffix, path));
+}
+
+async function fetchDebugFileWithoutCache(
+  os: Platform,
+  arch: Arch,
+  commit: ResolvedCommit,
+  is_canary: boolean | undefined,
+  store_suffix: string,
+  path: string,
+) {
+  const oid = commit.oid;
 
   const cached_path = getCachedDebugFile(os, arch, oid);
   if (cached_path) {
@@ -79,19 +87,11 @@ export async function fetchDebugFile(
     };
   }
 
-  if (in_progress_downloads.has(path)) {
-    return in_progress_downloads.get(path)!;
-  }
-
   if (!process.env.BUN_DOWNLOAD_BASE) {
     const e: any = new Error("BUN_DOWNLOAD_BASE is not set");
     e.code = "MissingToken";
     throw e;
   }
-
-  const { promise, resolve, reject } = Promise.withResolvers<DebugInfo>();
-  in_progress_downloads.set(path, promise);
-  promise.catch(() => { }); // mark as handled
 
   let feature_config: FeatureConfig;
 
@@ -125,26 +125,20 @@ export async function fetchDebugFile(
         try {
           let success = await tryFromPR(os, arch, commit, tmp.path, is_canary);
           if (!success) {
-            in_progress_downloads.delete(path);
             const err: any = new Error(
               `Failed to fetch debug file for ${os}-${arch} for PR ${pr.number}`,
             );
             err.code = "DebugInfoUnavailable";
-            reject(err);
             throw err;
           }
         } catch (err) {
-          in_progress_downloads.delete(path);
-          reject(err);
           throw err;
         }
       } else {
-        in_progress_downloads.delete(path);
         const err: any = new Error(
           `Failed to fetch debug file for ${os}-${arch} for commit ${commit.oid}`,
         );
         err.code = "DebugInfoUnavailable";
-        reject(err);
         throw err;
       }
     } else {
@@ -188,17 +182,13 @@ export async function fetchDebugFile(
     putCachedDebugFile(os, arch, oid, path);
   } catch (e) {
     await rm(path, { force: true });
-    reject(e);
     throw e;
   }
 
-  in_progress_downloads.delete(path);
-  const result = {
+  return {
     file_path: path,
     feature_config,
   };
-  resolve(result);
-  return result;
 }
 
 export async function tryFromPR(

@@ -2,6 +2,7 @@
 // Values are cached in memory for ever, assuming the bun.report server has a lot of memory.
 import { SHA256 } from "bun";
 import assert from "node:assert";
+import { AsyncMutexMap } from "./mutex";
 
 type FileHash = string;
 
@@ -10,7 +11,7 @@ const file_hash_map = new Map<string, FileHash>();
 /** hash of file -> lines of source code */
 const file_content_map = new Map<FileHash, string[]>();
 
-const get_file_content_in_progress = new Map<FileHash, Promise<null | string[]>>();
+const get_file_content_in_progress = new AsyncMutexMap<null | string[]>();
 
 async function getFileContent(
   commit: string,
@@ -29,21 +30,12 @@ async function getFileContent(
     return content;
   }
 
-  if (get_file_content_in_progress.has(key)) {
-    return get_file_content_in_progress.get(key)!;
-  }
-
-  const { promise, resolve, reject } = Promise.withResolvers<null | string[]>();
-  get_file_content_in_progress.set(key, promise);
-  promise.catch(() => { }); // mark as handled
-
-  try {
+  return get_file_content_in_progress.get(key, async () => {
     const res = await fetch(
       `https://raw.githubusercontent.com/oven-sh/bun/${commit}/${path}`,
     );
+
     if (!res.ok) {
-      get_file_content_in_progress.delete(key);
-      resolve(null);
       return null;
     }
 
@@ -54,21 +46,13 @@ async function getFileContent(
     if (file_content_map.has(hash)) {
       const result = file_content_map.get(hash);
       assert(result);
-      resolve(result);
-      get_file_content_in_progress.delete(key);
       return result;
     }
 
     const split = content.split("\n");
     file_content_map.set(hash, split);
-    resolve(split);
-    get_file_content_in_progress.delete(key);
     return split;
-  } catch (e) {
-    get_file_content_in_progress.delete(key);
-    reject(e);
-    throw e;
-  }
+  });
 }
 
 export interface CodeView {

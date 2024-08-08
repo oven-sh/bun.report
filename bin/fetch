@@ -2,6 +2,7 @@
 import { parse } from "../lib";
 import { getCommit } from "../backend/git";
 import { fetchDebugFile } from "../backend/debug-store";
+import { Arch, Platform } from "../lib/util";
 
 let args = process.argv.slice(2);
 
@@ -31,14 +32,15 @@ if (
   process.exit(1);
 }
 
+const parsed = await parse(id);
 
 if (id.includes('/')) {
-  id = (await parse(id)).commitish;
+  id = parsed?.commitish;
 }
 
 if (id.length !== 40) {
   id = await getCommit(id);
 }
 
-const file = await fetchDebugFile(os, arch, 'canary');
+const file = await fetchDebugFile(os as Platform, arch as Arch, id, !!parsed?.is_canary);
 console.log(file);

@@ -8,7 +8,6 @@ import { remap } from "./remap";
 import { join } from "node:path";
 import { addrsToPlainText, formatMarkdown } from "../lib/format";
 import { garbageCollect, tagIssue } from "./db";
-import { verify } from "@octokit/webhooks-methods";
 import { escapeHTML, remapCacheKey } from "../lib/util";
 import { sendToSentry } from "./sentry";
 

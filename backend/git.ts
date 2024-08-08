@@ -2,9 +2,10 @@ import { Octokit } from "octokit";
 import type { ResolvedCommit } from "../lib/parser";
 import { existsSync } from 'node:fs';
 import { git } from "./system-deps";
-import { cache_root, storeRoot } from "./debug-store";
+import { cache_root } from "./debug-store";
 import { $ } from "bun";
 import { join } from 'path';
+import { AsyncMutex } from "./mutex";
 
 export const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
@@ -21,10 +22,10 @@ if (!existsSync(local_clone_dir) && git) {
   await $`${git} clone https://github.com/oven-sh/bun.git -n ${local_clone_dir}`;
 }
 
+const git_fetch_mutex = new AsyncMutex();
+
 /** Returns null if the commit does not exist */
-export async function getCommit(
-  commitish: string,
-): Promise<ResolvedCommit | null> {
+export async function getCommit(commitish: string): Promise<ResolvedCommit | null> {
   if (commitish_cache.has(commitish)) {
     return commitish_cache.get(commitish)!;
   }
@@ -36,19 +37,24 @@ export async function getCommit(
   // The switch has also regressed the ability to return PR-related information,
   // but in practice this had not really worked out, so it is disabled until
   // further notice.
-
   let query = await queryGitCliCommitish(commitish);
   if (!query) {
-    await $`${git} --git-dir ${local_clone_git_dir} fetch`;
-    query = await queryGitCliCommitish(commitish);
+    if (!git_fetch_mutex.locked) {
+      using _ = git_fetch_mutex.lockSync();
+
+      await $`${git} --git-dir ${local_clone_git_dir} fetch`;
+      query = await queryGitCliCommitish(commitish);
+    }
   }
 
   if (!query) return null;
 
-  return {
+  const result = {
     oid: query,
     pr: null,
   }
+  commitish_cache.set(commitish, result)
+  return result;
 
   // if (!process.env.GITHUB_TOKEN) {
   //   const e: any = new Error("GITHUB_TOKEN is not set");
