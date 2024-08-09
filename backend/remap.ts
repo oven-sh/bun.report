@@ -1,10 +1,10 @@
 import type { Address, Parse, Remap, ResolvedCommit } from "../lib/parser";
 import { getCommit } from "./git";
-import { fetchDebugFile } from "./debug-store";
+import { cache_root, fetchDebugFile } from "./debug-store";
 import { getCachedRemap, putCachedRemap } from "./db";
 import { parseCacheKey } from "../lib/util";
 import { llvm_symbolizer, pdb_addr2line } from "./system-deps";
-import { formatMarkdown } from "../lib";
+import { addrsToMarkdown, formatMarkdown } from "../lib";
 import { decodeFeatures } from "./feature";
 import { AsyncMutexMap } from "./mutex";
 
@@ -48,6 +48,7 @@ export async function remap(
   parse.cache_key = key;
 
   if (cached) {
+    cached.addresses = filterAddresses(cached.addresses);
     return cached;
   }
 
@@ -128,7 +129,7 @@ export async function remapUncached(
     lines = stdout.split("\n").filter((l) => l.length > 0);
   }
 
-  const mapped_addrs: Address[] = parse.addresses.map((addr) => {
+  let mapped_addrs: Address[] = parse.addresses.map((addr) => {
     if (addr.object === "bun") {
       const fn_line = lines.shift();
       const source_line = lines.shift();
@@ -155,6 +156,26 @@ export async function remapUncached(
       address: addr.address,
     } satisfies Address;
   });
+
+  // This appears pretty often, and it does not provide much value
+  if (mapped_addrs[0]?.function?.includes("WTF::jscSignalHandler")) {
+    const old = mapped_addrs.slice();
+
+    mapped_addrs.shift();
+
+    console.log(mapped_addrs);
+    // remove additional `???` lines
+    while(mapped_addrs.length > 0 && (!mapped_addrs[0].remapped || mapped_addrs[0].function === "??")) {
+      mapped_addrs.shift();
+    }
+
+    // if this operation somehow removes all addresses, revert
+    if (mapped_addrs.length === 0) {
+      mapped_addrs = old;
+    }
+  }
+
+  mapped_addrs = filterAddresses(mapped_addrs);
 
   const key = parseCacheKey(parse);
   let display_version = debug_info.feature_config?.version ?? parse.version;
@@ -200,6 +221,30 @@ export async function remapUncached(
   }
 
   return remap;
+}
+
+export function filterAddresses(addrs: Address[]): Address[] {
+  if (addrs[0]?.function?.includes("WTF::jscSignalHandler")) {
+    const old = addrs.slice();
+    addrs.shift();
+
+    // remove additional `??` lines
+    while(addrs.length > 0 && (!addrs[0].remapped || addrs[0].function === "??")) {
+      addrs.shift();
+    }
+
+    // if this operation somehow removes all addresses, revert
+    if (addrs.length === 0) {
+      return old;
+    }
+  }
+
+  // remove trailing ?? lines
+  while(addrs.length > 0 && (!addrs[addrs.length - 1].remapped || addrs[addrs.length - 1].function === "??")) {
+    addrs.pop();
+  }
+
+  return addrs;
 }
 
 export function cleanFunctionName(str: string): string {
