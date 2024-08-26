@@ -1,5 +1,6 @@
 import { type Platform, type Arch } from "./util";
 import { decodePart } from "./vlq";
+import zlib from 'zlib';
 
 declare const DEBUG: boolean;
 if (typeof DEBUG === "undefined") {
@@ -247,12 +248,17 @@ function parsePanicMessage(
   message_compressed: string,
 ): Promise<string> | string {
   if (typeof Bun !== "undefined") {
-    return (
-      "panic: " +
-      new TextDecoder().decode(
-        Bun.gunzipSync(Buffer.from(message_compressed, "base64url")),
-      )
-    );
+    try {
+      return (
+        "panic: " +
+        new TextDecoder().decode(
+          zlib.inflateSync(Buffer.from(message_compressed, "base64url")),
+        )
+      );
+    } catch (e) {
+      console.warn(message_compressed);
+      throw e;
+    }
   } else {
     const stream = new DecompressionStream("deflate");
     const writer = stream.writable.getWriter();
