@@ -326,7 +326,10 @@ export async function fetchFeatureData(
   const url = `${process.env.BUN_DOWNLOAD_BASE}/${commit}${is_canary ? "-canary" : ""}/features.json`;
   const response = await fetch(url);
   if (response.status !== 200) {
-    throw new Error(`Failed to fetch ${url}: ${response.status}`);
+    const e = new Error(`Failed to fetch ${url}: ${response.status}`);
+    // @ts-ignore
+    e.code = 'FeatureFileMissing';
+    throw e;
   }
   return migrateFeatureData(JSON.parse(await response.text()));
 }

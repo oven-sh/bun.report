@@ -62,6 +62,9 @@ async function fetchRemap(
   });
   if (fetch_id !== current_fetch_id) return null;
   if (!response.ok) {
+    if (response.status === 400) {
+      throw new Error(`Server failed to parse trace string.\nPlease try again later.`);
+    }
     throw new Error(
       `${response.status} ${response.statusText}\nPlease try again later.`,
     );
