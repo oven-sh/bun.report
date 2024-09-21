@@ -1,7 +1,7 @@
 import { join, relative, dirname } from "node:path";
 import type { Platform, Arch } from "../lib/util";
 import assert from "node:assert";
-import { exists, rm, mkdir, rename } from "node:fs/promises";
+import { exists, rm, mkdir, rename, readdir } from "node:fs/promises";
 import { unzip } from "./system-deps";
 import {
   getCachedDebugFile,
@@ -161,11 +161,18 @@ async function fetchDebugFileWithoutCache(
       throw e;
     }
 
-    const desired_file = join(
-      tmp.path,
-      dir,
-      "bun" + store_suffix + (os !== "windows" ? "-profile" : ""),
-    );
+    let desired_file = join(tmp.path, dir, "bun" + store_suffix + "-profile");
+    const entries = await readdir(join(tmp.path, dir));
+
+    if (os === "windows") {
+      for (const entry of entries) {
+        if (entry.endsWith(".pdb")) {
+          desired_file = join(tmp.path, dir, entry);
+          break;
+        }
+      }
+    }
+
     if (!(await exists(desired_file))) {
       throw new Error(
         `Failed to find ${relative(tmp.path, desired_file)} in extraction`,
@@ -175,7 +182,16 @@ async function fetchDebugFileWithoutCache(
     await mkdir(dirname(path), { recursive: true });
     await rename(desired_file, path);
 
-    feature_config =
+    for (const entry of entries) {
+      if (entry.endsWith(".json")) {
+        const feature_config_path = join(tmp.path, dir, entry);
+        feature_config = await Bun.file(feature_config_path).json();
+        putCachedFeatureData(oid, is_canary, feature_config);
+        break;
+      }
+    }
+
+    feature_config ??=
       getCachedFeatureData(oid, is_canary) ??
       (await fetchFeatureData(oid, is_canary));
 
