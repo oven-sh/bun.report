@@ -84,7 +84,7 @@ const get_feature_data_stmt = db.prepare(
   "SELECT data FROM feature_data WHERE id = ?",
 );
 const insert_feature_data_stmt = db.prepare(
-  "INSERT INTO feature_data (id, data) VALUES (?, ?)",
+  "INSERT INTO feature_data (id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data WHERE id = excluded.id"
 );
 
 export function getCachedRemap(cache_key: string): Remap | null {

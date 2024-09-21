@@ -186,7 +186,8 @@ async function fetchDebugFileWithoutCache(
       if (entry.endsWith(".json")) {
         const feature_config_path = join(tmp.path, dir, entry);
         feature_config = await Bun.file(feature_config_path).json();
-        putCachedFeatureData(oid, is_canary, feature_config);
+        const commit = feature_config?.revision || oid;
+        putCachedFeatureData(commit, is_canary, feature_config);
         break;
       }
     }
@@ -328,8 +329,9 @@ export async function tryFromPR(
         await Bun.file(join(temp, "features.json")).json(),
       );
       features.is_pr = true;
-      putCachedFeatureData(oid, is_canary, features);
-    } catch { }
+      const commit = features?.revision || oid;
+      putCachedFeatureData(commit, is_canary, features);
+    } catch {}
   }
 
   return true;
