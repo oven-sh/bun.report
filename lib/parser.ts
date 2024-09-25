@@ -1,6 +1,5 @@
 import { type Platform, type Arch } from "./util";
 import { decodePart } from "./vlq";
-import zlib from 'zlib';
 
 declare const DEBUG: boolean;
 if (typeof DEBUG === "undefined") {
@@ -252,7 +251,7 @@ function parsePanicMessage(
       return (
         "panic: " +
         new TextDecoder().decode(
-          zlib.inflateSync(Buffer.from(message_compressed, "base64url")),
+          Bun.inflateSync(Buffer.from(message_compressed, "base64url"), { windowBits: 0 }),
         )
       );
     } catch (e) {
