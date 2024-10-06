@@ -34,6 +34,8 @@ const command_map: { [key: string]: string } = {
   e: "ExecCommand",
   x: "PatchCommand",
   z: "PatchCommitCommand",
+  o: "OutdatedCommand",
+  k: "PublishCommand",
 };
 
 /** This map serves as a sort of "mutex" */
