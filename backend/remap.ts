@@ -75,9 +75,9 @@ export async function remapUncached(
 
   const debug_info = opts.exe
     ? {
-      file_path: opts.exe,
-      feature_config: null,
-    }
+        file_path: opts.exe,
+        feature_config: null,
+      }
     : await fetchDebugFile(parse.os, parse.arch, commit, parse.is_canary);
 
   if (!debug_info) {
@@ -122,7 +122,7 @@ export async function remapUncached(
     if ((await subproc.exited) !== 0) {
       const e: any = new Error(
         "pdb-addr2line failed: " +
-        (await Bun.readableStreamToText(subproc.stderr))
+          (await Bun.readableStreamToText(subproc.stderr))
       );
       e.code = "PdbAddr2LineFailed";
     }
@@ -142,9 +142,9 @@ export async function remapUncached(
           remapped: true,
           src: parsed_line
             ? {
-              file: parsed_line.file,
-              line: parsed_line.line,
-            }
+                file: parsed_line.file,
+                line: parsed_line.line,
+              }
             : null,
           function: cleanFunctionName(fn_line),
           object: "bun",
@@ -159,6 +159,7 @@ export async function remapUncached(
     } satisfies Address;
   });
 
+  const old = mapped_addrs.slice();
   // This appears pretty often, and it does not provide much value
   if (mapped_addrs[0]?.function?.includes("WTF::jscSignalHandler")) {
     const old = mapped_addrs.slice();
@@ -167,7 +168,10 @@ export async function remapUncached(
 
     console.log(mapped_addrs);
     // remove additional `???` lines
-    while(mapped_addrs.length > 0 && (!mapped_addrs[0].remapped || mapped_addrs[0].function === "??")) {
+    while (
+      mapped_addrs.length > 0 &&
+      (!mapped_addrs[0].remapped || mapped_addrs[0].function === "??")
+    ) {
       mapped_addrs.shift();
     }
 
@@ -226,12 +230,20 @@ export async function remapUncached(
 }
 
 export function filterAddresses(addrs: Address[]): Address[] {
-  if (addrs[0]?.function?.includes("WTF::jscSignalHandler")) {
+  if (
+    addrs[0]?.function?.includes("WTF::jscSignalHandler") ||
+    addrs[0]?.function?.includes("assertionFailure") ||
+    addrs[0]?.function?.includes("panic") ||
+    addrs[0]?.function?.endsWith("assert")
+  ) {
     const old = addrs.slice();
     addrs.shift();
 
     // remove additional `??` lines
-    while(addrs.length > 0 && (!addrs[0].remapped || addrs[0].function === "??")) {
+    while (
+      addrs.length > 0 &&
+      (!addrs[0].remapped || addrs[0].function === "??")
+    ) {
       addrs.shift();
     }
 
@@ -242,7 +254,11 @@ export function filterAddresses(addrs: Address[]): Address[] {
   }
 
   // remove trailing ?? lines
-  while(addrs.length > 0 && (!addrs[addrs.length - 1].remapped || addrs[addrs.length - 1].function === "??")) {
+  while (
+    addrs.length > 0 &&
+    (!addrs[addrs.length - 1].remapped ||
+      addrs[addrs.length - 1].function === "??")
+  ) {
     addrs.pop();
   }
 
