@@ -350,7 +350,7 @@ async function remapAndRedirect(
       report += `\n\n<!-- sentry_id: ${id} -->`;
     } else if (sentryDetails?.shortId) {
       const { shortId, permalink } = sentryDetails;
-      report += `\n\nFixes ${shortId}\n\n<small>Sentry Issue: <strong><a href="${permalink}">${shortId}</a></strong></small>`;
+      report += `\n\nFixes ${shortId}\n<sub>Sentry Issue: <strong><a href="${permalink}">${shortId}</a></strong></sub>`;
     }
     const url = `https://github.com/oven-sh/bun/issues/new?labels=crash&template=${template}&remapped_trace=${encodeURIComponent(
       report
