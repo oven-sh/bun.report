@@ -230,13 +230,14 @@ export async function remapUncached(
 }
 
 export function filterAddresses(addrs: Address[]): Address[] {
-  if (
+  const old = addrs.slice();
+
+  while (
     addrs[0]?.function?.includes?.("WTF::jscSignalHandler") ||
     addrs[0]?.function?.includes?.("assertionFailure") ||
     addrs[0]?.function?.includes?.("panic") ||
     addrs[0]?.function?.endsWith?.("assert")
   ) {
-    const old = addrs.slice();
     addrs.shift();
 
     // remove additional `??` lines
@@ -245,11 +246,6 @@ export function filterAddresses(addrs: Address[]): Address[] {
       (!addrs[0].remapped || addrs[0].function === "??")
     ) {
       addrs.shift();
-    }
-
-    // if this operation somehow removes all addresses, revert
-    if (addrs.length === 0) {
-      return old;
     }
   }
 
@@ -260,6 +256,11 @@ export function filterAddresses(addrs: Address[]): Address[] {
       addrs[addrs.length - 1].function === "??")
   ) {
     addrs.pop();
+  }
+
+  // if this operation somehow removes all addresses, revert
+  if (addrs.length === 0) {
+    return old;
   }
 
   return addrs;
