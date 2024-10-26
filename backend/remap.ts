@@ -231,10 +231,10 @@ export async function remapUncached(
 
 export function filterAddresses(addrs: Address[]): Address[] {
   if (
-    addrs[0]?.function?.includes("WTF::jscSignalHandler") ||
-    addrs[0]?.function?.includes("assertionFailure") ||
-    addrs[0]?.function?.includes("panic") ||
-    addrs[0]?.function?.endsWith("assert")
+    addrs[0]?.function?.includes?.("WTF::jscSignalHandler") ||
+    addrs[0]?.function?.includes?.("assertionFailure") ||
+    addrs[0]?.function?.includes?.("panic") ||
+    addrs[0]?.function?.endsWith?.("assert")
   ) {
     const old = addrs.slice();
     addrs.shift();
