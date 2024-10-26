@@ -1,9 +1,5 @@
 import type { ServeOptions, Server } from "bun";
-import {
-  type RemapAPIResponse,
-  parse,
-  type Parse,
-} from "../lib/parser";
+import { type RemapAPIResponse, parse, type Parse } from "../lib/parser";
 import { remap } from "./remap";
 import { join } from "node:path";
 import { addrsToPlainText, formatMarkdown, os_names } from "../lib/format";
@@ -61,16 +57,16 @@ export default {
                   "%md%",
                   require("marked").parse(
                     await Bun.file(
-                      join(import.meta.dir, "../explainer.md"),
-                    ).text(),
-                  ),
+                      join(import.meta.dir, "../explainer.md")
+                    ).text()
+                  )
                 ),
                 {
                   headers: {
                     "Content-Type": "text/html; charset=utf-8",
                   },
-                },
-              ),
+                }
+              )
           );
       }
 
@@ -82,7 +78,7 @@ export default {
 
       if (pathname === "/style.css") {
         return new Response(
-          Bun.file(join(import.meta.dir, "../frontend/style.css")),
+          Bun.file(join(import.meta.dir, "../frontend/style.css"))
         );
       }
     }
@@ -103,15 +99,14 @@ export default {
             import.meta.dir,
             process.env.NODE_ENV === "production"
               ? "favicon.ico"
-              : "../frontend/favicon.ico",
-          ),
-        ),
+              : "../frontend/favicon.ico"
+          )
+        )
       );
     }
 
     // Discord bot crawling
     if (request.headers.get("user-agent")?.includes("discord")) {
-      
       if (pathname.endsWith("/oembed.json")) {
         const str = pathname.slice(1, -12);
 
@@ -121,14 +116,15 @@ export default {
           }
 
           const arch = parsed.arch.split("_baseline");
-          let { oid } = await getCommit(parsed.commitish).catch(_ => null) ?? {};
+          let { oid } =
+            (await getCommit(parsed.commitish).catch((_) => null)) ?? {};
 
           const oembed: { [key: string]: string } = {
             author_name: parsed.message,
             author_url: `${request_url.origin}/${encodeURI(str)}/view`,
             provider_name: `Bun v${parsed.version} (${parsed.commitish}) on ${os_names[parsed.os[0]]} ${arch[0]}${arch.length > 1 ? " (baseline)" : ""}`,
             type: "link",
-            version: "1.0"
+            version: "1.0",
           };
 
           if (oid !== undefined) {
@@ -140,7 +136,9 @@ export default {
       }
 
       // Respond with the same metadata if user tries to be helpful by adding "/view"
-      const str = pathname.endsWith("/view") ? pathname.slice(1, -5) : pathname.slice(1);
+      const str = pathname.endsWith("/view")
+        ? pathname.slice(1, -5)
+        : pathname.slice(1);
 
       return parse(str).then(async (parsed) => {
         if (!parsed) {
@@ -162,14 +160,11 @@ export default {
           metadata_tags += `<meta property=og:description content="${escapeHTML(embed_description)}">`;
         } catch (e) {}
 
-        return new Response(
-          metadata_tags,
-          {
-            headers: {
-              "Content-Type": "text/html; charset=utf-8"
-            },
-          }
-        );
+        return new Response(metadata_tags, {
+          headers: {
+            "Content-Type": "text/html; charset=utf-8",
+          },
+        });
       });
     }
 
@@ -313,7 +308,7 @@ const install_template = "7-install-crash-report.yml";
 async function remapAndRedirect(
   parsed_str: string,
   parsed: Parse,
-  headers: Headers,
+  headers: Headers
 ) {
   try {
     const remapped = await remap(parsed_str, parsed);
@@ -322,27 +317,36 @@ async function remapAndRedirect(
       return new Response("Failed to remap", { status: 500 });
     }
 
-    sendToSentry(parsed, remapped).catch((e) => {
+    let sentry_id: string | undefined;
+
+    try {
+      sentry_id = await sendToSentry(parsed, remapped);
+    } catch (e) {
       console.error("Failed to send to sentry", e);
-    });
+    }
 
     if (remapped.issue) {
       return Response.redirect(
         `https://github.com/oven-sh/bun/issues/${remapped.issue}`,
-        307,
+        307
       );
     }
 
-
     const markdown = formatMarkdown(remapped);
-    const template = remapped.command === "InstallCommand" ? install_template : default_template;
-    const report =
+    const template =
+      remapped.command === "InstallCommand"
+        ? install_template
+        : default_template;
+    let report =
       markdown +
       "\n\n<!-- from bun.report: " +
       remapCacheKey(remapped) +
       " -->";
-    const url = `https://github.com/oven-sh/bun/issues/new?labels=bug,crash&template=${template}&remapped_trace=${encodeURIComponent(
-      report,
+    if (sentry_id) {
+      report += `\n\n<!-- sentry_id: ${sentry_id} -->`;
+    }
+    const url = `https://github.com/oven-sh/bun/issues/new?labels=crash&template=${template}&remapped_trace=${encodeURIComponent(
+      report
     )}`;
 
     return Response.redirect(url, 307);
@@ -377,18 +381,18 @@ setInterval(
   () => {
     garbageCollect();
   },
-  1000 * 60 * 60 * 24 * 7,
+  1000 * 60 * 60 * 24 * 7
 );
 
 console.log("bun.report");
 console.log(
   "Discord Webhook: " +
-  (process.env.DISCORD_WEBHOOK_URL ? "enabled" : "disabled"),
+    (process.env.DISCORD_WEBHOOK_URL ? "enabled" : "disabled")
 );
 console.log("Sentry: " + (process.env.SENTRY_DSN ? "enabled" : "disabled"));
 console.log(
   "GitHub Webhook: " +
-  (process.env.GITHUB_WEBHOOK_SECRET ? "enabled" : "disabled"),
+    (process.env.GITHUB_WEBHOOK_SECRET ? "enabled" : "disabled")
 );
 
 if (!process.env.BUN_DOWNLOAD_BASE) {

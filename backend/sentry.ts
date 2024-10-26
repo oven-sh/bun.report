@@ -7,7 +7,7 @@ import { getCodeView } from "./code-view";
 
 async function remapToPayload(
   parse: Parse,
-  remap: Remap,
+  remap: Remap
 ): Promise<Sentry.Payload> {
   assert(parse.cache_key);
 
@@ -144,7 +144,7 @@ function remapToExceptionType(message: string) {
 
 async function remapToException(
   parse: Parse,
-  remap: Remap,
+  remap: Remap
 ): Promise<Sentry.PayloadException> {
   const { type, value } = remapToExceptionType(parse.message);
   return {
@@ -152,7 +152,7 @@ async function remapToException(
     value,
     stacktrace: {
       frames: await Promise.all(
-        remap.addresses.map((x) => toStackFrame(x, remap.commit.oid)).reverse(),
+        remap.addresses.map((x) => toStackFrame(x, remap.commit.oid)).reverse()
       ),
       mechanism: {
         type: "generic",
@@ -164,14 +164,16 @@ async function remapToException(
 
 async function toStackFrame(
   address: Address,
-  commit: string,
+  commit: string
 ): Promise<Sentry.StackTraceFrame> {
   const { object, function: fn, remapped } = address;
   if (remapped) {
     const { src } = address;
     if (src) {
       const filename = src.file.replaceAll("\\", "/");
-      const code_view = await getCodeView(commit, src.file, src.line).catch(() => null);
+      const code_view = await getCodeView(commit, src.file, src.line).catch(
+        () => null
+      );
       return {
         filename,
         lineno: src.line,
@@ -181,10 +183,10 @@ async function toStackFrame(
         source_link: `https://raw.githubusercontent.com/oven-sh/bun/${commit}/${src.file}#L${src.line}`,
         ...(code_view
           ? {
-            pre_context: code_view.above,
-            context_line: code_view.line,
-            post_context: code_view.below,
-          }
+              pre_context: code_view.above,
+              context_line: code_view.line,
+              post_context: code_view.below,
+            }
           : {}),
       };
     }
@@ -208,9 +210,13 @@ export async function sendToSentry(parse: Parse, remap: Remap) {
 
   console.log(body);
 
-  await fetch(url, {
+  const response = await fetch(url, {
     method: "POST",
     body: body,
     verbose: true,
   });
+
+  // https://${domain}.sentry.io/issues/?query=${id}
+  const json = await response.json();
+  return json?.id;
 }
