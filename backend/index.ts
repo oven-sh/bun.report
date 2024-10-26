@@ -317,10 +317,13 @@ async function remapAndRedirect(
       return new Response("Failed to remap", { status: 500 });
     }
 
-    let sentry_id: string | undefined;
+    let sentryDetails:
+      | { id: string }
+      | { shortId: string; permalink: string }
+      | undefined;
 
     try {
-      sentry_id = await sendToSentry(parsed, remapped);
+      sentryDetails = await sendToSentry(parsed, remapped);
     } catch (e) {
       console.error("Failed to send to sentry", e);
     }
@@ -342,8 +345,12 @@ async function remapAndRedirect(
       "\n\n<!-- from bun.report: " +
       remapCacheKey(remapped) +
       " -->";
-    if (sentry_id) {
-      report += `\n\n<!-- sentry_id: ${sentry_id} -->`;
+    if (sentryDetails?.id) {
+      const { id } = sentryDetails;
+      report += `\n\n<!-- sentry_id: ${id} -->`;
+    } else if (sentryDetails?.shortId) {
+      const { shortId, permalink } = sentryDetails;
+      report += `\n\nFor Bun's team:\n\nSentry Issue: **[${shortId}](${permalink})**\nFixes ${shortId}`;
     }
     const url = `https://github.com/oven-sh/bun/issues/new?labels=crash&template=${template}&remapped_trace=${encodeURIComponent(
       report

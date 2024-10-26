@@ -199,6 +199,47 @@ async function toStackFrame(
   };
 }
 
+async function fetchEventDetails(eventId: string): Promise<any> {
+  const response = await fetch(
+    `https://sentry.io/api/0/organizations/4507155222364160/eventids/${eventId}/`,
+    {
+      headers: {
+        Authorization: `Bearer ${process.env.SENTRY_PRIVATE_KEY}`,
+      },
+    }
+  );
+  if (!response.ok) {
+    return { id: eventId };
+  }
+  const json = await response.json();
+  const groupId = json?.groupId;
+  if (!groupId) {
+    return { id: eventId };
+  }
+
+  const issueResponse = await fetch(
+    `https://sentry.io/api/0/issues/${groupId}/`,
+    {
+      headers: {
+        Authorization: `Bearer ${process.env.SENTRY_PRIVATE_KEY}`,
+      },
+    }
+  );
+  if (!issueResponse.ok) {
+    return { id: eventId };
+  }
+  const { shortId, permalink } = await issueResponse.json();
+  if (!shortId || !permalink) {
+    return { id: eventId };
+  }
+
+  return {
+    groupId,
+    shortId,
+    permalink,
+  };
+}
+
 export async function sendToSentry(parse: Parse, remap: Remap) {
   const url = process.env.SENTRY_DSN;
   if (!url) {
@@ -218,5 +259,15 @@ export async function sendToSentry(parse: Parse, remap: Remap) {
 
   // https://${domain}.sentry.io/issues/?query=${id}
   const json = await response.json();
-  return json?.id;
+  const id = json?.id;
+  if (!id) {
+    return null;
+  }
+
+  const result = await fetchEventDetails(id);
+  if (!result) {
+    return { id };
+  }
+
+  return result;
 }
