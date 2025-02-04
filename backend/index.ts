@@ -228,7 +228,7 @@ function postRequest(request: Request, server: Server) {
   }
 }
 
-async function postRemap(request: Request, server: Server) {
+async function postRemap(url: URL, request: Request, server: Server) {
   // Validate input body request
   let parsed: Parse;
 
@@ -253,7 +253,7 @@ async function postRemap(request: Request, server: Server) {
       features: remapped.features,
     } satisfies RemapAPIResponse);
   } catch (e) {
-    return handleError(e, false);
+    return handleError(url, e, false);
   }
 }
 
@@ -331,11 +331,11 @@ async function remapAndRedirect(parsed_str: string, parsed: Parse, headers: Head
 
     return Response.redirect(url, 307);
   } catch (e) {
-    return handleError(e, true);
+    return handleError(url, e, true);
   }
 }
 
-function handleError(e: any, visual: boolean) {
+function handleError(url: URL, e: any, visual: boolean) {
   switch (e?.code) {
     case "MissingToken":
       return Response.json({ error: "Missing GITHUB_TOKEN" });
@@ -353,6 +353,17 @@ function handleError(e: any, visual: boolean) {
       });
     default:
       console.error(e);
+      if (process.env.DISCORD_WEBHOOK_URL) {
+        fetch(process.env.DISCORD_WEBHOOK_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            content: `bun.report experienced an 500 error\nurl: ${url}\nerror:\n${e}`,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      }
       return new Response("Internal server error", { status: 500 });
   }
 }
