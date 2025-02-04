@@ -9,10 +9,7 @@ export const os_names: { [key: string]: string } = {
   l: "Linux",
 };
 
-export function formatMarkdown(
-  remap: Remap,
-  internal?: { source: string },
-): string {
+export function formatMarkdown(remap: Remap, internal?: { source: string }): string {
   return [
     `Bun v${remap.version} (${treeURLMD(remap.commit)}) on ${remap.os} ${remap.arch} [${remap.command}]`,
     "",
@@ -20,14 +17,10 @@ export function formatMarkdown(
     "",
     ...addrsToMarkdown(remap.commit.oid, remap.addresses).map((l) => `- ${l}`),
     "",
-    remap.features.length > 0
-      ? `Features: ${remap.features.map(escmd).join(", ")}`
-      : "",
+    remap.features.length > 0 ? `Features: ${remap.features.map(escmd).join(", ")}` : "",
     "",
     ...(internal
-      ? [
-          `[(see trace)](<https://bun.report/${internal.source.replace(/^\/+/, "")}/view>)`,
-        ]
+      ? [`[(see trace)](<https://bun.report/${internal.source.replace(/^\/+/, "")}/view>)`]
       : []),
   ]
     .join("\n")
@@ -104,9 +97,7 @@ export function addrsToPlainText(commit: string, addrs: Address[]): string[] {
     if (addr.remapped) {
       lines.push(
         `${
-          addr.src
-            ? `${escmdcode(basename(addr.src.file))}:${addr.src.line} – `
-            : ""
+          addr.src ? `${escmdcode(basename(addr.src.file))}:${addr.src.line} – ` : ""
         }${addr.function}${addr.object !== "bun" ? ` in ${addr.object}` : ""}`,
       );
     } else {

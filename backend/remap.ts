@@ -41,10 +41,7 @@ const command_map: { [key: string]: string } = {
 /** This map serves as a sort of "mutex" */
 const in_progress_remaps = new AsyncMutexMap<Remap>();
 
-export async function remap(
-  parsed_string: string,
-  parse: Parse
-): Promise<Remap> {
+export async function remap(parsed_string: string, parse: Parse): Promise<Remap> {
   const key = parseCacheKey(parse);
   const cached = getCachedRemap(key);
   parse.cache_key = key;
@@ -62,7 +59,7 @@ const macho_first_offset = 0x100000000;
 export async function remapUncached(
   parsed_string: string,
   parse: Parse,
-  opts: { exe?: string } = {}
+  opts: { exe?: string } = {},
 ): Promise<Remap> {
   const commit: ResolvedCommit | null = opts.exe
     ? { oid: "unknown", pr: null }
@@ -82,7 +79,7 @@ export async function remapUncached(
 
   if (!debug_info) {
     const e: any = new Error(
-      `Could not find debug file for ${parse.os}-${parse.arch} for commit ${parse.commitish}`
+      `Could not find debug file for ${parse.os}-${parse.arch} for commit ${parse.commitish}`,
     );
     e.code = "DebugInfoUnavailable";
     throw e;
@@ -94,20 +91,14 @@ export async function remapUncached(
     .filter((a) => a.object === "bun")
     .map(
       (a) =>
-        "0x" +
-        (parse.os === "macos"
-          ? macho_first_offset + a.address
-          : a.address
-        ).toString(16)
+        "0x" + (parse.os === "macos" ? macho_first_offset + a.address : a.address).toString(16),
     );
   if (bun_addrs.length > 0) {
     const cmd = [
       parse.os === "windows" ? pdb_addr2line : llvm_symbolizer,
       "--exe",
       debug_info.file_path,
-      ...(parse.os !== "windows"
-        ? ["--no-inlines", "--relative-address"]
-        : ["--llvm"]),
+      ...(parse.os !== "windows" ? ["--no-inlines", "--relative-address"] : ["--llvm"]),
       "-f",
       ...bun_addrs,
     ];
@@ -121,8 +112,7 @@ export async function remapUncached(
 
     if ((await subproc.exited) !== 0) {
       const e: any = new Error(
-        "pdb-addr2line failed: " +
-          (await Bun.readableStreamToText(subproc.stderr))
+        "pdb-addr2line failed: " + (await Bun.readableStreamToText(subproc.stderr)),
       );
       e.code = "PdbAddr2LineFailed";
     }
@@ -185,10 +175,7 @@ export async function remapUncached(
 
   const key = parseCacheKey(parse);
   let display_version = debug_info.feature_config?.version ?? parse.version;
-  if (
-    debug_info.feature_config?.is_canary &&
-    !display_version.includes("canary")
-  ) {
+  if (debug_info.feature_config?.is_canary && !display_version.includes("canary")) {
     display_version += "-canary";
   }
   const remap = {
@@ -207,10 +194,7 @@ export async function remapUncached(
 
   if (process.env.DISCORD_WEBHOOK_URL) {
     const markdown = formatMarkdown(remap, { source: parsed_string });
-    const markdown_no_links = markdown.replaceAll(
-      /\((https?:[^\)]*?)\)/g,
-      "(<$1>)"
-    );
+    const markdown_no_links = markdown.replaceAll(/\((https?:[^\)]*?)\)/g, "(<$1>)");
     const body = JSON.stringify({
       content: markdown_no_links,
     });
@@ -241,10 +225,7 @@ export function filterAddresses(addrs: Address[]): Address[] {
     addrs.shift();
 
     // remove additional `??` lines
-    while (
-      addrs.length > 0 &&
-      (!addrs[0].remapped || addrs[0].function === "??")
-    ) {
+    while (addrs.length > 0 && (!addrs[0].remapped || addrs[0].function === "??")) {
       addrs.shift();
     }
   }
@@ -252,8 +233,7 @@ export function filterAddresses(addrs: Address[]): Address[] {
   // remove trailing ?? lines
   while (
     addrs.length > 0 &&
-    (!addrs[addrs.length - 1].remapped ||
-      addrs[addrs.length - 1].function === "??")
+    (!addrs[addrs.length - 1].remapped || addrs[addrs.length - 1].function === "??")
   ) {
     addrs.pop();
   }
@@ -290,9 +270,7 @@ export function cleanFunctionName(str: string): string {
     .replace(/__anon_\d+\b/g, "");
 }
 
-export function parsePdb2AddrLineFile(
-  str: string
-): { file: string; line: number } | null {
+export function parsePdb2AddrLineFile(str: string): { file: string; line: number } | null {
   if (str.startsWith("??:")) return null;
 
   const last_colon = str.lastIndexOf(":");

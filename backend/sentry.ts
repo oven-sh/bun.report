@@ -5,10 +5,7 @@ import type * as Sentry from "./sentry-types";
 import assert from "node:assert";
 import { getCodeView } from "./code-view";
 
-async function remapToPayload(
-  parse: Parse,
-  remap: Remap
-): Promise<Sentry.Payload> {
+async function remapToPayload(parse: Parse, remap: Remap): Promise<Sentry.Payload> {
   assert(parse.cache_key);
 
   const event_id = MD5.hash(parse.cache_key, "hex");
@@ -142,17 +139,14 @@ function remapToExceptionType(message: string) {
   };
 }
 
-async function remapToException(
-  parse: Parse,
-  remap: Remap
-): Promise<Sentry.PayloadException> {
+async function remapToException(parse: Parse, remap: Remap): Promise<Sentry.PayloadException> {
   const { type, value } = remapToExceptionType(parse.message);
   return {
     type,
     value,
     stacktrace: {
       frames: await Promise.all(
-        remap.addresses.map((x) => toStackFrame(x, remap.commit.oid)).reverse()
+        remap.addresses.map((x) => toStackFrame(x, remap.commit.oid)).reverse(),
       ),
       mechanism: {
         type: "generic",
@@ -162,18 +156,13 @@ async function remapToException(
   };
 }
 
-async function toStackFrame(
-  address: Address,
-  commit: string
-): Promise<Sentry.StackTraceFrame> {
+async function toStackFrame(address: Address, commit: string): Promise<Sentry.StackTraceFrame> {
   const { object, function: fn, remapped } = address;
   if (remapped) {
     const { src } = address;
     if (src) {
       const filename = src.file.replaceAll("\\", "/");
-      const code_view = await getCodeView(commit, src.file, src.line).catch(
-        () => null
-      );
+      const code_view = await getCodeView(commit, src.file, src.line).catch(() => null);
       return {
         filename,
         lineno: src.line,
@@ -206,7 +195,7 @@ async function fetchEventDetails(eventId: string): Promise<any> {
       headers: {
         Authorization: `Bearer ${process.env.SENTRY_PRIVATE_KEY}`,
       },
-    }
+    },
   );
   if (!response.ok) {
     return { id: eventId };
@@ -217,14 +206,11 @@ async function fetchEventDetails(eventId: string): Promise<any> {
     return { id: eventId };
   }
 
-  const issueResponse = await fetch(
-    `https://sentry.io/api/0/issues/${groupId}/`,
-    {
-      headers: {
-        Authorization: `Bearer ${process.env.SENTRY_PRIVATE_KEY}`,
-      },
-    }
-  );
+  const issueResponse = await fetch(`https://sentry.io/api/0/issues/${groupId}/`, {
+    headers: {
+      Authorization: `Bearer ${process.env.SENTRY_PRIVATE_KEY}`,
+    },
+  });
   if (!issueResponse.ok) {
     return { id: eventId };
   }

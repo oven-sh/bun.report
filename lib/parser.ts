@@ -6,7 +6,7 @@ if (typeof DEBUG === "undefined") {
   (globalThis as any).DEBUG = process.env.NODE_ENV !== "production";
 }
 
-const debug = process.env.NODE_ENV === "production" ? () => { } : console.log;
+const debug = process.env.NODE_ENV === "production" ? () => {} : console.log;
 
 const platform_map: { [key: string]: [Platform, Arch] } = {
   w: ["windows", "x86_64"],
@@ -22,8 +22,7 @@ const platform_map: { [key: string]: [Platform, Arch] } = {
   L: ["linux", "aarch64"],
 };
 
-const reasons: { [key: string]: (input: string) => string | Promise<string> } =
-{
+const reasons: { [key: string]: (input: string) => string | Promise<string> } = {
   "0": parsePanicMessage,
   "1": () => "panic: reached unreachable code",
   "2": (addr) => `Segmentation fault at ${parseVlqAddr(addr)}`,
@@ -117,9 +116,7 @@ function validateSemver(version: string): boolean {
 
 export async function parse(str: string): Promise<Parse | null> {
   try {
-    str = str
-      .replace(/^(?:(https?:\/\/)?bun\.report\/)?/, "")
-      .replace(/\/view$/, "");
+    str = str.replace(/^(?:(https?:\/\/)?bun\.report\/)?/, "").replace(/\/view$/, "");
 
     const first_slash = str.indexOf("/");
     const version = str.slice(0, first_slash);
@@ -243,15 +240,15 @@ export async function parse(str: string): Promise<Parse | null> {
   }
 }
 
-function parsePanicMessage(
-  message_compressed: string,
-): Promise<string> | string {
+function parsePanicMessage(message_compressed: string): Promise<string> | string {
   if (typeof Bun !== "undefined") {
     try {
       return (
         "panic: " +
         new TextDecoder().decode(
-          Bun.inflateSync(Buffer.from(message_compressed, "base64url"), { windowBits: 0 }),
+          Bun.inflateSync(Buffer.from(message_compressed, "base64url"), {
+            windowBits: 0,
+          }),
         )
       );
     } catch (e) {
@@ -292,10 +289,7 @@ function parseVlqAddr(unparsed_addr: string): string {
   if (first == null || second == null) return "unknown address";
   first = first ? correctIntToUint32(first).toString(16) : "";
   return (
-    "address 0x" +
-    (
-      first + correctIntToUint32(second).toString(16).padStart(8, "0")
-    ).toUpperCase()
+    "address 0x" + (first + correctIntToUint32(second).toString(16).padStart(8, "0")).toUpperCase()
   );
 }
 

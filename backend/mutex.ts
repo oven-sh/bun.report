@@ -1,4 +1,4 @@
-import assert from 'node:assert';
+import assert from "node:assert";
 
 /**
  * In many places there is some form of global state that is assumed to be
@@ -11,13 +11,13 @@ export class AsyncMutex {
 
   async lock() {
     if (this.locked) await this.unlock();
-    this.locked = new Promise<void>((resolve) => this.resolve_fn = resolve);
+    this.locked = new Promise<void>((resolve) => (this.resolve_fn = resolve));
     return { [Symbol.dispose]: this.resolve_fn! };
   }
 
   lockSync() {
     assert(this.locked === null);
-    this.locked = new Promise<void>((resolve) => this.resolve_fn = resolve);
+    this.locked = new Promise<void>((resolve) => (this.resolve_fn = resolve));
     return { [Symbol.dispose]: this.resolve_fn! };
   }
 

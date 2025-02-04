@@ -21,11 +21,7 @@ interface DebugInfo {
   feature_config: FeatureConfig;
 }
 
-export function storeRoot(
-  platform: Platform,
-  arch: Arch,
-  is_canary: boolean | undefined,
-) {
+export function storeRoot(platform: Platform, arch: Arch, is_canary: boolean | undefined) {
   return join(cache_root, platform + "-" + arch + (is_canary ? "-canary" : ""));
 }
 
@@ -34,7 +30,7 @@ export async function temp() {
   await mkdir(path, { recursive: true });
   return {
     path,
-    [Symbol.dispose]: () => void rm(path, { force: true }).catch(() => { }),
+    [Symbol.dispose]: () => void rm(path, { force: true }).catch(() => {}),
   };
 }
 
@@ -65,7 +61,9 @@ export async function fetchDebugFile(
   const root = storeRoot(os, arch, is_canary);
   const path = join(root, oid[0], oid + store_suffix);
 
-  return in_progress_downloads.get(path, () => fetchDebugFileWithoutCache(os, arch, commit, is_canary, store_suffix, path));
+  return in_progress_downloads.get(path, () =>
+    fetchDebugFileWithoutCache(os, arch, commit, is_canary, store_suffix, path),
+  );
 }
 
 async function fetchDebugFileWithoutCache(
@@ -113,14 +111,7 @@ async function fetchDebugFileWithoutCache(
       const pr = commit.pr;
       if (pr) {
         if (process.env.NODE_ENV === "development") {
-          console.log(
-            "fetching debug file for",
-            os,
-            arch,
-            oid,
-            "from PR",
-            pr.number,
-          );
+          console.log("fetching debug file for", os, arch, oid, "from PR", pr.number);
         }
         try {
           let success = await tryFromPR(os, arch, commit, tmp.path, is_canary);
@@ -154,9 +145,7 @@ async function fetchDebugFileWithoutCache(
       cwd: tmp.path,
     });
     if ((await subproc.exited) !== 0) {
-      const e: any = new Error(
-        "unzip failed: " + (await Bun.readableStreamToText(subproc.stderr)),
-      );
+      const e: any = new Error("unzip failed: " + (await Bun.readableStreamToText(subproc.stderr)));
       e.code = "UnzipFailed";
       throw e;
     }
@@ -174,9 +163,7 @@ async function fetchDebugFileWithoutCache(
     }
 
     if (!(await exists(desired_file))) {
-      throw new Error(
-        `Failed to find ${relative(tmp.path, desired_file)} in extraction`,
-      );
+      throw new Error(`Failed to find ${relative(tmp.path, desired_file)} in extraction`);
     }
 
     await mkdir(dirname(path), { recursive: true });
@@ -193,8 +180,7 @@ async function fetchDebugFileWithoutCache(
     }
 
     feature_config ??=
-      getCachedFeatureData(oid, is_canary) ??
-      (await fetchFeatureData(oid, is_canary));
+      getCachedFeatureData(oid, is_canary) ?? (await fetchFeatureData(oid, is_canary));
 
     putCachedDebugFile(os, arch, oid, path);
   } catch (e) {
@@ -260,9 +246,7 @@ export async function tryFromPR(
   const dir = `bun-${download_os}-${download_arch}-profile`;
 
   {
-    const artifact = artifacts.data.artifacts.find(
-      (artifact) => artifact.name === dir,
-    );
+    const artifact = artifacts.data.artifacts.find((artifact) => artifact.name === dir);
 
     if (!artifact) {
       if (process.env.NODE_ENV === "development") {
@@ -279,10 +263,7 @@ export async function tryFromPR(
       archive_format: "zip",
     });
 
-    await Bun.write(
-      join(temp, "artifact-download.zip"),
-      downloaded_artifact.data as any,
-    );
+    await Bun.write(join(temp, "artifact-download.zip"), downloaded_artifact.data as any);
 
     const subproc = Bun.spawn({
       cmd: [unzip, join(temp, "artifact-download.zip")],
@@ -291,9 +272,7 @@ export async function tryFromPR(
     });
 
     if ((await subproc.exited) !== 0) {
-      const e: any = new Error(
-        "unzip failed: " + (await Bun.readableStreamToText(subproc.stderr)),
-      );
+      const e: any = new Error("unzip failed: " + (await Bun.readableStreamToText(subproc.stderr)));
       e.code = "UnzipFailed";
       throw e;
     }
@@ -312,10 +291,7 @@ export async function tryFromPR(
       archive_format: "zip",
     });
 
-    await Bun.write(
-      join(temp, "artifact-download-2.zip"),
-      downloaded_artifact.data as any,
-    );
+    await Bun.write(join(temp, "artifact-download-2.zip"), downloaded_artifact.data as any);
 
     const subproc = Bun.spawn({
       cmd: [unzip, join(temp, "artifact-download-2.zip")],
@@ -325,9 +301,7 @@ export async function tryFromPR(
     await subproc.exited;
 
     try {
-      const features = migrateFeatureData(
-        await Bun.file(join(temp, "features.json")).json(),
-      );
+      const features = migrateFeatureData(await Bun.file(join(temp, "features.json")).json());
       features.is_pr = true;
       const commit = features?.revision || oid;
       putCachedFeatureData(commit, is_canary, features);
@@ -346,7 +320,7 @@ export async function fetchFeatureData(
   if (response.status !== 200) {
     const e = new Error(`Failed to fetch ${url}: ${response.status}`);
     // @ts-ignore
-    e.code = 'FeatureFileMissing';
+    e.code = "FeatureFileMissing";
     throw e;
   }
   return migrateFeatureData(JSON.parse(await response.text()));

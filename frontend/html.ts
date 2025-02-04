@@ -5,16 +5,11 @@ function skeleton(mul: number, add: number, i: number) {
   return `<td><span class="skeleton"style="width:${Math.random() * mul + add}px;--delay:${i * 100 - 2e5}ms"aria-hidden="true"`;
 }
 
-export function addrsToHTML(
-  commit: string,
-  addrs: (Address | ParsedAddress)[],
-): string[] {
+export function addrsToHTML(commit: string, addrs: (Address | ParsedAddress)[]): string[] {
   let unknown_in_a_row = 0;
   let pushUnknown = () => {
     if (unknown_in_a_row > 0) {
-      lines.push(
-        `<td><span class='js'>${unknown_in_a_row} unknown/js code</span></td>`,
-      );
+      lines.push(`<td><span class='js'>${unknown_in_a_row} unknown/js code</span></td>`);
       unknown_in_a_row = 0;
     }
   };

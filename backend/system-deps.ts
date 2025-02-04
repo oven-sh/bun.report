@@ -7,7 +7,9 @@ export const pdb_addr2line =
     : join(import.meta.dir, "..", "pdb-addr2line/target/release/pdb-addr2line");
 
 if (!existsSync(pdb_addr2line)) {
-  console.warn(`pdb-addr2line missing (expected at ${pdb_addr2line}, run 'cargo build --release' in pdb-addr2line)`);
+  console.warn(
+    `pdb-addr2line missing (expected at ${pdb_addr2line}, run 'cargo build --release' in pdb-addr2line)`,
+  );
 }
 
 export const unzip = Bun.which("unzip")!;

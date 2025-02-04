@@ -1,22 +1,22 @@
 import { Octokit } from "octokit";
 import type { ResolvedCommit } from "../lib/parser";
-import { existsSync } from 'node:fs';
+import { existsSync } from "node:fs";
 import { git } from "./system-deps";
 import { cache_root } from "./debug-store";
 import { $ } from "bun";
-import { join } from 'path';
+import { join } from "path";
 import { AsyncMutex } from "./mutex";
 
 export const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
 
-const local_clone_dir = join(cache_root, 'bun');
-const local_clone_git_dir = join(cache_root, 'bun', '.git');
+const local_clone_dir = join(cache_root, "bun");
+const local_clone_git_dir = join(cache_root, "bun", ".git");
 const commitish_cache = new Map<string, ResolvedCommit>();
 
 if (!existsSync(local_clone_dir) && git) {
-  console.log('cloning oven-sh/bun for git commit lookups, may take a while...')
+  console.log("cloning oven-sh/bun for git commit lookups, may take a while...");
 
   // notice "-n", we do not actually checkout a tree
   await $`${git} clone https://github.com/oven-sh/bun.git -n ${local_clone_dir}`;
@@ -33,7 +33,7 @@ export async function getCommit(commitish: string): Promise<ResolvedCommit | nul
   // This used to use the GitHub API, but now that bun has over 10k commits, you
   // need more than 7 chars to lookup a commit hash. We will eventually bump up
   // the bun binary to have more, but old builds will still use those commits.
-  // 
+  //
   // The switch has also regressed the ability to return PR-related information,
   // but in practice this had not really worked out, so it is disabled until
   // further notice.
@@ -52,8 +52,8 @@ export async function getCommit(commitish: string): Promise<ResolvedCommit | nul
   const result = {
     oid: query,
     pr: null,
-  }
-  commitish_cache.set(commitish, result)
+  };
+  commitish_cache.set(commitish, result);
   return result;
 
   // if (!process.env.GITHUB_TOKEN) {
@@ -121,8 +121,11 @@ async function queryGitCliCommitish(commitish: string) {
 
 // Fetch once per hour
 if (git) {
-  const timer = setInterval(async () => {
-    await $`${git} --git-dir ${local_clone_git_dir} fetch`;
-  }, 1000 * 60 * 60);
+  const timer = setInterval(
+    async () => {
+      await $`${git} --git-dir ${local_clone_git_dir} fetch`;
+    },
+    1000 * 60 * 60,
+  );
   timer.unref();
 }

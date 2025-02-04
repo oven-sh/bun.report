@@ -13,11 +13,8 @@ const file_content_map = new Map<FileHash, string[]>();
 
 const get_file_content_in_progress = new AsyncMutexMap<null | string[]>();
 
-async function getFileContent(
-  commit: string,
-  path: string,
-): Promise<null | string[]> {
-  path = path.replaceAll('\\', '/');
+async function getFileContent(commit: string, path: string): Promise<null | string[]> {
+  path = path.replaceAll("\\", "/");
 
   if (path.includes("WebKit")) return null;
   if (path.includes("src/deps/zig")) return null;
@@ -31,9 +28,7 @@ async function getFileContent(
   }
 
   return get_file_content_in_progress.get(key, async () => {
-    const res = await fetch(
-      `https://raw.githubusercontent.com/oven-sh/bun/${commit}/${path}`,
-    );
+    const res = await fetch(`https://raw.githubusercontent.com/oven-sh/bun/${commit}/${path}`);
 
     if (!res.ok) {
       return null;

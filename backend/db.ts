@@ -15,11 +15,7 @@ const cache_lifetime_ms = 1000 * 60 * 60 * 24 * 7 * 3;
 
 function initTable(name: string, query: string) {
   const existing_table = db
-    .query(
-      "SELECT name FROM sqlite_master WHERE type='table' AND name='" +
-      name +
-      "';",
-    )
+    .query("SELECT name FROM sqlite_master WHERE type='table' AND name='" + name + "';")
     .all();
   if (existing_table.length === 0) {
     db.run(`CREATE TABLE ${name} (${query})`);
@@ -56,16 +52,12 @@ initTable(
 `,
 );
 
-const get_remap_stmt = db.prepare(
-  "SELECT remapped_data FROM remap WHERE cache_key = ?",
-);
+const get_remap_stmt = db.prepare("SELECT remapped_data FROM remap WHERE cache_key = ?");
 const insert_remap_stmt = db.prepare(
   "INSERT OR REPLACE INTO remap (cache_key, remapped_data) VALUES (?, ?)",
 );
 
-const get_debug_file_stmt = db.prepare(
-  "SELECT file_path FROM debug_file WHERE cache_key = ?",
-);
+const get_debug_file_stmt = db.prepare("SELECT file_path FROM debug_file WHERE cache_key = ?");
 const insert_debug_file_stmt = db.prepare(
   "INSERT INTO debug_file (cache_key, file_path, last_updated) VALUES (?, ?, ?)",
 );
@@ -73,18 +65,12 @@ const update_debug_file_stmt = db.prepare(
   "UPDATE debug_file SET last_updated = ? WHERE cache_key = ?",
 );
 
-const get_issue_stmt = db.prepare(
-  "SELECT issue FROM issues WHERE cache_key = ?",
-);
-const insert_issue_stmt = db.prepare(
-  "INSERT INTO issues (cache_key, issue) VALUES (?, ?)",
-);
+const get_issue_stmt = db.prepare("SELECT issue FROM issues WHERE cache_key = ?");
+const insert_issue_stmt = db.prepare("INSERT INTO issues (cache_key, issue) VALUES (?, ?)");
 
-const get_feature_data_stmt = db.prepare(
-  "SELECT data FROM feature_data WHERE id = ?",
-);
+const get_feature_data_stmt = db.prepare("SELECT data FROM feature_data WHERE id = ?");
 const insert_feature_data_stmt = db.prepare(
-  "INSERT INTO feature_data (id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data WHERE id = excluded.id"
+  "INSERT INTO feature_data (id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data WHERE id = excluded.id",
 );
 
 export function getCachedRemap(cache_key: string): Remap | null {
@@ -105,11 +91,7 @@ export function putCachedRemap(cache_key: string, remap: Remap) {
   insert_remap_stmt.run(cache_key, JSON.stringify(remap));
 }
 
-export function getCachedDebugFile(
-  os: Platform,
-  arch: Arch,
-  commit: string,
-): string | null {
+export function getCachedDebugFile(os: Platform, arch: Arch, commit: string): string | null {
   const cache_key = `${os}-${arch}-${commit}`;
   const result = get_debug_file_stmt.get(cache_key) as {
     file_path: string;
@@ -122,16 +104,14 @@ export function getCachedDebugFile(
   return null;
 }
 
-export function putCachedDebugFile(
-  os: Platform,
-  arch: Arch,
-  commit: string,
-  file_path: string,
-) {
+export function putCachedDebugFile(os: Platform, arch: Arch, commit: string, file_path: string) {
   insert_debug_file_stmt.run(`${os}-${arch}-${commit}`, file_path, Date.now());
 }
 
-export function getCachedFeatureData(commit: string, is_canary: boolean | undefined): FeatureConfig | null {
+export function getCachedFeatureData(
+  commit: string,
+  is_canary: boolean | undefined,
+): FeatureConfig | null {
   if (is_canary) {
     commit = commit + "-canary";
   }
@@ -142,7 +122,11 @@ export function getCachedFeatureData(commit: string, is_canary: boolean | undefi
   return null;
 }
 
-export function putCachedFeatureData(commit: string, is_canary: boolean | undefined, data: FeatureConfig) {
+export function putCachedFeatureData(
+  commit: string,
+  is_canary: boolean | undefined,
+  data: FeatureConfig,
+) {
   if (is_canary) {
     commit = commit + "-canary";
   }
@@ -155,9 +139,9 @@ export async function garbageCollect() {
   const old_files = db
     .query("SELECT * FROM debug_file WHERE last_updated < $date")
     .all({ $date: remove_date.getTime() } as any) as {
-      cache_key: string;
-      file_path: string;
-    }[];
+    cache_key: string;
+    file_path: string;
+  }[];
 
   for (const { cache_key, file_path } of old_files) {
     console.log("Remove " + relative(process.cwd(), file_path));

@@ -39,10 +39,7 @@ function transition(state: UIState, data?: any) {
 }
 
 // Data fetching framework
-async function fetchRemap(
-  parse_text: string,
-  parse: Parse,
-): Promise<RemapAPIResponse | null> {
+async function fetchRemap(parse_text: string, parse: Parse): Promise<RemapAPIResponse | null> {
   // One remap fetch may be in progress. If there are two, cancel the first
   if (pending_fetch_ctrl) {
     pending_fetch_ctrl.abort();
@@ -65,9 +62,7 @@ async function fetchRemap(
     if (response.status === 400) {
       throw new Error(`Server failed to parse trace string.\nPlease try again later.`);
     }
-    throw new Error(
-      `${response.status} ${response.statusText}\nPlease try again later.`,
-    );
+    throw new Error(`${response.status} ${response.statusText}\nPlease try again later.`);
   }
 
   const remap = await response.json();
@@ -225,10 +220,7 @@ function cardHead() {
   parsed = parsed!;
 
   return /* html */ `
-    <p><code>${eschtml(parsed.message).replace(
-    /^panic: /,
-    "<strong>panic</strong>: ",
-  )}</code></p>
+    <p><code>${eschtml(parsed.message).replace(/^panic: /, "<strong>panic</strong>: ")}</code></p>
   `;
 }
 
@@ -240,17 +232,16 @@ function cardFooter() {
   const commit = /* pr
     ? `<a href="https://github.com/oven-sh/bun/pull/${pr.number}" target="_blank">#${pr.number}</a>`
     : */ oid
-      ? `<a href="https://github.com/oven-sh/bun/commit/${oid}" target="_blank">${parsed.commitish}</a>`
-      : parsed.commitish;
+    ? `<a href="https://github.com/oven-sh/bun/commit/${oid}" target="_blank">${parsed.commitish}</a>`
+    : parsed.commitish;
 
   const arch = parsed.arch.split("_baseline");
 
-
   const features = fetched?.features
     ? /* html */ `
-        <p><strong>Features:</strong> ${fetched.features.join(', ')}</p>
+        <p><strong>Features:</strong> ${fetched.features.join(", ")}</p>
       `
-    : '';
+    : "";
 
   return /* html */ `
     <p>

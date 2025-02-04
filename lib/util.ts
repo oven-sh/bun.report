@@ -4,10 +4,7 @@ import type { Parse, Remap } from "./parser";
 // https://github.com/paperdave/various/blob/main/packages/utils/src/debounce.ts
 // MIT License
 /** Wrap a function and apply debounce logic to. */
-export const debounce = <Args extends any[]>(
-  func: (...args: Args) => void,
-  waitTime: number,
-) => {
+export const debounce = <Args extends any[]>(func: (...args: Args) => void, waitTime: number) => {
   let timeout: Timer;
 
   return (...args: Args) => {
@@ -84,9 +81,7 @@ export function remapCacheKey(remap: Remap) {
     remap.arch,
     ...remap.addresses.flatMap((a) => [
       a.object,
-      ...(a.remapped
-        ? [a.function, a.src?.file ?? "no-file"]
-        : [a.address.toString(16)]),
+      ...(a.remapped ? [a.function, a.src?.file ?? "no-file"] : [a.address.toString(16)]),
     ]),
   ].join("_");
   const hasher = new Bun.CryptoHasher("sha256");

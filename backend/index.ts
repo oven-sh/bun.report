@@ -56,17 +56,15 @@ export default {
                 text.replaceAll(
                   "%md%",
                   require("marked").parse(
-                    await Bun.file(
-                      join(import.meta.dir, "../explainer.md")
-                    ).text()
-                  )
+                    await Bun.file(join(import.meta.dir, "../explainer.md")).text(),
+                  ),
                 ),
                 {
                   headers: {
                     "Content-Type": "text/html; charset=utf-8",
                   },
-                }
-              )
+                },
+              ),
           );
       }
 
@@ -77,9 +75,7 @@ export default {
       }
 
       if (pathname === "/style.css") {
-        return new Response(
-          Bun.file(join(import.meta.dir, "../frontend/style.css"))
-        );
+        return new Response(Bun.file(join(import.meta.dir, "../frontend/style.css")));
       }
     }
     if (process.env.NODE_ENV === "production") {
@@ -97,11 +93,9 @@ export default {
         Bun.file(
           join(
             import.meta.dir,
-            process.env.NODE_ENV === "production"
-              ? "favicon.ico"
-              : "../frontend/favicon.ico"
-          )
-        )
+            process.env.NODE_ENV === "production" ? "favicon.ico" : "../frontend/favicon.ico",
+          ),
+        ),
       );
     }
 
@@ -116,8 +110,7 @@ export default {
           }
 
           const arch = parsed.arch.split("_baseline");
-          let { oid } =
-            (await getCommit(parsed.commitish).catch((_) => null)) ?? {};
+          let { oid } = (await getCommit(parsed.commitish).catch((_) => null)) ?? {};
 
           const oembed: { [key: string]: string } = {
             author_name: parsed.message,
@@ -136,9 +129,7 @@ export default {
       }
 
       // Respond with the same metadata if user tries to be helpful by adding "/view"
-      const str = pathname.endsWith("/view")
-        ? pathname.slice(1, -5)
-        : pathname.slice(1);
+      const str = pathname.endsWith("/view") ? pathname.slice(1, -5) : pathname.slice(1);
 
       return parse(str).then(async (parsed) => {
         if (!parsed) {
@@ -152,10 +143,9 @@ export default {
         try {
           const remapped = await remap(str, parsed);
 
-          const embed_description = addrsToPlainText(
-            remapped.commit.oid,
-            remapped.addresses
-          ).join("\n");
+          const embed_description = addrsToPlainText(remapped.commit.oid, remapped.addresses).join(
+            "\n",
+          );
 
           metadata_tags += `<meta property=og:description content="${escapeHTML(embed_description)}">`;
         } catch (e) {}
@@ -305,11 +295,7 @@ async function postRemap(request: Request, server: Server) {
 const default_template = "6-crash-report.yml";
 const install_template = "7-install-crash-report.yml";
 
-async function remapAndRedirect(
-  parsed_str: string,
-  parsed: Parse,
-  headers: Headers
-) {
+async function remapAndRedirect(parsed_str: string, parsed: Parse, headers: Headers) {
   try {
     const remapped = await remap(parsed_str, parsed);
 
@@ -317,10 +303,7 @@ async function remapAndRedirect(
       return new Response("Failed to remap", { status: 500 });
     }
 
-    let sentryDetails:
-      | { id: string }
-      | { shortId: string; permalink: string }
-      | undefined;
+    let sentryDetails: { id: string } | { shortId: string; permalink: string } | undefined;
 
     try {
       sentryDetails = await sendToSentry(parsed, remapped);
@@ -329,22 +312,12 @@ async function remapAndRedirect(
     }
 
     if (remapped.issue) {
-      return Response.redirect(
-        `https://github.com/oven-sh/bun/issues/${remapped.issue}`,
-        307
-      );
+      return Response.redirect(`https://github.com/oven-sh/bun/issues/${remapped.issue}`, 307);
     }
 
     const markdown = formatMarkdown(remapped);
-    const template =
-      remapped.command === "InstallCommand"
-        ? install_template
-        : default_template;
-    let report =
-      markdown +
-      "\n\n<!-- from bun.report: " +
-      remapCacheKey(remapped) +
-      " -->";
+    const template = remapped.command === "InstallCommand" ? install_template : default_template;
+    let report = markdown + "\n\n<!-- from bun.report: " + remapCacheKey(remapped) + " -->";
     if (sentryDetails?.id) {
       const { id } = sentryDetails;
       report += `\n\n<!-- sentry_id: ${id} -->`;
@@ -353,7 +326,7 @@ async function remapAndRedirect(
       report += `\n\n<sub>Sentry Issue: <strong><a href="${permalink}">${shortId}</a></strong></sub>`;
     }
     const url = `https://github.com/oven-sh/bun/issues/new?labels=crash&template=${template}&remapped_trace=${encodeURIComponent(
-      report
+      report,
     )}`;
 
     return Response.redirect(url, 307);
@@ -388,19 +361,13 @@ setInterval(
   () => {
     garbageCollect();
   },
-  1000 * 60 * 60 * 24 * 7
+  1000 * 60 * 60 * 24 * 7,
 );
 
 console.log("bun.report");
-console.log(
-  "Discord Webhook: " +
-    (process.env.DISCORD_WEBHOOK_URL ? "enabled" : "disabled")
-);
+console.log("Discord Webhook: " + (process.env.DISCORD_WEBHOOK_URL ? "enabled" : "disabled"));
 console.log("Sentry: " + (process.env.SENTRY_DSN ? "enabled" : "disabled"));
-console.log(
-  "GitHub Webhook: " +
-    (process.env.GITHUB_WEBHOOK_SECRET ? "enabled" : "disabled")
-);
+console.log("GitHub Webhook: " + (process.env.GITHUB_WEBHOOK_SECRET ? "enabled" : "disabled"));
 
 if (!process.env.BUN_DOWNLOAD_BASE) {
   console.error("BUN_DOWNLOAD_BASE is not set");
