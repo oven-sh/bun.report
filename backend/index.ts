@@ -228,9 +228,10 @@ function postRequest(request: Request, server: Server) {
   }
 }
 
-async function postRemap(url: URL, request: Request, server: Server) {
+async function postRemap(request: Request, server: Server) {
   // Validate input body request
   let parsed: Parse;
+  const url = new URL(request.url);
 
   const body = await request.text();
   try {
