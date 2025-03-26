@@ -108,6 +108,7 @@ export async function remapUncached(
     const subproc = Bun.spawn({
       cmd,
       stdio: ["ignore", "pipe", "pipe"],
+      timeout: 5000,
     });
 
     if ((await subproc.exited) !== 0) {

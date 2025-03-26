@@ -143,6 +143,7 @@ async function fetchDebugFileWithoutCache(
       cmd: [unzip, join(tmp.path, dir + ".zip")],
       stdio: ["ignore", "pipe", "pipe"],
       cwd: tmp.path,
+      timeout: 5000,
     });
     if ((await subproc.exited) !== 0) {
       const e: any = new Error("unzip failed: " + (await Bun.readableStreamToText(subproc.stderr)));
@@ -269,6 +270,7 @@ export async function tryFromPR(
       cmd: [unzip, join(temp, "artifact-download.zip")],
       stdio: ["ignore", "pipe", "pipe"],
       cwd: temp,
+      timeout: 5000,
     });
 
     if ((await subproc.exited) !== 0) {
@@ -297,6 +299,7 @@ export async function tryFromPR(
       cmd: [unzip, join(temp, "artifact-download-2.zip")],
       stdio: ["ignore", "pipe", "pipe"],
       cwd: temp,
+      timeout: 5000,
     });
     await subproc.exited;
 
