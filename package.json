@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@octokit/webhooks-methods": "^5.1.0",
-    "@types/bun": "latest",
+    "@types/bun": "^1.2.6",
     "html-minifier": "^4.0.0",
     "lightningcss": "^1.24.1",
     "marked": "^12.0.1",
