@@ -136,7 +136,7 @@ async function fetchDebugFileWithoutCache(
       if (response.status !== 200) {
         throw new Error(`Failed to fetch ${url}: ${response.status}`);
       }
-      await Bun.write(join(tmp.path, dir + ".zip"), response);
+      await Bun.write(join(tmp.path, dir + ".zip"), await response.blob());
     }
 
     const subproc = Bun.spawn({
