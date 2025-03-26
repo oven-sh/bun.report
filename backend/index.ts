@@ -32,6 +32,7 @@ function getPathname(url: URL) {
 // Server
 export default {
   port: 3000,
+  idleTimeout: 30,
 
   fetch(request, server) {
     if (process.env.NODE_ENV === "development") {
