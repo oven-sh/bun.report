@@ -11,6 +11,9 @@
   "exports": {
     ".": "./lib.ts"
   },
+  "bin": {
+    "bun-run-remap": "./bin/bun-run-remap.ts"
+  },
   "devDependencies": {
     "@octokit/webhooks-methods": "^5.1.0",
     "@types/bun": "^1.2.6",

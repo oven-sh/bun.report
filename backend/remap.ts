@@ -1,10 +1,10 @@
 import type { Address, Parse, Remap, ResolvedCommit } from "../lib/parser";
 import { getCommit } from "./git";
-import { cache_root, fetchDebugFile } from "./debug-store";
+import { fetchDebugFile } from "./debug-store";
 import { getCachedRemap, putCachedRemap } from "./db";
 import { parseCacheKey } from "../lib/util";
 import { llvm_symbolizer, pdb_addr2line } from "./system-deps";
-import { addrsToMarkdown, formatMarkdown } from "../lib";
+import { formatMarkdown } from "../lib";
 import { decodeFeatures } from "./feature";
 import { AsyncMutexMap } from "./mutex";
 
@@ -103,7 +103,7 @@ export async function remapUncached(
       ...bun_addrs,
     ];
 
-    console.log("running", cmd.join(" "));
+    // console.log("running", cmd.join(" "));
 
     const subproc = Bun.spawn({
       cmd,
