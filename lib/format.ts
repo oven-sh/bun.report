@@ -13,7 +13,9 @@ export function formatMarkdown(remap: Remap, internal?: { source: string }): str
   return [
     `Bun v${remap.version} (${treeURLMD(remap.commit)}) on ${remap.os} ${remap.arch} [${remap.command}]`,
     "",
-    remap.message.replace(/^panic: /, "**panic**: "),
+    "```",
+    remap.message.replace(/^panic: /, "PANIC: "),
+    "```",
     "",
     ...addrsToMarkdown(remap.commit.oid, remap.addresses).map((l) => `- ${l}`),
     "",
