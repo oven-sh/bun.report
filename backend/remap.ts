@@ -18,6 +18,7 @@ const command_map: { [key: string]: string } = {
   g: "GetCompletionsCommand",
   h: "HelpCommand",
   j: "InitCommand",
+  v: "InfoCommand",
   i: "InstallCommand",
   C: "InstallCompletionsCommand",
   l: "LinkCommand",
@@ -36,6 +37,8 @@ const command_map: { [key: string]: string } = {
   z: "PatchCommitCommand",
   o: "OutdatedCommand",
   k: "PublishCommand",
+  A: "AuditCommand",
+  W: "WhyCommand",
 };
 
 /** This map serves as a sort of "mutex" */
