@@ -203,8 +203,7 @@ export default {
       if (!parsed) {
         return new Response("Not found", { status: 404 });
       }
-
-      return remapAndRedirect(str, parsed, request.headers);
+      return remapAndRedirect(request_url, str, parsed, request.headers);
     });
   },
   error(err) {
@@ -298,7 +297,7 @@ async function postRemap(request: Request, server: Server) {
 const default_template = "6-crash-report.yml";
 const install_template = "7-install-crash-report.yml";
 
-async function remapAndRedirect(parsed_str: string, parsed: Parse, headers: Headers) {
+async function remapAndRedirect(url: URL, parsed_str: string, parsed: Parse, headers: Headers) {
   try {
     const remapped = await remap(parsed_str, parsed);
 

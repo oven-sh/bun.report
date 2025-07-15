@@ -1,7 +1,7 @@
 import { AsyncMutexMap } from "./mutex";
 import { getFileAtCommit } from "./git";
 import type { Address, ResolvedCommit, Remap } from "../lib/parser";
-import { escmd } from "../lib/util";
+import { basename, escmd, escmdcode } from "../lib/util";
 
 export async function formatMarkdown(remap: Remap, internal?: { source: string }): Promise<string> {
   return [
