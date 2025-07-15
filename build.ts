@@ -66,7 +66,7 @@ export async function build(mode: string) {
 }
 
 if (import.meta.main) {
-  rmSync("dist", { force: true });
+  rmSync("dist", { force: true, recursive: true });
 
   if (!existsSync("pdb-addr2line/target/release/pdb-addr2line")) {
     console.log("Building pdb-addr2line");
