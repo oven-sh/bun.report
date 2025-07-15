@@ -76,7 +76,7 @@ const server = Bun.serve({
               }
               console.error("====================");
               console.error("Remapped stack trace");
-              console.warn(formatMarkdown(remap).split("\n").slice(1).join("\n"));
+              console.warn(await formatMarkdown(remap).split("\n").slice(1).join("\n"));
               console.error("====================");
               server.unref();
               if (timer) {

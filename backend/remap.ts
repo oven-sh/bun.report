@@ -4,7 +4,7 @@ import { fetchDebugFile } from "./debug-store";
 import { getCachedRemap, putCachedRemap } from "./db";
 import { parseCacheKey } from "../lib/util";
 import { llvm_symbolizer, pdb_addr2line } from "./system-deps";
-import { formatMarkdown } from "../lib";
+import { formatMarkdown } from "./markdown";
 import { decodeFeatures } from "./feature";
 import { AsyncMutexMap } from "./mutex";
 
@@ -197,7 +197,7 @@ export async function remapUncached(
   putCachedRemap(key, remap);
 
   if (process.env.DISCORD_WEBHOOK_URL) {
-    const markdown = formatMarkdown(remap, { source: parsed_string });
+    const markdown = await formatMarkdown(remap, { source: parsed_string });
     const markdown_no_links = markdown.replaceAll(/\((https?:[^\)]*?)\)/g, "(<$1>)");
     const body = JSON.stringify({
       content: markdown_no_links,

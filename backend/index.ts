@@ -2,11 +2,12 @@ import type { ServeOptions, Server } from "bun";
 import { type RemapAPIResponse, parse, type Parse } from "../lib/parser";
 import { remap } from "./remap";
 import { join } from "node:path";
-import { addrsToPlainText, formatMarkdown, os_names } from "../lib/format";
+import { addrsToPlainText, os_names } from "../lib/format";
 import { garbageCollect, tagIssue } from "./db";
 import { escapeHTML, remapCacheKey } from "../lib/util";
 import { sendToSentry } from "./sentry";
 import { getCommit } from "./git";
+import { formatMarkdown } from "./markdown";
 
 process.env.NODE_ENV ||= "development";
 
@@ -202,8 +203,7 @@ export default {
       if (!parsed) {
         return new Response("Not found", { status: 404 });
       }
-
-      return remapAndRedirect(str, parsed, request.headers);
+      return remapAndRedirect(request_url, str, parsed, request.headers);
     });
   },
   error(err) {
@@ -297,7 +297,7 @@ async function postRemap(request: Request, server: Server) {
 const default_template = "6-crash-report.yml";
 const install_template = "7-install-crash-report.yml";
 
-async function remapAndRedirect(parsed_str: string, parsed: Parse, headers: Headers) {
+async function remapAndRedirect(url: URL, parsed_str: string, parsed: Parse, headers: Headers) {
   try {
     const remapped = await remap(parsed_str, parsed);
 
@@ -317,7 +317,7 @@ async function remapAndRedirect(parsed_str: string, parsed: Parse, headers: Head
       return Response.redirect(`https://github.com/oven-sh/bun/issues/${remapped.issue}`, 307);
     }
 
-    const markdown = formatMarkdown(remapped);
+    const markdown = await formatMarkdown(remapped);
     const template = remapped.command === "InstallCommand" ? install_template : default_template;
     let report = markdown + "\n\n<!-- from bun.report: " + remapCacheKey(remapped) + " -->";
     if (sentryDetails?.id) {
