@@ -2,11 +2,12 @@ import type { ServeOptions, Server } from "bun";
 import { type RemapAPIResponse, parse, type Parse } from "../lib/parser";
 import { remap } from "./remap";
 import { join } from "node:path";
-import { addrsToPlainText, formatMarkdown, os_names } from "../lib/format";
+import { addrsToPlainText, os_names } from "../lib/format";
 import { garbageCollect, tagIssue } from "./db";
 import { escapeHTML, remapCacheKey } from "../lib/util";
 import { sendToSentry } from "./sentry";
 import { getCommit } from "./git";
+import { formatMarkdown } from "./markdown";
 
 process.env.NODE_ENV ||= "development";
 
@@ -317,7 +318,7 @@ async function remapAndRedirect(parsed_str: string, parsed: Parse, headers: Head
       return Response.redirect(`https://github.com/oven-sh/bun/issues/${remapped.issue}`, 307);
     }
 
-    const markdown = formatMarkdown(remapped);
+    const markdown = await formatMarkdown(remapped);
     const template = remapped.command === "InstallCommand" ? install_template : default_template;
     let report = markdown + "\n\n<!-- from bun.report: " + remapCacheKey(remapped) + " -->";
     if (sentryDetails?.id) {

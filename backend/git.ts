@@ -119,6 +119,14 @@ async function queryGitCliCommitish(commitish: string) {
   }
 }
 
+export async function getFileAtCommit(commit: ResolvedCommit, path: string): Promise<Uint8Array|null> {
+  try {
+    return ((await $`${git} --git-dir ${local_clone_git_dir} show ${commit.oid}:${path}`).bytes());
+  } catch {
+    return null;
+  }
+}
+
 // Fetch once per hour
 if (git) {
   const timer = setInterval(
