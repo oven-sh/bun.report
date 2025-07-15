@@ -121,7 +121,7 @@ async function externalCommitMatchingBunCommit(
     const fallback = `bun-${bunCommit.oid}`;
     const file = await getFileAtCommit(bunCommit, cmakeFile);
     if (!file) return fallback;
-    const text = new TextDecoder("utf-8").decode(file);
+    const text = file.toString("utf-8");
     const match = cmakeSearch.exec(text);
     if (!match) return fallback;
     return match[1];

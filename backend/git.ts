@@ -119,9 +119,9 @@ async function queryGitCliCommitish(commitish: string) {
   }
 }
 
-export async function getFileAtCommit(commit: ResolvedCommit, path: string): Promise<Uint8Array|null> {
+export async function getFileAtCommit(commit: ResolvedCommit, path: string): Promise<Buffer|null> {
   try {
-    return ((await $`${git} --git-dir ${local_clone_git_dir} show ${commit.oid}:${path}`).bytes());
+    return ((await $`${git} --git-dir ${local_clone_git_dir} show ${commit.oid}:${path}`.quiet()).stdout);
   } catch {
     return null;
   }
