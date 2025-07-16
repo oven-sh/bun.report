@@ -157,9 +157,10 @@ async function fetchDebugFileWithoutCache(
     let desired_file = join(tmp.path, dir, "bun" + store_suffix + "-profile");
     const entries = await readdir(join(tmp.path, dir));
 
-    if (os === "windows") {
+    const extension = os === "windows" ? ".pdb" : os === "macos" ? ".dSYM" : undefined;
+    if (extension) {
       for (const entry of entries) {
-        if (entry.endsWith(".pdb")) {
+        if (entry.endsWith(extension)) {
           desired_file = join(tmp.path, dir, entry);
           break;
         }
