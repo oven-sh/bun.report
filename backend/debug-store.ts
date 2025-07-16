@@ -146,7 +146,10 @@ async function fetchDebugFileWithoutCache(
       timeout: 60000,
     });
     if ((await subproc.exited) !== 0) {
-      const e: any = new Error("unzip failed: " + (await Bun.readableStreamToText(subproc.stderr)));
+      const reason = subproc.signalCode ?? `code ${subproc.exitCode}`;
+      const e: any = new Error(
+        `unzip ${join(tmp.path, dir + ".zip")} failed with ${reason}: ${await Bun.readableStreamToText(subproc.stderr)}`,
+      );
       e.code = "UnzipFailed";
       throw e;
     }
@@ -274,7 +277,10 @@ export async function tryFromPR(
     });
 
     if ((await subproc.exited) !== 0) {
-      const e: any = new Error("unzip failed: " + (await Bun.readableStreamToText(subproc.stderr)));
+      const reason = subproc.signalCode ?? `code ${subproc.exitCode}`;
+      const e: any = new Error(
+        `unzip ${join(temp, "artifact-download.zip")} failed with ${reason}: ${await Bun.readableStreamToText(subproc.stderr)}`,
+      );
       e.code = "UnzipFailed";
       throw e;
     }
