@@ -36,9 +36,7 @@ export default {
   idleTimeout: 30,
 
   fetch(request, server) {
-    if (process.env.NODE_ENV === "development") {
-      console.log(`${request.method} ${request.url}`);
-    }
+    console.log(`${request.method} ${request.url}`);
 
     if (request.method === "POST") {
       return postRequest(request, server);
