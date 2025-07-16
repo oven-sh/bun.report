@@ -45,6 +45,9 @@ const command_map: { [key: string]: string } = {
 const in_progress_remaps = new AsyncMutexMap<Remap>();
 
 export async function remap(parsed_string: string, parse: Parse): Promise<Remap> {
+  if (process.env.NODE_ENV === "development") {
+    return remapUncached(parsed_string, parse);
+  }
   const key = parseCacheKey(parse);
   const cached = getCachedRemap(key);
   parse.cache_key = key;

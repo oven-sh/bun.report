@@ -143,10 +143,13 @@ async function fetchDebugFileWithoutCache(
       cmd: [unzip, join(tmp.path, dir + ".zip")],
       stdio: ["ignore", "pipe", "pipe"],
       cwd: tmp.path,
-      timeout: 5000,
+      timeout: 60000,
     });
     if ((await subproc.exited) !== 0) {
-      const e: any = new Error("unzip failed: " + (await Bun.readableStreamToText(subproc.stderr)));
+      const reason = subproc.signalCode ?? `code ${subproc.exitCode}`;
+      const e: any = new Error(
+        `unzip ${join(tmp.path, dir + ".zip")} failed with ${reason}: ${await Bun.readableStreamToText(subproc.stderr)}`,
+      );
       e.code = "UnzipFailed";
       throw e;
     }
@@ -154,9 +157,10 @@ async function fetchDebugFileWithoutCache(
     let desired_file = join(tmp.path, dir, "bun" + store_suffix + "-profile");
     const entries = await readdir(join(tmp.path, dir));
 
-    if (os === "windows") {
+    const extension = os === "windows" ? ".pdb" : os === "macos" ? ".dSYM" : undefined;
+    if (extension) {
       for (const entry of entries) {
-        if (entry.endsWith(".pdb")) {
+        if (entry.endsWith(extension)) {
           desired_file = join(tmp.path, dir, entry);
           break;
         }
@@ -270,11 +274,14 @@ export async function tryFromPR(
       cmd: [unzip, join(temp, "artifact-download.zip")],
       stdio: ["ignore", "pipe", "pipe"],
       cwd: temp,
-      timeout: 5000,
+      timeout: 60000,
     });
 
     if ((await subproc.exited) !== 0) {
-      const e: any = new Error("unzip failed: " + (await Bun.readableStreamToText(subproc.stderr)));
+      const reason = subproc.signalCode ?? `code ${subproc.exitCode}`;
+      const e: any = new Error(
+        `unzip ${join(temp, "artifact-download.zip")} failed with ${reason}: ${await Bun.readableStreamToText(subproc.stderr)}`,
+      );
       e.code = "UnzipFailed";
       throw e;
     }
