@@ -99,6 +99,7 @@ export async function remapUncached(
       (a) =>
         "0x" + (parse.os === "macos" ? macho_first_offset + a.address : a.address).toString(16),
     );
+    console.log(parse.addresses.map(a=>a.address.toString(16)));
   if (bun_addrs.length > 0) {
     const cmd = [
       parse.os === "windows" ? pdb_addr2line : llvm_symbolizer,

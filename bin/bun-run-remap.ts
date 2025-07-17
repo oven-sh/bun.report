@@ -1,12 +1,24 @@
 #!/usr/bin/env bun
 import type { ServeOptions, Subprocess } from "bun";
-import { formatMarkdown, parse } from "../lib";
+import { cc } from "bun:ffi";
+import { parse } from "../lib";
+import { formatMarkdown } from "../backend/markdown";
 import { existsSync } from "node:fs";
+import source from "./ensure-no-coredump.c" with { type: "file" };
 process.env.SKIP_GIT = "true";
 process.env.SKIP_UNZIP = "true";
 process.env.SKIP_LLVM_SYMBOLIZER = process.platform === "win32" ? "true" : undefined;
 process.env.SKIP_PDB_ADDR2LINE = process.platform !== "win32" ? "true" : undefined;
 const { remapUncached } = await import("../backend/remap");
+
+const {
+  symbols: { ensure_no_coredump: ensureNoCoredump },
+} = cc({
+  source,
+  symbols: {
+    ensure_no_coredump: { args: [], returns: "void" },
+  },
+});
 
 // Parse command line arguments
 const args = process.argv.slice(2);
@@ -70,13 +82,13 @@ const server = Bun.serve({
           }
 
           remapUncached(str, parsed, { exe: binaryPath })
-            .then(async(remap) => {
+            .then(async (remap) => {
               if (subproc) {
                 await subproc.exited;
               }
               console.error("====================");
               console.error("Remapped stack trace");
-              console.warn(await formatMarkdown(remap).split("\n").slice(1).join("\n"));
+              console.warn((await formatMarkdown(remap)).split("\n").slice(1).join("\n"));
               console.error("====================");
               server.unref();
               if (timer) {
@@ -112,7 +124,7 @@ subproc = Bun.spawn({
   env: {
     ...process.env,
     BUN_CRASH_REPORT_URL: `${server.url.href}`,
-  }
+  },
 });
 await subproc.exited;
 const exitCode = subproc.exitCode;
@@ -125,6 +137,7 @@ timer = setTimeout(() => {
 process.on("beforeExit", () => {
   if (!exitCode) {
     console.error("Raised", signal);
+    ensureNoCoredump();
     process.abort();
   }
   process.exitCode = exitCode;
