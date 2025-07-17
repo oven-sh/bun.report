@@ -1,22 +1,20 @@
 import { join } from "path";
 import { rmSync, existsSync } from "fs";
+import { copyFile } from "fs/promises";
 import * as lightning from "lightningcss";
 // @ts-ignore
 import * as html_minifier from "html-minifier";
 import * as marked from "marked";
 
 export async function build(mode: string) {
-  let in_file = await Bun.file(
-    join(import.meta.dir, "./frontend/frontend.ts"),
-  ).text();
+  let in_file = await Bun.file(join(import.meta.dir, "./frontend/frontend.ts")).text();
 
   // the following transforms should be considered issues
   // in bun's bundler, as it does not support these things:
 
   // minifier is unable to tree-shake away `x = x!` assertions
-  in_file = in_file.replace(
-    /^[ \t]*(\w+)[ \t]*=[ \t]*(\w+)[ \t]*!?[ \t]*\n$/gm,
-    (stmt, a, b) => (a === b ? "" : stmt),
+  in_file = in_file.replace(/^[ \t]*(\w+)[ \t]*=[ \t]*(\w+)[ \t]*!?[ \t]*\n$/gm, (stmt, a, b) =>
+    a === b ? "" : stmt,
   );
 
   // macros are not able to run on template strings with interpolation.
@@ -33,7 +31,7 @@ export async function build(mode: string) {
     [Symbol.dispose]: () => {
       try {
         rmSync(temp_path);
-      } catch (e) { }
+      } catch (e) {}
     },
   };
 
@@ -42,13 +40,13 @@ export async function build(mode: string) {
     minify:
       mode === "production"
         ? {
-          syntax: true,
-          whitespace: true,
-          identifiers: true,
-        }
+            syntax: true,
+            whitespace: true,
+            identifiers: true,
+          }
         : {
-          syntax: true,
-        },
+            syntax: true,
+          },
     define: {
       "process.env.NODE_ENV": JSON.stringify(mode),
       DEBUG: mode === "development" ? "true" : "false",
@@ -77,9 +75,7 @@ if (import.meta.main) {
 
   console.log("minified js: %d bytes gzip", Bun.gzipSync(js).byteLength);
 
-  const css = await Bun.file(
-    join(import.meta.dir, "./frontend/style.css"),
-  ).arrayBuffer();
+  const css = await Bun.file(join(import.meta.dir, "./frontend/style.css")).arrayBuffer();
 
   const result = lightning.transform({
     filename: "style.css",
@@ -89,14 +85,9 @@ if (import.meta.main) {
   if (result.warnings.length > 0) {
     console.warn("css minification warnings:", result.warnings);
   }
-  console.log(
-    "minified css: %d bytes gzip",
-    Bun.gzipSync(result.code).byteLength,
-  );
+  console.log("minified css: %d bytes gzip", Bun.gzipSync(result.code).byteLength);
 
-  let html = await Bun.file(
-    join(import.meta.dir, "./frontend/index.dev.html"),
-  ).text();
+  let html = await Bun.file(join(import.meta.dir, "./frontend/index.dev.html")).text();
   // markdown
   const md = await Bun.file(join(import.meta.dir, "./explainer.md")).text();
   html = html.replace(/%md%/g, await marked.marked(md));
@@ -131,10 +122,7 @@ if (import.meta.main) {
     outdir: join(import.meta.dir, "./dist"),
   });
   if (!server_bundle.success) {
-    throw new AggregateError(
-      server_bundle.logs,
-      "Failed to build server bundle",
-    );
+    throw new AggregateError(server_bundle.logs, "Failed to build server bundle");
   }
 
   console.log(
@@ -144,9 +132,6 @@ if (import.meta.main) {
   );
 
   await Bun.write("dist/index.html", html);
-  await Bun.write(
-    "dist/pdb-addr2line",
-    Bun.file("pdb-addr2line/target/release/pdb-addr2line"),
-  );
+  await copyFile("pdb-addr2line/target/release/pdb-addr2line", "dist/pdb-addr2line");
   await Bun.write("dist/favicon.ico", Bun.file("frontend/favicon.ico"));
 }
