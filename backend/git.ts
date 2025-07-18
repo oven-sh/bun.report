@@ -11,8 +11,8 @@ export const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
 
-const local_clone_dir = join(cache_root, "bun");
-const local_clone_git_dir = join(cache_root, "bun", ".git");
+const local_clone_dir = process.env.CI_CLONE_DIR ?? join(cache_root, "bun");
+const local_clone_git_dir = join(local_clone_dir, ".git");
 const commitish_cache = new Map<string, ResolvedCommit>();
 
 if (!existsSync(local_clone_dir) && git) {
@@ -119,16 +119,20 @@ async function queryGitCliCommitish(commitish: string) {
   }
 }
 
-export async function getFileAtCommit(commit: ResolvedCommit, path: string): Promise<Buffer|null> {
+export async function getFileAtCommit(
+  commit: ResolvedCommit,
+  path: string,
+): Promise<Buffer | null> {
   try {
-    return ((await $`${git} --git-dir ${local_clone_git_dir} show ${commit.oid}:${path}`.quiet()).stdout);
+    return (await $`${git} --git-dir ${local_clone_git_dir} show ${commit.oid}:${path}`.quiet())
+      .stdout;
   } catch {
     return null;
   }
 }
 
 // Fetch once per hour
-if (git) {
+if (git && !process.env.CI_CLONE_DIR) {
   const timer = setInterval(
     async () => {
       await $`${git} --git-dir ${local_clone_git_dir} fetch`;
