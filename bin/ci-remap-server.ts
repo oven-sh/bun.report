@@ -8,14 +8,16 @@ import { existsSync } from "node:fs";
 const args = process.argv.slice(2);
 let binaryPath: string;
 let repoPath: string;
+let commit: string;
 
-if (args.length < 2) {
-  console.error("Usage: ci-remap-server <path/to/bun-binary> <path/to/bun-repo/>");
+if (args.length < 3) {
+  console.error("Usage: ci-remap-server </path/to/bun-binary> </path/to/bun-repo> <commit ID>");
   process.exit(1);
 }
 
 binaryPath = args[0];
 repoPath = args[1];
+commit = args[2];
 
 process.env.SKIP_GIT = "true";
 process.env.SKIP_UNZIP = "true";
@@ -57,7 +59,7 @@ async function captureTrace(traceString: string): Promise<void> {
     const parsed = await parse(traceString);
     if (!parsed) throw new Error("parse returned null");
     try {
-      const remap = await remapUncached(traceString, parsed, { exe: binaryPath });
+      const remap = await remapUncached(traceString, parsed, { exe: binaryPath, commit });
       uncollectedTraces.push({ remap: await formatMarkdown(remap) });
     } catch (e) {
       uncollectedTraces.push({ failed_remap: parsed });
