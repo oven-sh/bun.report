@@ -19,6 +19,12 @@ binaryPath = args[0];
 repoPath = args[1];
 commit = args[2];
 
+if (existsSync(binaryPath + ".dSYM")) {
+  binaryPath = binaryPath + ".dSYM";
+} else if (existsSync(binaryPath.replace(".exe", ".pdb"))) {
+  binaryPath = binaryPath.replace(".exe", ".pdb");
+}
+
 process.env.SKIP_GIT = "true";
 process.env.SKIP_UNZIP = "true";
 process.env.SKIP_LLVM_SYMBOLIZER = process.platform === "win32" ? "true" : undefined;
