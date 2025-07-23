@@ -2,9 +2,10 @@ import { join } from "node:path";
 import { existsSync } from "node:fs";
 
 export const pdb_addr2line =
-  process.env.NODE_ENV === "production"
+  Bun.which("pdb-addr2line") ??
+  (process.env.NODE_ENV === "production"
     ? join(import.meta.dir, "./pdb-addr2line")
-    : join(import.meta.dir, "..", "pdb-addr2line/target/release/pdb-addr2line");
+    : join(import.meta.dir, "..", "pdb-addr2line/target/release/pdb-addr2line"));
 
 if (!existsSync(pdb_addr2line) && !process.env.SKIP_PDB_ADDR2LINE) {
   console.warn(

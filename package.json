@@ -12,7 +12,7 @@
     ".": "./lib.ts"
   },
   "bin": {
-    "bun-run-remap": "./bin/bun-run-remap.ts"
+    "ci-remap-server": "./bin/ci-remap-server.ts"
   },
   "dependencies": {
     "@octokit/webhooks-methods": "^5.1.0",

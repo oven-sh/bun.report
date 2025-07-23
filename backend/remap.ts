@@ -65,10 +65,10 @@ const macho_first_offset = 0x100000000;
 export async function remapUncached(
   parsed_string: string,
   parse: Parse,
-  opts: { exe?: string } = {},
+  opts: { exe?: string; commit?: string } = {},
 ): Promise<Remap> {
   const commit: ResolvedCommit | null = opts.exe
-    ? { oid: "unknown", pr: null }
+    ? { oid: opts.commit ?? "unknown", pr: null }
     : await getCommit(parse.commitish);
   if (!commit) {
     const e: any = new Error(`Could not find commit ${parse.commitish}`);
