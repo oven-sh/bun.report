@@ -255,12 +255,13 @@ export function filterAddresses(addrs: Address[]): Address[] {
 
 function withoutZigAnon(str: string): string {
   if (str && !str.startsWith("__anon_")) {
-    const __anon_ = str.lastIndexOf("__anon_");
-    if (__anon_ > 0) {
-      if (str.endsWith(str.slice(__anon_ + 6))) {
-        return str.slice(0, __anon_);
-      }
-    }
+    // Remove all __anon_${number} patterns
+    str = str.replace(/__anon_\d+/g, "");
+  }
+
+  if (str && !str.startsWith("__struct_")) {
+    // Remove all __struct_${number} patterns
+    str = str.replace(/__struct_\d+/g, "");
   }
 
   return str;
