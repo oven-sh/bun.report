@@ -253,10 +253,23 @@ export function filterAddresses(addrs: Address[]): Address[] {
   return addrs;
 }
 
+function withoutZigAnon(str: string): string {
+  if (str && !str.startsWith("__anon_")) {
+    const __anon_ = str.lastIndexOf("__anon_");
+    if (__anon_ > 0) {
+      if (str.endsWith(str.slice(__anon_ + 6))) {
+        return str.slice(0, __anon_);
+      }
+    }
+  }
+
+  return str;
+}
+
 export function cleanFunctionName(str: string): string {
   const last_paren = str.lastIndexOf(")");
   if (last_paren === -1) {
-    return str;
+    return withoutZigAnon(str);
   }
   let last_open_paren = last_paren;
   let n = 1;
@@ -271,10 +284,7 @@ export function cleanFunctionName(str: string): string {
       }
     }
   }
-  return str
-    .slice(0, last_open_paren)
-    .replace(/\(.+?\)/g, "(...)")
-    .replace(/__anon_\d+\b/g, "");
+  return withoutZigAnon(str.slice(0, last_open_paren).replace(/\(.+?\)/g, "(...)"));
 }
 
 export function parsePdb2AddrLineFile(str: string): { file: string; line: number } | null {
