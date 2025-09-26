@@ -135,11 +135,14 @@ async function sendToDiscord(
     return;
   }
 
-  // Build message using embed for longer content
-  const parts: string[] = [];
+  const form = new FormData();
+  const messageComponents = [];
 
   // Header
-  parts.push(`## ${feedbackData.email || "Unknown User"}`);
+  messageComponents.push({
+    type: 10,
+    content: `## <${feedbackData.email || "Unknown User"}>`,
+  });
 
   // System info in one line
   const sysInfo = [];
@@ -150,18 +153,40 @@ async function sendToDiscord(
   if (feedbackData.remoteFilesystem === "true") sysInfo.push("Remote FS");
 
   if (sysInfo.length > 0) {
-    parts.push(sysInfo.join(" "));
-    parts.push("");
+    messageComponents.push({
+      type: 10,
+      content: "-# " + sysInfo.join(" ") + "\n",
+    });
   }
 
   // Message
   if (feedbackData.message) {
-    parts.push(feedbackData.message);
-    parts.push("");
+    messageComponents.push({
+      type: 10,
+      content: feedbackData.message + "\n",
+    });
+  }
+
+  // show some crticial information if relevent (ie high mem usage)
+  let criticalInfo = [];
+  if (feedbackData.availableMemory && feedbackData.totalMemory) {
+    const availableMemory = parseInt(feedbackData.availableMemory);
+    const totalMemory = parseInt(feedbackData.totalMemory);
+    const memoryUsage = (availableMemory / totalMemory) * 100;
+    if (memoryUsage > 80) {
+      criticalInfo.push(`**Memory Usage:** ${memoryUsage.toFixed(2)}%`);
+    }
+  }
+  if (criticalInfo.length > 0) {
+    messageComponents.push({
+      type: 10,
+      content: criticalInfo.join(" ") + "\n",
+    });
   }
 
   // File tree
   if (fileList.length > 0) {
+    const parts = [];
     parts.push("```");
     const sortedFiles = fileList.sort();
 
@@ -176,50 +201,106 @@ async function sendToDiscord(
     }
     parts.push("```");
     parts.push("");
-  }
 
-  // Archive link
-  if (tarballUrl) {
-    const filename = tarballUrl.split("/").pop()?.split("?")[0] || "archive.tar.gz";
-    parts.push(`[Download archive - ${filename}](${tarballUrl})`);
-    parts.push("");
+    messageComponents.push({
+      type: 10,
+      content: parts.join("\n"),
+    });
   }
 
   // Footer with IDs and IP
+  let footerParts = [];
   if (feedbackData.clientId && feedbackData.serverId) {
-    parts.push(`ID: ${feedbackData.clientId}-${feedbackData.serverId}`);
+    if (tarballUrl) {
+      footerParts.push(
+        `**ID:** [${feedbackData.clientId}-${feedbackData.serverId}](<${tarballUrl}> "Download Archive")`,
+      );
+    } else {
+      footerParts.push(`**ID:** ${feedbackData.clientId}-${feedbackData.serverId}`);
+    }
   }
   if (feedbackData.projectId) {
-    parts.push(`Project: ${feedbackData.projectId}`);
+    footerParts.push(`**Project:** ${feedbackData.projectId}`);
   }
   if (feedbackData.ipAddress && feedbackData.ipAddress !== "unknown") {
-    parts.push(`IP: ${feedbackData.ipAddress}`);
+    footerParts.push(`**IP:** ${feedbackData.ipAddress}`);
   }
 
-  // Use embed for longer content support
-  const embed = {
-    description: parts.join("\n"),
-    color: 0x5865f2, // Discord blurple
-    timestamp: new Date().toISOString(),
-  };
+  // Upload archive to discord
+  if (tarballUrl) {
+    const tarballFilename = "archive.tar.gz";
+    messageComponents.push({
+      type: 13,
+      file: {
+        url: `attachment://${tarballFilename}`,
+      },
+    });
+    form.append("file", await (await fetch(tarballUrl)).blob(), tarballFilename);
+  }
 
+  // Show current timestamp
+  // footerParts.push(`<t:${Math.floor(Date.now() / 1000)}:R>`);
+
+  if (footerParts.length > 0) {
+    messageComponents.push({
+      type: 10,
+      content: "-# " + footerParts.join("\n-# "),
+    });
+  }
+
+  // Create webhook payload
   const webhookPayload = {
     username: "Bun Feedback Bot",
-    embeds: [embed],
+    flags: 1 << 15,
+    allowed_mentions: {},
+    components: [
+      {
+        type: 17,
+        accent_color: 0x5865f2, // Discord blurple,
+        components: messageComponents,
+      },
+    ],
   };
+  form.append("payload_json", JSON.stringify(webhookPayload));
 
-  const response = await fetch(DISCORD_WEBHOOK_URL, {
+  // Send webhook
+  const webhookUrl = new URL(DISCORD_WEBHOOK_URL);
+  webhookUrl.searchParams.set("wait", "true");
+  webhookUrl.searchParams.set("with_components", "true");
+
+  const response = await fetch(webhookUrl, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(webhookPayload),
+    body: form,
   });
 
   if (!response.ok) {
     console.error(`Discord webhook failed: ${response.status} ${response.statusText}`);
     const text = await response.text().catch(() => "");
     if (text) {
+      // if webhook fails, try to let us know but still send the feedback
+      const errorForm = new FormData();
+      errorForm.append(
+        "payload_json",
+        JSON.stringify({
+          content: `**Error:** ${text}`,
+          allowed_mentions: {},
+        }),
+      );
+      errorForm.append(
+        "file[1]",
+        new Blob([JSON.stringify(webhookPayload, null, 2)]),
+        "discord-payload.json",
+      );
+      errorForm.append(
+        "file[2]",
+        new Blob([JSON.stringify({ feedbackData, tarballUrl, fileList }, null, 2)]),
+        "inputs.json",
+      );
+      await fetch(DISCORD_WEBHOOK_URL, {
+        method: "POST",
+        body: errorForm,
+      });
+
       console.error("Discord webhook error:", text);
     }
   }
