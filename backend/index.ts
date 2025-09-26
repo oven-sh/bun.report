@@ -8,6 +8,7 @@ import { escapeHTML, remapCacheKey } from "../lib/util";
 import { sendToSentry } from "./sentry";
 import { getCommit } from "./git";
 import { formatMarkdown } from "./markdown";
+import { onFeedbackRequest } from "./feedback";
 
 process.env.NODE_ENV ||= "development";
 
@@ -34,6 +35,12 @@ function getPathname(url: URL) {
 export default {
   port: 3000,
   idleTimeout: 30,
+
+  routes: {
+    "/v1/feedback": {
+      POST: onFeedbackRequest,
+    },
+  },
 
   fetch(request, server) {
     console.log(`${request.method} ${request.url}`);

@@ -16,13 +16,17 @@
   },
   "dependencies": {
     "@octokit/webhooks-methods": "^5.1.0",
-    "@types/bun": "^1.2.6",
+    "@sentry/types": "^7.112.2",
+    "@types/archiver": "^6.0.3",
+    "@types/bun": "^1.2.22",
+    "@types/tar": "^6.1.13",
+    "archiver": "^7.0.1",
     "html-minifier": "^4.0.0",
     "lightningcss": "^1.24.1",
     "marked": "^12.0.1",
     "octokit": "^3.2.0",
-    "typescript": "^5.0.0",
-    "@sentry/types": "^7.112.2",
-    "prettier": "^3.2.5"
+    "prettier": "^3.2.5",
+    "tar": "^7.5.1",
+    "typescript": "^5.0.0"
   }
 }
