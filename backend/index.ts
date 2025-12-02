@@ -367,8 +367,7 @@ async function remapAndRedirect(url: URL, parsed_str: string, parsed: Parse, hea
           .replaceAll("%HIDE_IF(!isStandaloneExecutable)%", isStandaloneExecutable ? `` : `hidden`)
           .replaceAll("%HIDE_IF(isStandaloneExecutable)%", isStandaloneExecutable ? `hidden` : ``)
           .replaceAll("%CURRENT_VERSION%", remapped.version ?? "")
-          .replaceAll("%LATEST_VERSION%", latestVersion ?? "")
-          .replaceAll("%UPDATE_WORDING%", isDefinitelyOutdated ? "Update to the latest version" : "Confirm you're on the latest version");
+          .replaceAll("%LATEST_VERSION%", latestVersion ?? "");
 
     return new Response(responseHtml, {
       headers: {

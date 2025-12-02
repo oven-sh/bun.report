@@ -36,12 +36,12 @@
         </div>
       </div>
 
-      <div class="next-steps">
+      <div class="next-steps %HIDE_IF(!isDefinitelyOutdated)%">
         <h2>What to do next</h2>
         <div class="step">
           <div class="step-number">1</div>
           <div class="step-content">
-            <p>%UPDATE_WORDING%: <code>bun upgrade</code></p>
+            <p>Update to the latest version: <code>bun upgrade</code></p>
           </div>
         </div>
         <div class="step">
@@ -50,6 +50,11 @@
             <p>To help get it fixed faster, provide source code and detailed reproduction steps via <code>bun feedback</code></p>
           </div>
         </div>
+      </div>
+
+      <div class="next-steps %HIDE_IF(isDefinitelyOutdated)%">
+        <h2>Help us fix it</h2>
+        <p style="margin: 0;">To help get it fixed faster, provide source code and detailed reproduction steps via <code>bun feedback</code></p>
       </div>
 
       <details>
