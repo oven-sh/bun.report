@@ -9,6 +9,8 @@ import { sendToSentry } from "./sentry";
 import { getCommit } from "./git";
 import { formatMarkdown } from "./markdown";
 import { onFeedbackRequest } from "./feedback";
+import crashRecordedHtml from "../frontend/crash-recorded.html" with { type: "text" };
+
 
 process.env.NODE_ENV ||= "development";
 
@@ -322,6 +324,20 @@ async function remapAndRedirect(url: URL, parsed_str: string, parsed: Parse, hea
       return Response.redirect(`https://github.com/oven-sh/bun/issues/${remapped.issue}`, 307);
     }
 
+    let bunVersions: {"$note": string, releases: Record<string, {status: "retired" | "current"}>} | undefined;
+    try {
+      bunVersions = await fetch("https://bun.com/versions.json").then(r => r.json());
+    } catch (e) {
+      console.error("Failed to fetch bun versions", e);
+    }
+    const versionInfo = bunVersions?.releases[remapped.version];
+    const isDefinitelyOutdated: boolean = versionInfo?.status === "retired";
+    let latestVersion: string | undefined = Object.keys(bunVersions?.releases ?? {}).at(-1);
+    if (latestVersion && bunVersions?.releases[latestVersion]?.status !== "current") {
+      latestVersion = undefined;
+      console.warn("Latest version is not current", latestVersion);
+    }
+    
     const markdown = await formatMarkdown(remapped);
     const template = remapped.command === "InstallCommand" ? install_template : default_template;
     let report = markdown + "\n\n<!-- from bun.report: " + remapCacheKey(remapped) + " -->";
@@ -332,11 +348,24 @@ async function remapAndRedirect(url: URL, parsed_str: string, parsed: Parse, hea
       const { shortId, permalink } = sentryDetails;
       report += `\n\n<sub>Sentry Issue: <strong><a href="${permalink}">${shortId}</a></strong></sub>`;
     }
-    const url = `https://github.com/oven-sh/bun/issues/new?labels=crash&template=${template}&remapped_trace=${encodeURIComponent(
+    const githubUrl = `https://github.com/oven-sh/bun/issues/new?labels=crash&template=${template}&remapped_trace=${encodeURIComponent(
       report,
     )}`;
 
-    return Response.redirect(url, 307);
+    const responseHtml = crashRecordedHtml
+      .toString()
+      .replace("%GITHUB_URL%", escapeHTML(githubUrl))
+      .replace("%STACKTRACE%", escapeHTML(markdown))
+      .replaceAll("%HIDE_IF(!isDefinitelyOutdated)%", isDefinitelyOutdated ? `` : `hidden`)
+      .replaceAll("%CURRENT_VERSION%", remapped.version ?? "")
+      .replaceAll("%LATEST_VERSION%", latestVersion ?? "")
+      .replaceAll("%UPDATE_WORDING%", isDefinitelyOutdated ? "Update to the latest version" : "Confirm you're on the latest version");
+
+    return new Response(responseHtml, {
+      headers: {
+        "Content-Type": "text/html; charset=utf-8",
+      },
+    });
   } catch (e) {
     return handleError(url, e, true);
   }
