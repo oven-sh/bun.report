@@ -10,6 +10,7 @@ import { getCommit } from "./git";
 import { formatMarkdown } from "./markdown";
 import { onFeedbackRequest } from "./feedback";
 import crashRecordedHtml from "../frontend/crash-recorded.html" with { type: "text" };
+import crashRecordedStandaloneHtml from "../frontend/crash-recorded-standalone.html" with { type: "text" };
 
 
 process.env.NODE_ENV ||= "development";
@@ -352,14 +353,20 @@ async function remapAndRedirect(url: URL, parsed_str: string, parsed: Parse, hea
       report,
     )}`;
 
-    const responseHtml = crashRecordedHtml
-      .toString()
-      .replace("%GITHUB_URL%", escapeHTML(githubUrl))
-      .replace("%STACKTRACE%", escapeHTML(markdown))
-      .replaceAll("%HIDE_IF(!isDefinitelyOutdated)%", isDefinitelyOutdated ? `` : `hidden`)
-      .replaceAll("%CURRENT_VERSION%", remapped.version ?? "")
-      .replaceAll("%LATEST_VERSION%", latestVersion ?? "")
-      .replaceAll("%UPDATE_WORDING%", isDefinitelyOutdated ? "Update to the latest version" : "Confirm you're on the latest version");
+    const isStandaloneExecutable = remapped.features.includes("standalone_executable");
+
+    const responseHtml = (isStandaloneExecutable
+      ? crashRecordedStandaloneHtml
+      : crashRecordedHtml)
+          .toString()
+          .replace("%GITHUB_URL%", escapeHTML(githubUrl))
+          .replace("%STACKTRACE%", escapeHTML(markdown))
+          .replaceAll("%HIDE_IF(!isDefinitelyOutdated)%", isDefinitelyOutdated ? `` : `hidden`)
+          .replaceAll("%HIDE_IF(!isStandaloneExecutable)%", isStandaloneExecutable ? `` : `hidden`)
+          .replaceAll("%HIDE_IF(isStandaloneExecutable)%", isStandaloneExecutable ? `hidden` : ``)
+          .replaceAll("%CURRENT_VERSION%", remapped.version ?? "")
+          .replaceAll("%LATEST_VERSION%", latestVersion ?? "")
+          .replaceAll("%UPDATE_WORDING%", isDefinitelyOutdated ? "Update to the latest version" : "Confirm you're on the latest version");
 
     return new Response(responseHtml, {
       headers: {
