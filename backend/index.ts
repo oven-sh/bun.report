@@ -11,6 +11,8 @@ import { formatMarkdown } from "./markdown";
 import { onFeedbackRequest } from "./feedback";
 import crashRecordedHtml from "../frontend/crash-recorded.html" with { type: "text" };
 import crashRecordedStandaloneHtml from "../frontend/crash-recorded-standalone.html" with { type: "text" };
+// @ts-ignore
+import crashRecordedCss from "../frontend/crash-recorded.css" with { type: "text" };
 
 
 process.env.NODE_ENV ||= "development";
@@ -355,10 +357,10 @@ async function remapAndRedirect(url: URL, parsed_str: string, parsed: Parse, hea
 
     const isStandaloneExecutable = remapped.features.includes("standalone_executable");
 
-    const responseHtml = (isStandaloneExecutable
+    const responseHtml = ((isStandaloneExecutable
       ? crashRecordedStandaloneHtml
-      : crashRecordedHtml)
-          .toString()
+      : crashRecordedHtml) as unknown as string)
+          .replace("%CSS%", crashRecordedCss as string)
           .replace("%GITHUB_URL%", escapeHTML(githubUrl))
           .replace("%STACKTRACE%", escapeHTML(markdown))
           .replaceAll("%HIDE_IF(!isDefinitelyOutdated)%", isDefinitelyOutdated ? `` : `hidden`)
