@@ -1,11 +1,11 @@
-import { Octokit } from "octokit";
-import type { ResolvedCommit } from "../lib/parser";
-import { existsSync } from "node:fs";
-import { git } from "./system-deps";
-import { cache_root } from "./debug-store";
 import { $ } from "bun";
+import { existsSync } from "node:fs";
+import { Octokit } from "octokit";
 import { join } from "path";
+import type { ResolvedCommit } from "../lib/parser";
+import { cache_root } from "./debug-store";
 import { AsyncMutex } from "./mutex";
+import { git } from "./system-deps";
 
 export const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
@@ -30,13 +30,22 @@ export async function getCommit(commitish: string): Promise<ResolvedCommit | nul
     return commitish_cache.get(commitish)!;
   }
 
-  // This used to use the GitHub API, but now that bun has over 10k commits, you
-  // need more than 7 chars to lookup a commit hash. We will eventually bump up
-  // the bun binary to have more, but old builds will still use those commits.
-  //
-  // The switch has also regressed the ability to return PR-related information,
-  // but in practice this had not really worked out, so it is disabled until
-  // further notice.
+  // Try resolving via features.json on S3 first (avoids needing a git clone)
+  if (process.env.BUN_DOWNLOAD_BASE) {
+    try {
+      const res = await fetch(`${process.env.BUN_DOWNLOAD_BASE}/${commitish}/features.json`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.revision?.length === 40) {
+          const result = { oid: data.revision, pr: null };
+          commitish_cache.set(commitish, result);
+          return result;
+        }
+      }
+    } catch {}
+  }
+
+  // Fallback: resolve via local git clone of oven-sh/bun
   let query = await queryGitCliCommitish(commitish);
   if (!query) {
     if (!git_fetch_mutex.locked) {
@@ -119,13 +128,9 @@ async function queryGitCliCommitish(commitish: string) {
   }
 }
 
-export async function getFileAtCommit(
-  commit: ResolvedCommit,
-  path: string,
-): Promise<Buffer | null> {
+export async function getFileAtCommit(commit: ResolvedCommit, path: string): Promise<Buffer | null> {
   try {
-    return (await $`${git} --git-dir ${local_clone_git_dir} show ${commit.oid}:${path}`.quiet())
-      .stdout;
+    return (await $`${git} --git-dir ${local_clone_git_dir} show ${commit.oid}:${path}`.quiet()).stdout;
   } catch {
     return null;
   }

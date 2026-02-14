@@ -11,13 +11,13 @@ export class AsyncMutex {
 
   async lock() {
     if (this.locked) await this.unlock();
-    this.locked = new Promise<void>((resolve) => (this.resolve_fn = resolve));
+    this.locked = new Promise<void>(resolve => (this.resolve_fn = resolve));
     return { [Symbol.dispose]: this.resolve_fn! };
   }
 
   lockSync() {
     assert(this.locked === null);
-    this.locked = new Promise<void>((resolve) => (this.resolve_fn = resolve));
+    this.locked = new Promise<void>(resolve => (this.resolve_fn = resolve));
     return { [Symbol.dispose]: this.resolve_fn! };
   }
 
@@ -42,7 +42,7 @@ export class AsyncMutexMap<T> {
 
     const result = compute_fn();
     this.ongoing.set(key, result);
-    result.finally(() => this.ongoing.delete(key));
+    result.finally(() => this.ongoing.delete(key)).catch(() => {});
     return result;
   }
 }

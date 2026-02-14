@@ -1,26 +1,23 @@
 import type { ServeOptions, Server } from "bun";
-import { type RemapAPIResponse, parse, type Parse } from "../lib/parser";
-import { remap } from "./remap";
 import { join } from "node:path";
+import crashRecordedStandaloneHtml from "../frontend/crash-recorded-standalone.html" with { type: "text" };
+import crashRecordedHtml from "../frontend/crash-recorded.html" with { type: "text" };
 import { addrsToPlainText, os_names } from "../lib/format";
-import { garbageCollect, tagIssue } from "./db";
+import { parse, type Parse, type RemapAPIResponse } from "../lib/parser";
 import { escapeHTML, remapCacheKey } from "../lib/util";
-import { sendToSentry } from "./sentry";
+import { garbageCollect } from "./db";
+import { onFeedbackRequest } from "./feedback";
 import { getCommit } from "./git";
 import { formatMarkdown } from "./markdown";
-import { onFeedbackRequest } from "./feedback";
-import crashRecordedHtml from "../frontend/crash-recorded.html" with { type: "text" };
-import crashRecordedStandaloneHtml from "../frontend/crash-recorded-standalone.html" with { type: "text" };
+import { remap } from "./remap";
+import { sendToSentry } from "./sentry";
 // @ts-ignore
 import crashRecordedCss from "../frontend/crash-recorded.css" with { type: "text" };
-
 
 process.env.NODE_ENV ||= "development";
 
 const html =
-  process.env.NODE_ENV === "production"
-    ? await Bun.file(join(import.meta.dir, "index.html")).arrayBuffer()
-    : null;
+  process.env.NODE_ENV === "production" ? await Bun.file(join(import.meta.dir, "index.html")).arrayBuffer() : null;
 
 function getPathname(url: URL) {
   let pathname = url.pathname;
@@ -63,13 +60,11 @@ export default {
         return Bun.file(join(import.meta.dir, "../frontend/index.dev.html"))
           .text()
           .then(
-            async (text) =>
+            async text =>
               new Response(
                 text.replaceAll(
                   "%md%",
-                  require("marked").parse(
-                    await Bun.file(join(import.meta.dir, "../explainer.md")).text(),
-                  ),
+                  require("marked").parse(await Bun.file(join(import.meta.dir, "../explainer.md")).text()),
                 ),
                 {
                   headers: {
@@ -81,9 +76,7 @@ export default {
       }
 
       if (pathname === "/frontend.js") {
-        return import("../build")
-          .then((mod) => mod.build("development"))
-          .then((f: any) => new Response(f));
+        return import("../build").then(mod => mod.build("development")).then((f: any) => new Response(f));
       }
 
       if (pathname === "/style.css") {
@@ -103,10 +96,7 @@ export default {
     if (pathname === "/favicon.ico") {
       return new Response(
         Bun.file(
-          join(
-            import.meta.dir,
-            process.env.NODE_ENV === "production" ? "favicon.ico" : "../frontend/favicon.ico",
-          ),
+          join(import.meta.dir, process.env.NODE_ENV === "production" ? "favicon.ico" : "../frontend/favicon.ico"),
         ),
       );
     }
@@ -116,13 +106,13 @@ export default {
       if (pathname.endsWith("/oembed.json")) {
         const str = pathname.slice(1, -12);
 
-        return parse(str).then(async (parsed) => {
+        return parse(str).then(async parsed => {
           if (!parsed) {
             return new Response("Not found", { status: 404 });
           }
 
           const arch = parsed.arch.split("_baseline");
-          let { oid } = (await getCommit(parsed.commitish).catch((_) => null)) ?? {};
+          let { oid } = (await getCommit(parsed.commitish).catch(_ => null)) ?? {};
 
           const oembed: { [key: string]: string } = {
             author_name: parsed.message,
@@ -143,7 +133,7 @@ export default {
       // Respond with the same metadata if user tries to be helpful by adding "/view"
       const str = pathname.endsWith("/view") ? pathname.slice(1, -5) : pathname.slice(1);
 
-      return parse(str).then(async (parsed) => {
+      return parse(str).then(async parsed => {
         if (!parsed) {
           return new Response("Not found", { status: 404 });
         }
@@ -155,9 +145,7 @@ export default {
         try {
           const remapped = await remap(str, parsed);
 
-          const embed_description = addrsToPlainText(remapped.commit.oid, remapped.addresses).join(
-            "\n",
-          );
+          const embed_description = addrsToPlainText(remapped.commit.oid, remapped.addresses).join("\n");
 
           metadata_tags += `<meta property=og:description content="${escapeHTML(embed_description)}">`;
         } catch (e) {}
@@ -180,7 +168,7 @@ export default {
     if (pathname.endsWith("/ack")) {
       const str = pathname.slice(1, -4);
       return parse(str)
-        .then(async (parsed) => {
+        .then(async parsed => {
           if (!parsed) {
             if (process.env.NODE_ENV === "development") {
               console.log("Invalid trace string sent for ack");
@@ -190,31 +178,30 @@ export default {
           }
 
           remap(str, parsed)
-            .then((remap) => {
+            .then(remap => {
               return sendToSentry(parsed, remap);
             })
-            .catch((e) => {
-              if (process.env.NODE_ENV === "development") {
-                console.log("Invalid trace string sent for ack");
-                console.error(e);
-              }
-            });
+            .catch(() => {});
 
           return new Response("ok");
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
           return new Response("ok");
         });
     }
 
     const str = pathname.slice(1);
-    return parse(str).then(async (parsed) => {
-      if (!parsed) {
-        return new Response("Not found", { status: 404 });
-      }
-      return remapAndRedirect(request_url, str, parsed, request.headers);
-    });
+    return parse(str)
+      .then(async parsed => {
+        if (!parsed) {
+          return new Response("Not found", { status: 404 });
+        }
+        return remapAndRedirect(request_url, str, parsed, request.headers);
+      })
+      .catch(err => {
+        return handleError(url, err, false);
+      });
   },
   error(err) {
     console.log(err);
@@ -327,7 +314,7 @@ async function remapAndRedirect(url: URL, parsed_str: string, parsed: Parse, hea
       return Response.redirect(`https://github.com/oven-sh/bun/issues/${remapped.issue}`, 307);
     }
 
-    let bunVersions: {"$note": string, releases: Record<string, {status: "retired" | "current"}>} | undefined;
+    let bunVersions: { "$note": string; releases: Record<string, { status: "retired" | "current" }> } | undefined;
     try {
       bunVersions = await fetch("https://bun.com/versions.json").then(r => r.json());
     } catch (e) {
@@ -340,7 +327,7 @@ async function remapAndRedirect(url: URL, parsed_str: string, parsed: Parse, hea
       latestVersion = undefined;
       console.warn("Latest version is not current", latestVersion);
     }
-    
+
     const markdown = await formatMarkdown(remapped);
     const template = remapped.command === "InstallCommand" ? install_template : default_template;
     let report = markdown + "\n\n<!-- from bun.report: " + remapCacheKey(remapped) + " -->";
@@ -357,17 +344,17 @@ async function remapAndRedirect(url: URL, parsed_str: string, parsed: Parse, hea
 
     const isStandaloneExecutable = remapped.features.includes("standalone_executable");
 
-    const responseHtml = ((isStandaloneExecutable
-      ? crashRecordedStandaloneHtml
-      : crashRecordedHtml) as unknown as string)
-          .replace("%CSS%", crashRecordedCss as string)
-          .replace("%GITHUB_URL%", escapeHTML(githubUrl))
-          .replace("%STACKTRACE%", escapeHTML(markdown))
-          .replaceAll("%HIDE_IF(!isDefinitelyOutdated)%", isDefinitelyOutdated ? `` : `hidden`)
-          .replaceAll("%HIDE_IF(!isStandaloneExecutable)%", isStandaloneExecutable ? `` : `hidden`)
-          .replaceAll("%HIDE_IF(isStandaloneExecutable)%", isStandaloneExecutable ? `hidden` : ``)
-          .replaceAll("%CURRENT_VERSION%", remapped.version ?? "")
-          .replaceAll("%LATEST_VERSION%", latestVersion ?? "");
+    const responseHtml = (
+      (isStandaloneExecutable ? crashRecordedStandaloneHtml : crashRecordedHtml) as unknown as string
+    )
+      .replace("%CSS%", crashRecordedCss as string)
+      .replace("%GITHUB_URL%", escapeHTML(githubUrl))
+      .replace("%STACKTRACE%", escapeHTML(markdown))
+      .replaceAll("%HIDE_IF(!isDefinitelyOutdated)%", isDefinitelyOutdated ? `` : `hidden`)
+      .replaceAll("%HIDE_IF(!isStandaloneExecutable)%", isStandaloneExecutable ? `` : `hidden`)
+      .replaceAll("%HIDE_IF(isStandaloneExecutable)%", isStandaloneExecutable ? `hidden` : ``)
+      .replaceAll("%CURRENT_VERSION%", remapped.version ?? "")
+      .replaceAll("%LATEST_VERSION%", latestVersion ?? "");
 
     return new Response(responseHtml, {
       headers: {
