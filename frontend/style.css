@@ -14,6 +14,7 @@
 }
 
 body {
+  color-scheme: dark light;
   font-family:
     system-ui,
     -apple-system,
@@ -154,7 +155,11 @@ pre {
 }
 
 table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
   padding-left: 1rem;
+  padding-bottom: 0.5rem;
 }
 
 tr td:first-child {
@@ -294,9 +299,6 @@ button:hover,
     padding-bottom: 2rem;
   }
 
-  tbody {
-    white-space: nowrap;
-  }
   table {
     padding-left: 0;
   }
