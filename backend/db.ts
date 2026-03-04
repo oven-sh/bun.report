@@ -145,7 +145,7 @@ export async function garbageCollect() {
 
   for (const { cache_key, file_path } of old_files) {
     console.log("Remove " + relative(process.cwd(), file_path));
-    await rm(file_path, {});
+    await rm(file_path, { recursive: true, force: true });
     db.run("DELETE FROM debug_file WHERE cache_key = ?", [cache_key]);
   }
 }

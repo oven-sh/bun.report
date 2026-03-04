@@ -30,7 +30,7 @@ export async function temp() {
   await mkdir(path, { recursive: true });
   return {
     path,
-    [Symbol.dispose]: () => void rm(path, { force: true }).catch(() => {}),
+    [Symbol.dispose]: () => void rm(path, { recursive: true, force: true }).catch(() => {}),
   };
 }
 
