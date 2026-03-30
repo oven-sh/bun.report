@@ -13,11 +13,39 @@ const file_content_map = new Map<FileHash, string[]>();
 
 const get_file_content_in_progress = new AsyncMutexMap<null | string[]>();
 
+/** bun commit -> zig commit, extracted from scripts/build/zig.ts */
+const zig_commit_cache = new Map<string, string | null>();
+
+async function resolveZigCommit(bunCommit: string): Promise<string | null> {
+  if (zig_commit_cache.has(bunCommit)) return zig_commit_cache.get(bunCommit)!;
+  const res = await fetch(
+    `https://raw.githubusercontent.com/oven-sh/bun/${bunCommit}/scripts/build/zig.ts`,
+  );
+  if (!res.ok) {
+    zig_commit_cache.set(bunCommit, null);
+    return null;
+  }
+  const m = (await res.text()).match(/ZIG_COMMIT\s*=\s*"([0-9a-f]{40})"/);
+  const zigCommit = m?.[1] ?? null;
+  zig_commit_cache.set(bunCommit, zigCommit);
+  return zigCommit;
+}
+
+async function resolveSourceUrl(commit: string, path: string): Promise<string | null> {
+  // vendor/zig/ is gitignored in bun — fetch from ziglang/zig at the pinned commit.
+  const zigLib = path.match(/^vendor\/zig\/(lib\/.*)$/);
+  if (zigLib) {
+    const zigCommit = await resolveZigCommit(commit);
+    if (!zigCommit) return null;
+    return `https://raw.githubusercontent.com/oven-sh/zig/${zigCommit}/${zigLib[1]}`;
+  }
+  return `https://raw.githubusercontent.com/oven-sh/bun/${commit}/${path}`;
+}
+
 async function getFileContent(commit: string, path: string): Promise<null | string[]> {
   path = path.replaceAll("\\", "/");
 
   if (path.includes("WebKit")) return null;
-  if (path.includes("src/deps/zig")) return null;
 
   const key = commit + ":" + path.toLowerCase();
   const hash = file_hash_map.get(key);
@@ -28,11 +56,10 @@ async function getFileContent(commit: string, path: string): Promise<null | stri
   }
 
   return get_file_content_in_progress.get(key, async () => {
-    const res = await fetch(`https://raw.githubusercontent.com/oven-sh/bun/${commit}/${path}`);
-
-    if (!res.ok) {
-      return null;
-    }
+    const url = await resolveSourceUrl(commit, path);
+    if (!url) return null;
+    const res = await fetch(url);
+    if (!res.ok) return null;
 
     const content = await res.text();
     const hash: FileHash = SHA256.hash(content, "hex");

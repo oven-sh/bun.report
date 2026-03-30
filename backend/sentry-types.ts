@@ -111,6 +111,14 @@ export interface StackTraceFrame {
   post_context?: string[];
   source_link?: string;
   instruction_addr?: string;
+  data?: {
+    symbolicator_status:
+      | "symbolicated"
+      | "missing_symbol"
+      | "unknown_image"
+      | "missing"
+      | "malformed";
+  };
 }
 
 export interface PayloadEventPackage {

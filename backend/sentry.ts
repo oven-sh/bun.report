@@ -195,6 +195,11 @@ function repoRelativePath(filename: string): string | null {
   return null;
 }
 
+// bun.report runs pdb-addr2line/llvm-symbolizer itself, so frames arrive
+// already resolved. Tell Sentry's native UI not to try re-symbolicating.
+const symbolicated = { data: { symbolicator_status: "symbolicated" as const } };
+const missing_symbol = { data: { symbolicator_status: "missing_symbol" as const } };
+
 async function toStackFrame(address: Address, commit: string): Promise<Sentry.StackTraceFrame> {
   const { object, function: fn, remapped } = address;
   if (remapped) {
@@ -209,6 +214,7 @@ async function toStackFrame(address: Address, commit: string): Promise<Sentry.St
         in_app: object === "bun" && !filename.includes("src/deps/zig"),
         function: fn,
         package: object,
+        ...symbolicated,
         ...(repoPath
           ? {
               source_link: `https://raw.githubusercontent.com/oven-sh/bun/${commit}/${repoPath}#L${src.line}`,
@@ -223,12 +229,19 @@ async function toStackFrame(address: Address, commit: string): Promise<Sentry.St
           : {}),
       };
     }
+    return {
+      function: fn,
+      in_app: object === "bun",
+      package: object,
+      ...symbolicated,
+    };
   }
 
   return {
     package: object,
     function: fn ?? "<anonymous>",
     in_app: object === "bun",
+    ...missing_symbol,
     ...("address" in address ? { instruction_addr: "0x" + address.address.toString(16) } : {}),
   };
 }
