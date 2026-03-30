@@ -87,9 +87,7 @@ export async function remapUncached(
     : await fetchDebugFile(parse.os, parse.arch, commit, parse.is_canary);
 
   if (!debug_info) {
-    const e: any = new Error(
-      `Could not find debug file for ${parse.os}-${parse.arch} for commit ${parse.commitish}`,
-    );
+    const e: any = new Error(`Could not find debug file for ${parse.os}-${parse.arch} for commit ${parse.commitish}`);
     e.code = "DebugInfoUnavailable";
     throw e;
   }
@@ -97,11 +95,8 @@ export async function remapUncached(
   let lines: string[] = [];
 
   const bun_addrs = parse.addresses
-    .filter((a) => a.object === "bun")
-    .map(
-      (a) =>
-        "0x" + (parse.os === "macos" ? macho_first_offset + a.address : a.address).toString(16),
-    );
+    .filter(a => a.object === "bun")
+    .map(a => "0x" + (parse.os === "macos" ? macho_first_offset + a.address : a.address).toString(16));
   if (bun_addrs.length > 0) {
     const cmd = [
       parse.os === "windows" ? pdb_addr2line : llvm_symbolizer,
@@ -121,17 +116,15 @@ export async function remapUncached(
     });
 
     if ((await subproc.exited) !== 0) {
-      const e: any = new Error(
-        "pdb-addr2line failed: " + (await Bun.readableStreamToText(subproc.stderr)),
-      );
+      const e: any = new Error("pdb-addr2line failed: " + (await Bun.readableStreamToText(subproc.stderr)));
       e.code = "PdbAddr2LineFailed";
     }
 
     const stdout = await Bun.readableStreamToText(subproc.stdout);
-    lines = stdout.split("\n").filter((l) => l.length > 0);
+    lines = stdout.split("\n").filter(l => l.length > 0);
   }
 
-  let mapped_addrs: Address[] = parse.addresses.map((addr) => {
+  let mapped_addrs: Address[] = parse.addresses.map(addr => {
     if (addr.object === "bun") {
       const fn_line = lines.shift();
       const source_line = lines.shift();
@@ -168,10 +161,7 @@ export async function remapUncached(
 
     console.log(mapped_addrs);
     // remove additional `???` lines
-    while (
-      mapped_addrs.length > 0 &&
-      (!mapped_addrs[0].remapped || mapped_addrs[0].function === "??")
-    ) {
+    while (mapped_addrs.length > 0 && (!mapped_addrs[0].remapped || mapped_addrs[0].function === "??")) {
       mapped_addrs.shift();
     }
 
@@ -196,9 +186,7 @@ export async function remapUncached(
     commit: commit,
     addresses: mapped_addrs,
     command: command_map[parse.command] ?? parse.command,
-    features: debug_info.feature_config
-      ? decodeFeatures(parse.features, debug_info.feature_config)
-      : [],
+    features: debug_info.feature_config ? decodeFeatures(parse.features, debug_info.feature_config) : [],
   };
   putCachedRemap(key, remap);
 
@@ -241,10 +229,7 @@ export function filterAddresses(addrs: Address[]): Address[] {
   }
 
   // remove trailing ?? lines
-  while (
-    addrs.length > 0 &&
-    (!addrs[addrs.length - 1].remapped || addrs[addrs.length - 1].function === "??")
-  ) {
+  while (addrs.length > 0 && (!addrs[addrs.length - 1].remapped || addrs[addrs.length - 1].function === "??")) {
     addrs.pop();
   }
 
@@ -309,8 +294,12 @@ export function parsePdb2AddrLineFile(str: string): { file: string; line: number
     return null;
   }
 
-  const file_full = str.slice(0, second_colon);
-  const file = file_full.replace(/\\/g, "/").replace(/.*?\/src\//g, "src/");
+  const file_full = str.slice(0, second_colon).replace(/\\/g, "/");
+  // Strip the CI build root, keeping the first repo-level dir (src, vendor,
+  // packages) onward. The old `.*?/src/` regex ate `vendor/libuv/` off paths
+  // like `.../vendor/libuv/src/win/process.c`.
+  const m = file_full.match(/(?:^|\/)(src|vendor|packages)\/(.*)$/);
+  const file = m ? `${m[1]}/${m[2]}` : file_full;
 
   return { file, line };
 }
