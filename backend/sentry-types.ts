@@ -31,6 +31,9 @@ export interface PayloadEvent {
   event_id: string;
   /** node integration sets this to "node" */
   platform: string;
+  release: string;
+  level: "fatal" | "error" | "warning" | "info" | "debug";
+  transaction?: string;
   tags: any;
   contexts: PayloadEventContexts;
   server_name?: string;
@@ -71,7 +74,6 @@ export interface PayloadEventContexts {
     timezone: string;
   };
   cloud_resource?: {};
-  release: string;
 }
 
 export interface OS {
@@ -87,14 +89,14 @@ export interface PayloadException {
   /** example: "foo is not defined" */
   value: string;
   stacktrace: StackTrace;
-}
-
-export interface StackTrace {
-  frames: StackTraceFrame[];
   mechanism: {
     type: "generic";
     handled: boolean;
   };
+}
+
+export interface StackTrace {
+  frames: StackTraceFrame[];
 }
 
 export interface StackTraceFrame {
@@ -108,6 +110,7 @@ export interface StackTraceFrame {
   context_line?: string;
   post_context?: string[];
   source_link?: string;
+  instruction_addr?: string;
 }
 
 export interface PayloadEventPackage {
