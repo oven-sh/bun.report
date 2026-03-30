@@ -214,7 +214,7 @@ async function toStackFrame(address: Address, commit: string): Promise<Sentry.St
         lineno: src.line,
         in_app: object === "bun" && !filename.includes("src/deps/zig"),
         function: fn,
-        module: object,
+        package: object,
         ...(repoPath
           ? {
               source_link: `https://raw.githubusercontent.com/oven-sh/bun/${commit}/${repoPath}#L${src.line}`,
@@ -232,7 +232,7 @@ async function toStackFrame(address: Address, commit: string): Promise<Sentry.St
   }
 
   return {
-    module: object,
+    package: object,
     function: fn ?? "<anonymous>",
     in_app: object === "bun",
     ...("address" in address ? { instruction_addr: "0x" + address.address.toString(16) } : {}),
