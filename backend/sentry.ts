@@ -52,6 +52,13 @@ function getTags(parse: Parse, remap: Remap): any {
   tags.version = remap.version;
   tags.commit = remap.commit.oid.slice(0, 9);
   tags.arch = parse.arch.replace(/_baseline$/, "");
+  // cache_key is SHA256(commitish_arch_os_canary_addresses). Before the
+  // randomUUID switch, MD5(cache_key) was the event_id — so Sentry deduped
+  // identical (stack, build) tuples to one event. Sending it as a tag lets
+  // count_unique(cache_key) recover that deduped metric for comparison against
+  // the pre-switch baseline, while count() gives actual occurrence volume.
+  // Truncated: 16 hex chars of SHA256 = 64 bits, collision-resistant enough.
+  if (parse.cache_key) tags.cache_key = parse.cache_key.slice(0, 16);
 
   tags.command = remap.command;
 
@@ -71,7 +78,7 @@ function getTags(parse: Parse, remap: Remap): any {
     if (parse.env_flags & 0b0100) tags.emulated_x64 = true;
   }
 
-  if (parse.os_version) tags.os_version = formatOSVersion(parse.os_version);
+  if (parse.os_version?.[0]) tags.os_version = formatOSVersion(parse.os_version);
   if (parse.total_ram_mb) tags.ram_mb = parse.total_ram_mb;
 
   if (parse.cpu_flags != null) {
@@ -109,7 +116,7 @@ function formatOSVersion(v: readonly [number, number, number]): string {
 
 function getOSContext(parse: Parse): Sentry.OS {
   const name = ({ windows: "Windows", macos: "macOS", linux: "Linux" } as const)[parse.os];
-  return parse.os_version ? { name, version: formatOSVersion(parse.os_version) } : { name };
+  return parse.os_version?.[0] ? { name, version: formatOSVersion(parse.os_version) } : { name };
 }
 
 function getOSDeviceContext(parse: Parse): Sentry.PayloadEventContexts["device"] {
@@ -157,7 +164,7 @@ function remapToExceptionType(message: string) {
   } else {
     type = type
       .split(" ")
-      .map(x => x.charAt(0).toUpperCase() + x.slice(1))
+      .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
       .join("");
   }
 
@@ -173,7 +180,9 @@ async function remapToException(parse: Parse, remap: Remap): Promise<Sentry.Payl
     type,
     value,
     stacktrace: {
-      frames: await Promise.all(remap.addresses.map(x => toStackFrame(x, remap.commit.oid)).reverse()),
+      frames: await Promise.all(
+        remap.addresses.map((x) => toStackFrame(x, remap.commit.oid)).reverse(),
+      ),
     },
     mechanism: {
       type: "generic",
@@ -189,7 +198,11 @@ function repoRelativePath(filename: string): string | null {
   const stripped = filename
     .replace(/^\/?(webkitbuild|build|workdir)\//, "")
     .replace(/^.*?\/(src|vendor|packages)\//, "$1/");
-  if (stripped.startsWith("src/") || stripped.startsWith("vendor/") || stripped.startsWith("packages/")) {
+  if (
+    stripped.startsWith("src/") ||
+    stripped.startsWith("vendor/") ||
+    stripped.startsWith("packages/")
+  ) {
     return stripped;
   }
   return null;
@@ -239,11 +252,14 @@ async function toStackFrame(address: Address, commit: string): Promise<Sentry.St
 }
 
 async function fetchEventDetails(eventId: string): Promise<any> {
-  const response = await fetch(`https://sentry.io/api/0/organizations/4507155222364160/eventids/${eventId}/`, {
-    headers: {
-      Authorization: `Bearer ${process.env.SENTRY_PRIVATE_KEY}`,
+  const response = await fetch(
+    `https://sentry.io/api/0/organizations/4507155222364160/eventids/${eventId}/`,
+    {
+      headers: {
+        Authorization: `Bearer ${process.env.SENTRY_PRIVATE_KEY}`,
+      },
     },
-  });
+  );
   if (!response.ok) {
     return { id: eventId };
   }
@@ -279,7 +295,7 @@ export async function sendToSentry(parse: Parse, remap: Remap) {
     return;
   }
   const event = await remapToPayload(parse, remap);
-  const body = event.map(x => JSON.stringify(x)).join("\n");
+  const body = event.map((x) => JSON.stringify(x)).join("\n");
 
   console.log(body);
 
