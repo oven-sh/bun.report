@@ -157,7 +157,7 @@ function remapToExceptionType(message: string) {
   } else {
     type = type
       .split(" ")
-      .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
+      .map(x => x.charAt(0).toUpperCase() + x.slice(1))
       .join("");
   }
 
@@ -173,9 +173,7 @@ async function remapToException(parse: Parse, remap: Remap): Promise<Sentry.Payl
     type,
     value,
     stacktrace: {
-      frames: await Promise.all(
-        remap.addresses.map((x) => toStackFrame(x, remap.commit.oid)).reverse(),
-      ),
+      frames: await Promise.all(remap.addresses.map(x => toStackFrame(x, remap.commit.oid)).reverse()),
     },
     mechanism: {
       type: "generic",
@@ -191,11 +189,7 @@ function repoRelativePath(filename: string): string | null {
   const stripped = filename
     .replace(/^\/?(webkitbuild|build|workdir)\//, "")
     .replace(/^.*?\/(src|vendor|packages)\//, "$1/");
-  if (
-    stripped.startsWith("src/") ||
-    stripped.startsWith("vendor/") ||
-    stripped.startsWith("packages/")
-  ) {
+  if (stripped.startsWith("src/") || stripped.startsWith("vendor/") || stripped.startsWith("packages/")) {
     return stripped;
   }
   return null;
@@ -214,7 +208,7 @@ async function toStackFrame(address: Address, commit: string): Promise<Sentry.St
         lineno: src.line,
         in_app: object === "bun" && !filename.includes("src/deps/zig"),
         function: fn,
-        module: object,
+        package: object,
         ...(repoPath
           ? {
               source_link: `https://raw.githubusercontent.com/oven-sh/bun/${commit}/${repoPath}#L${src.line}`,
@@ -232,7 +226,7 @@ async function toStackFrame(address: Address, commit: string): Promise<Sentry.St
   }
 
   return {
-    module: object,
+    package: object,
     function: fn ?? "<anonymous>",
     in_app: object === "bun",
     ...("address" in address ? { instruction_addr: "0x" + address.address.toString(16) } : {}),
@@ -240,14 +234,11 @@ async function toStackFrame(address: Address, commit: string): Promise<Sentry.St
 }
 
 async function fetchEventDetails(eventId: string): Promise<any> {
-  const response = await fetch(
-    `https://sentry.io/api/0/organizations/4507155222364160/eventids/${eventId}/`,
-    {
-      headers: {
-        Authorization: `Bearer ${process.env.SENTRY_PRIVATE_KEY}`,
-      },
+  const response = await fetch(`https://sentry.io/api/0/organizations/4507155222364160/eventids/${eventId}/`, {
+    headers: {
+      Authorization: `Bearer ${process.env.SENTRY_PRIVATE_KEY}`,
     },
-  );
+  });
   if (!response.ok) {
     return { id: eventId };
   }
@@ -283,7 +274,7 @@ export async function sendToSentry(parse: Parse, remap: Remap) {
     return;
   }
   const event = await remapToPayload(parse, remap);
-  const body = event.map((x) => JSON.stringify(x)).join("\n");
+  const body = event.map(x => JSON.stringify(x)).join("\n");
 
   console.log(body);
 

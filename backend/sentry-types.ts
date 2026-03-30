@@ -101,7 +101,7 @@ export interface StackTrace {
 
 export interface StackTraceFrame {
   filename?: string;
-  module: string;
+  package: string;
   function: string;
   lineno?: number;
   colno?: number;
