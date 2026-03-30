@@ -1,4 +1,5 @@
 import type { Address, Parse, Remap } from "../lib";
+import type { Platform } from "../lib/util";
 import type * as Sentry from "./sentry-types";
 import { getCodeView } from "./code-view";
 
@@ -23,9 +24,12 @@ async function remapToPayload(parse: Parse, remap: Remap): Promise<Sentry.Payloa
       event_id,
       platform: "other",
       release: `bun@${remap.version}+${remap.commit.oid.slice(0, 9)}`,
+      dist: buildDist(parse),
       level: "fatal",
       transaction: remap.command,
       tags: getTags(parse, remap),
+      fingerprint: buildFingerprint(parse, remap),
+      extra: buildExtra(remap),
       contexts: {
         runtime: {
           name: "bun",
@@ -35,7 +39,7 @@ async function remapToPayload(parse: Parse, remap: Remap): Promise<Sentry.Payloa
         device: getOSDeviceContext(parse),
       },
       timestamp: new Date().getTime() / 1000,
-      environment: "production",
+      environment: parse.is_canary ? "canary" : "production",
       sdk: {
         integrations: [],
         name: "bun",
@@ -108,6 +112,18 @@ function decodeCPUFlags(flags: number, arch: string): string[] {
   return out;
 }
 
+/**
+ * `dist` marks build variants of the same release — same version, same commit,
+ * different compile flags. For bun that's baseline (older-CPU target) and musl
+ * (Alpine/musl libc). undefined means the standard build for this os/arch.
+ */
+function buildDist(parse: Parse): string | undefined {
+  const parts: string[] = [];
+  if (parse.arch.endsWith("_baseline")) parts.push("baseline");
+  if (parse.env_flags != null && parse.env_flags & 0b0010) parts.push("musl");
+  return parts.length ? parts.join("-") : undefined;
+}
+
 function formatOSVersion(v: readonly [number, number, number]): string {
   // Drop trailing zeros so "26.4.0" shows as "26.4".
   const parts = v[2] !== 0 ? v : v[1] !== 0 ? v.slice(0, 2) : v.slice(0, 1);
@@ -116,7 +132,32 @@ function formatOSVersion(v: readonly [number, number, number]): string {
 
 function getOSContext(parse: Parse): Sentry.OS {
   const name = ({ windows: "Windows", macos: "macOS", linux: "Linux" } as const)[parse.os];
-  return parse.os_version?.[0] ? { name, version: formatOSVersion(parse.os_version) } : { name };
+  if (!parse.os_version?.[0]) return { name };
+
+  // Windows encodes as major.minor.build (e.g. 10.0.22631). Build number is
+  // what actually distinguishes 23H2 from 24H2 — put it in its own field.
+  if (parse.os === "windows") {
+    const [maj, min, build] = parse.os_version;
+    return { name, version: `${maj}.${min}`, build: build ? String(build) : undefined };
+  }
+  return { name, version: formatOSVersion(parse.os_version) };
+}
+
+/**
+ * The "Additional Data" panel on every event. We already resolve the commit
+ * to its PR (title, number, branch) in remap.commit.pr — currently thrown
+ * away. Surfacing it means clicking any crash shows the PR that introduced
+ * the crashing code (or at least, the PR the build was cut from).
+ */
+function buildExtra(remap: Remap): Record<string, unknown> | undefined {
+  const pr = remap.commit.pr;
+  if (!pr) return undefined;
+  return {
+    pr_number: pr.number,
+    pr_title: pr.title,
+    pr_branch: pr.ref,
+    pr_url: `https://github.com/oven-sh/bun/pull/${pr.number}`,
+  };
 }
 
 function getOSDeviceContext(parse: Parse): Sentry.PayloadEventContexts["device"] {
@@ -164,7 +205,7 @@ function remapToExceptionType(message: string) {
   } else {
     type = type
       .split(" ")
-      .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
+      .map(x => x.charAt(0).toUpperCase() + x.slice(1))
       .join("");
   }
 
@@ -174,20 +215,117 @@ function remapToExceptionType(message: string) {
   };
 }
 
+/**
+ * Sentry's default fingerprint hashes the message, which for us includes the
+ * fault address ("Segmentation fault at address 0x7FF6..."). That address is
+ * per-process even after ASLR stripping if the crash is in a loaded DLL, so
+ * identical crashes fragment into thousands of one-event issue groups.
+ *
+ * This builds a fingerprint from the crash type + the function names of the
+ * top in-app frames — what a human would actually use to recognize a crash.
+ * The address stays visible in the message; grouping just ignores it.
+ *
+ * Falls back to Sentry's default when we can't find any remapped in-app
+ * frames (e.g. a crash entirely inside an external DLL we can't symbolicate).
+ */
+function buildFingerprint(parse: Parse, remap: Remap): string[] {
+  const { type } = remapToExceptionType(parse.message);
+
+  // Walk from the top of the stack (crash site outward). A frame is usable
+  // if we symbolicated it to a real function name — ?? and <anonymous> are
+  // symbolication failures, not identities.
+  const usable: string[] = [];
+  for (const addr of remap.addresses) {
+    if (usable.length >= 5) break;
+    if (!addr.remapped) continue;
+    const fn = addr.function;
+    if (!fn || fn === "??" || fn === "<anonymous>") continue;
+    usable.push(fn);
+  }
+
+  if (usable.length === 0) {
+    // No symbolicated frames — punt to Sentry's default so we don't collapse
+    // every unsymbolicated crash into one mega-group.
+    return ["{{ default }}"];
+  }
+
+  // For panics, the panic message IS the identity ("assertion failed: x",
+  // "index out of bounds"). Different panic messages are different bugs even
+  // if the stack happens to match. Other crash types don't have a meaningful
+  // message — it's just "Segfault at 0x..." which we're trying to escape.
+  if (type === "Panic") {
+    return [type, parse.message, ...usable];
+  }
+
+  return [type, ...usable];
+}
+
+/**
+ * Hardware faults don't carry a meaningful error string — "Segmentation fault
+ * at address 0x..." describes what the CPU did, not what the code did.
+ * Sentry's docs say to set synthetic:true for these so the UI doesn't try to
+ * parse the message as an error class.
+ *
+ * mechanism.type describes HOW the crash was caught:
+ *   - POSIX: sigaction handler → "signal" + meta.signal with the POSIX number
+ *   - Windows: AddVectoredExceptionHandler → "veh" + data with the NT code
+ *     (Sentry has no Windows-specific meta field; their own minidump path
+ *     puts the code name in exception.type, but we keep type cross-platform
+ *     and stash the NT code in mechanism.data instead.)
+ *
+ * Panic/Error/OOM/StackOverflow are software-raised — real message, no signal,
+ * no exception code.
+ */
+function buildMechanism(type: string, os: Platform): Sentry.Mechanism {
+  // SIGBUS is 10 on macOS/BSD, 7 on Linux.
+  const posix: Record<string, { number: number; name: string }> = {
+    Segfault: { number: 11, name: "SIGSEGV" },
+    IllegalInstruction: { number: 4, name: "SIGILL" },
+    BusError: { number: os === "macos" ? 10 : 7, name: "SIGBUS" },
+    FloatingPointException: { number: 8, name: "SIGFPE" },
+  };
+
+  // crash_handler.zig:927 maps ExceptionCode → reason; this inverts it.
+  const nt: Record<string, { code: number; name: string }> = {
+    Segfault: { code: 0xc0000005, name: "EXCEPTION_ACCESS_VIOLATION" },
+    IllegalInstruction: { code: 0xc000001d, name: "EXCEPTION_ILLEGAL_INSTRUCTION" },
+    StackOverflow: { code: 0xc00000fd, name: "EXCEPTION_STACK_OVERFLOW" },
+    UnalignedMemoryAccess: { code: 0x80000002, name: "EXCEPTION_DATATYPE_MISALIGNMENT" },
+  };
+
+  if (os === "windows") {
+    const exc = nt[type];
+    if (!exc) return { type: "generic", handled: false };
+    return {
+      type: "veh",
+      handled: false,
+      synthetic: true,
+      data: {
+        exception_code: "0x" + exc.code.toString(16).toUpperCase(),
+        exception_name: exc.name,
+      },
+    };
+  }
+
+  const sig = posix[type];
+  if (!sig) return { type: "generic", handled: false };
+  return {
+    type: "signal",
+    handled: false,
+    synthetic: true,
+    meta: { signal: sig },
+  };
+}
+
 async function remapToException(parse: Parse, remap: Remap): Promise<Sentry.PayloadException> {
   const { type, value } = remapToExceptionType(parse.message);
   return {
     type,
     value,
     stacktrace: {
-      frames: await Promise.all(
-        remap.addresses.map((x) => toStackFrame(x, remap.commit.oid)).reverse(),
-      ),
+      frames: await Promise.all(remap.addresses.map(x => toStackFrame(x, remap.commit.oid)).reverse()),
     },
-    mechanism: {
-      type: "generic",
-      handled: false,
-    },
+    mechanism: buildMechanism(type, parse.os),
   };
 }
 
@@ -198,11 +336,7 @@ function repoRelativePath(filename: string): string | null {
   const stripped = filename
     .replace(/^\/?(webkitbuild|build|workdir)\//, "")
     .replace(/^.*?\/(src|vendor|packages)\//, "$1/");
-  if (
-    stripped.startsWith("src/") ||
-    stripped.startsWith("vendor/") ||
-    stripped.startsWith("packages/")
-  ) {
+  if (stripped.startsWith("src/") || stripped.startsWith("vendor/") || stripped.startsWith("packages/")) {
     return stripped;
   }
   return null;
@@ -252,14 +386,11 @@ async function toStackFrame(address: Address, commit: string): Promise<Sentry.St
 }
 
 async function fetchEventDetails(eventId: string): Promise<any> {
-  const response = await fetch(
-    `https://sentry.io/api/0/organizations/4507155222364160/eventids/${eventId}/`,
-    {
-      headers: {
-        Authorization: `Bearer ${process.env.SENTRY_PRIVATE_KEY}`,
-      },
+  const response = await fetch(`https://sentry.io/api/0/organizations/4507155222364160/eventids/${eventId}/`, {
+    headers: {
+      Authorization: `Bearer ${process.env.SENTRY_PRIVATE_KEY}`,
     },
-  );
+  });
   if (!response.ok) {
     return { id: eventId };
   }
@@ -295,7 +426,7 @@ export async function sendToSentry(parse: Parse, remap: Remap) {
     return;
   }
   const event = await remapToPayload(parse, remap);
-  const body = event.map((x) => JSON.stringify(x)).join("\n");
+  const body = event.map(x => JSON.stringify(x)).join("\n");
 
   console.log(body);
 

@@ -4,7 +4,7 @@
  * for the purposes of bun.report
  */
 
-export type NodeEnv = "production" | "development";
+export type NodeEnv = "production" | "development" | "canary";
 
 /** example: "2024-05-01T23:33:44.598Z" */
 export type DateString = string;
@@ -33,8 +33,13 @@ export interface PayloadEvent {
   platform: string;
   release: string;
   level: "fatal" | "error" | "warning" | "info" | "debug";
+  /** Build variant of this release (e.g. "baseline", "musl"). */
+  dist?: string;
   transaction?: string;
   tags: any;
+  fingerprint?: string[];
+  /** Non-searchable display-only data — shows in the "Additional Data" panel. */
+  extra?: Record<string, unknown>;
   contexts: PayloadEventContexts;
   server_name?: string;
   /** seconds */
@@ -83,16 +88,27 @@ export interface OS {
   build?: string;
 }
 
+export interface Mechanism {
+  /** Describes how the crash was captured — signal handler, VEH, etc. */
+  type: "generic" | "signal" | "veh";
+  handled: boolean;
+  /** Message is a synthetic description (e.g. "segfault at 0x...") rather than an error string. */
+  synthetic?: boolean;
+  /** Sentry has dedicated fields for POSIX/Mach; Windows goes in `data`. */
+  meta?: {
+    signal?: { number: number; name: string; code?: number };
+  };
+  /** Arbitrary display-only data — used for Windows NT exception codes. */
+  data?: Record<string, string | number>;
+}
+
 export interface PayloadException {
   /** example: "ReferenceError" */
   type: string;
   /** example: "foo is not defined" */
   value: string;
   stacktrace: StackTrace;
-  mechanism: {
-    type: "generic";
-    handled: boolean;
-  };
+  mechanism: Mechanism;
 }
 
 export interface StackTrace {
