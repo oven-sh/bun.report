@@ -200,7 +200,7 @@ export default {
         return remapAndRedirect(request_url, str, parsed, request.headers);
       })
       .catch(err => {
-        return handleError(url, err, false);
+        return handleError(request_url, err, false);
       });
   },
   error(err) {
@@ -210,7 +210,7 @@ export default {
 } satisfies ServeOptions;
 
 // Post requests
-function postRequest(request: Request, server: Server) {
+function postRequest(request: Request, server: Server<unknown>) {
   const pathname = getPathname(new URL(request.url));
 
   switch (pathname) {
@@ -226,7 +226,7 @@ function postRequest(request: Request, server: Server) {
   }
 }
 
-async function postRemap(request: Request, server: Server) {
+async function postRemap(request: Request, server: Server<unknown>) {
   // Validate input body request
   let parsed: Parse;
   const url = new URL(request.url);
@@ -314,7 +314,7 @@ async function remapAndRedirect(url: URL, parsed_str: string, parsed: Parse, hea
       return Response.redirect(`https://github.com/oven-sh/bun/issues/${remapped.issue}`, 307);
     }
 
-    let bunVersions: { "$note": string; releases: Record<string, { status: "retired" | "current" }> } | undefined;
+    let bunVersions: { $note: string; releases: Record<string, { status: "retired" | "current" }> } | undefined;
     try {
       bunVersions = await fetch("https://bun.com/versions.json").then(r => r.json());
     } catch (e) {
@@ -331,10 +331,10 @@ async function remapAndRedirect(url: URL, parsed_str: string, parsed: Parse, hea
     const markdown = await formatMarkdown(remapped);
     const template = remapped.command === "InstallCommand" ? install_template : default_template;
     let report = markdown + "\n\n<!-- from bun.report: " + remapCacheKey(remapped) + " -->";
-    if (sentryDetails?.id) {
+    if (sentryDetails && "id" in sentryDetails) {
       const { id } = sentryDetails;
       report += `\n\n<!-- sentry_id: ${id} -->`;
-    } else if (sentryDetails?.shortId) {
+    } else if (sentryDetails && "shortId" in sentryDetails) {
       const { shortId, permalink } = sentryDetails;
       report += `\n\n<sub>Sentry Issue: <strong><a href="${permalink}">${shortId}</a></strong></sub>`;
     }

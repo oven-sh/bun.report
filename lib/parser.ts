@@ -11,7 +11,7 @@ const debug = process.env.NODE_ENV === "production" ? () => {} : console.log;
 const platform_map: { [key: string]: [Platform, Arch] } = {
   w: ["windows", "x86_64"],
   e: ["windows", "x86_64_baseline"],
-  // 'W': ['windows', 'aarch64'],
+  W: ["windows", "aarch64"],
 
   m: ["macos", "x86_64"],
   b: ["macos", "x86_64_baseline"],
@@ -25,13 +25,13 @@ const platform_map: { [key: string]: [Platform, Arch] } = {
 const reasons: { [key: string]: (input: string) => string | Promise<string> } = {
   "0": parsePanicMessage,
   "1": () => "panic: reached unreachable code",
-  "2": (addr) => `Segmentation fault at ${parseVlqAddr(addr)}`,
-  "3": (addr) => `Illegal instruction at ${parseVlqAddr(addr)}`,
-  "4": (addr) => `Bus error at ${parseVlqAddr(addr)}`,
-  "5": (addr) => `Floating point exception at ${parseVlqAddr(addr)}`,
+  "2": addr => `Segmentation fault at ${parseVlqAddr(addr)}`,
+  "3": addr => `Illegal instruction at ${parseVlqAddr(addr)}`,
+  "4": addr => `Bus error at ${parseVlqAddr(addr)}`,
+  "5": addr => `Floating point exception at ${parseVlqAddr(addr)}`,
   "6": () => `Unaligned memory access`,
   "7": () => `Stack overflow`,
-  "8": (rest) => "error: " + rest,
+  "8": rest => "error: " + rest,
   "9": () => `Bun ran out of memory`,
 };
 
@@ -57,6 +57,14 @@ export interface Parse {
   is_canary?: boolean;
   /** lazily computed by parseCacheKey */
   cache_key?: string;
+  /** v3+: OS version as major.minor.patch (kernel on Linux, product on macOS, build on Windows) */
+  os_version?: [number, number, number];
+  /** v3+: env flags — bit0=wsl, bit1=musl, bit2=emulated_x64 (Rosetta/Prism), bit3=canary */
+  env_flags?: number;
+  /** v3+: CPU feature flags (CPUFeatures.Flags bitcast) */
+  cpu_flags?: number;
+  /** v3+: total RAM in MB */
+  total_ram_mb?: number;
 }
 
 export interface ResolvedCommit {
@@ -132,11 +140,16 @@ export async function parse(str: string): Promise<Parse | null> {
     const trace_version = str[first_slash + 3];
 
     let is_canary = false;
+    let has_v3_meta = false;
     if (trace_version === "1") {
       // '1' - original. uses 7 char hash with VLQ encoded stack-frames
     } else if (trace_version === "2") {
       // '2' - same as '1' but this build is known to be a canary build
       is_canary = true;
+    } else if (trace_version === "3") {
+      // '3' - adds os_version, env_flags, cpu_flags, ram after the sha.
+      //       canary bit moves into env_flags.
+      has_v3_meta = true;
     } else {
       DEBUG && debug("invalid version '%s'", trace_version);
       return null;
@@ -149,6 +162,29 @@ export async function parse(str: string): Promise<Parse | null> {
     const commitish = str.slice(first_slash + 4, i);
 
     let c, object, address, inc;
+
+    let os_version: [number, number, number] | undefined;
+    let env_flags: number | undefined;
+    let cpu_flags: number | undefined;
+    let total_ram_mb: number | undefined;
+
+    if (has_v3_meta) {
+      const vals: number[] = [];
+      for (let n = 0; n < 6; n++) {
+        const [v, adv] = decodePart(str.slice(i));
+        if (v == null) {
+          DEBUG && debug("invalid v3 meta at vlq %d", n);
+          return null;
+        }
+        vals.push(v);
+        i += adv;
+      }
+      os_version = [vals[0], vals[1], vals[2]];
+      env_flags = vals[3];
+      cpu_flags = vals[4];
+      total_ram_mb = vals[5];
+      is_canary = !!(env_flags & 0b1000);
+    }
 
     [c, inc] = decodePart(str.slice(i));
     i += inc;
@@ -233,6 +269,10 @@ export async function parse(str: string): Promise<Parse | null> {
       command,
       features: features_data,
       is_canary,
+      os_version,
+      env_flags,
+      cpu_flags,
+      total_ram_mb,
     };
   } catch (e) {
     DEBUG && debug(e);
@@ -243,14 +283,7 @@ export async function parse(str: string): Promise<Parse | null> {
 function parsePanicMessage(message_compressed: string): Promise<string> | string {
   if (typeof Bun !== "undefined") {
     try {
-      return (
-        "panic: " +
-        new TextDecoder().decode(
-          Bun.inflateSync(Buffer.from(message_compressed, "base64url"), {
-            windowBits: 0,
-          }),
-        )
-      );
+      return "panic: " + new TextDecoder().decode(Bun.inflateSync(Buffer.from(message_compressed, "base64url")));
     } catch (e) {
       console.warn(message_compressed);
       throw e;
@@ -258,9 +291,7 @@ function parsePanicMessage(message_compressed: string): Promise<string> | string
   } else {
     const stream = new DecompressionStream("deflate");
     const writer = stream.writable.getWriter();
-    const write_promise = writer.write(
-      Uint8Array.from(atob(message_compressed), (c) => c.charCodeAt(0)),
-    );
+    const write_promise = writer.write(Uint8Array.from(atob(message_compressed), c => c.charCodeAt(0)));
     writer.close();
     const reader = stream.readable.getReader();
 
@@ -277,7 +308,7 @@ function parsePanicMessage(message_compressed: string): Promise<string> | string
         return "panic: " + (await new Blob(chunks).text());
       })(),
     ]).then(
-      (x) => x[1],
+      x => x[1],
       () => "",
     );
   }
@@ -288,9 +319,7 @@ function parseVlqAddr(unparsed_addr: string): string {
   let [second] = decodePart(unparsed_addr.slice(i));
   if (first == null || second == null) return "unknown address";
   first = first ? correctIntToUint32(first).toString(16) : "";
-  return (
-    "address 0x" + (first + correctIntToUint32(second).toString(16).padStart(8, "0")).toUpperCase()
-  );
+  return "address 0x" + (first + correctIntToUint32(second).toString(16).padStart(8, "0")).toUpperCase();
 }
 
 function correctIntToUint32(int: number): number {

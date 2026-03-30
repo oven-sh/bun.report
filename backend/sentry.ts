@@ -1,14 +1,9 @@
-import { MD5 } from "bun";
 import type { Address, Parse, Remap } from "../lib";
-import { type Platform, type Arch, parseCacheKey } from "../lib/util";
 import type * as Sentry from "./sentry-types";
-import assert from "node:assert";
 import { getCodeView } from "./code-view";
 
 async function remapToPayload(parse: Parse, remap: Remap): Promise<Sentry.Payload> {
-  assert(parse.cache_key);
-
-  const event_id = MD5.hash(parse.cache_key, "hex");
+  const event_id = crypto.randomUUID().replaceAll("-", "");
 
   return [
     {
@@ -26,16 +21,18 @@ async function remapToPayload(parse: Parse, remap: Remap): Promise<Sentry.Payloa
         values: [await remapToException(parse, remap)],
       },
       event_id,
-      platform: "bun",
+      platform: "native",
+      release: `bun@${remap.version}+${remap.commit.oid.slice(0, 9)}`,
+      level: "fatal",
+      transaction: remap.command,
       tags: getTags(parse, remap),
       contexts: {
-        release: remap.version,
         runtime: {
           name: "bun",
           version: remap.version + "+" + remap.commit.oid.slice(0, 9),
         },
-        os: getOSContext(parse.os),
-        device: getOSDeviceContext(parse.arch),
+        os: getOSContext(parse),
+        device: getOSDeviceContext(parse),
       },
       timestamp: new Date().getTime() / 1000,
       environment: "production",
@@ -53,6 +50,7 @@ function getTags(parse: Parse, remap: Remap): any {
   const tags: any = {};
 
   tags.version = remap.version;
+  tags.commit = remap.commit.oid.slice(0, 9);
   tags.arch = parse.arch.replace(/_baseline$/, "");
 
   tags.command = remap.command;
@@ -65,29 +63,59 @@ function getTags(parse: Parse, remap: Remap): any {
     tags.baseline = true;
   }
 
+  if (parse.is_canary) tags.canary = true;
+
+  if (parse.env_flags != null) {
+    if (parse.env_flags & 0b0001) tags.wsl = true;
+    if (parse.env_flags & 0b0010) tags.musl = true;
+    if (parse.env_flags & 0b0100) tags.emulated_x64 = true;
+  }
+
+  if (parse.os_version) tags.os_version = formatOSVersion(parse.os_version);
+  if (parse.total_ram_mb) tags.ram_mb = parse.total_ram_mb;
+
+  if (parse.cpu_flags != null) {
+    for (const name of decodeCPUFlags(parse.cpu_flags, parse.arch)) {
+      tags[`cpu_${name}`] = true;
+    }
+  }
+
   return tags;
 }
 
-function getOSContext(os: Platform): Sentry.OS {
-  switch (os) {
-    case "windows":
-      return {
-        name: "Windows",
-      };
-    case "macos":
-      return {
-        name: "macOS",
-      };
-    case "linux":
-      return {
-        name: "Linux",
-      };
+// Bit layout must match bun's src/bun.js/bindings/CPUFeatures.{cpp,zig}.
+// bit 0 is `none`, top bits are padding — both skipped. Append only.
+const cpu_flag_names = {
+  x86_64: [, "sse42", "popcnt", "avx", "avx2", "avx512"],
+  aarch64: [, "neon", "fp", "aes", "crc32", "atomics", "sve"],
+} as const;
+
+function decodeCPUFlags(flags: number, arch: string): string[] {
+  const names = cpu_flag_names[arch.replace(/_baseline$/, "") as keyof typeof cpu_flag_names];
+  if (!names) return [];
+  const out: string[] = [];
+  for (let bit = 0; bit < names.length; bit++) {
+    const name = names[bit];
+    if (name && flags & (1 << bit)) out.push(name);
   }
+  return out;
 }
 
-function getOSDeviceContext(arch: Arch): Sentry.PayloadEventContexts["device"] {
+function formatOSVersion(v: readonly [number, number, number]): string {
+  // Drop trailing zeros so "26.4.0" shows as "26.4".
+  const parts = v[2] !== 0 ? v : v[1] !== 0 ? v.slice(0, 2) : v.slice(0, 1);
+  return parts.join(".");
+}
+
+function getOSContext(parse: Parse): Sentry.OS {
+  const name = ({ windows: "Windows", macos: "macOS", linux: "Linux" } as const)[parse.os];
+  return parse.os_version ? { name, version: formatOSVersion(parse.os_version) } : { name };
+}
+
+function getOSDeviceContext(parse: Parse): Sentry.PayloadEventContexts["device"] {
   return {
-    arch,
+    arch: parse.arch,
+    ...(parse.total_ram_mb ? { memory_size: parse.total_ram_mb * 1024 * 1024 } : {}),
   };
 }
 
@@ -148,12 +176,29 @@ async function remapToException(parse: Parse, remap: Remap): Promise<Sentry.Payl
       frames: await Promise.all(
         remap.addresses.map((x) => toStackFrame(x, remap.commit.oid)).reverse(),
       ),
-      mechanism: {
-        type: "generic",
-        handled: true,
-      },
+    },
+    mechanism: {
+      type: "generic",
+      handled: false,
     },
   };
+}
+
+function repoRelativePath(filename: string): string | null {
+  // Debug symbols encode absolute build paths; strip known prefixes so source_link
+  // points at a real file in the repo. Return null when the file lives outside the
+  // bun repo (vendor/zig stdlib, system headers, etc.).
+  const stripped = filename
+    .replace(/^\/?(webkitbuild|build|workdir)\//, "")
+    .replace(/^.*?\/(src|vendor|packages)\//, "$1/");
+  if (
+    stripped.startsWith("src/") ||
+    stripped.startsWith("vendor/") ||
+    stripped.startsWith("packages/")
+  ) {
+    return stripped;
+  }
+  return null;
 }
 
 async function toStackFrame(address: Address, commit: string): Promise<Sentry.StackTraceFrame> {
@@ -162,6 +207,7 @@ async function toStackFrame(address: Address, commit: string): Promise<Sentry.St
     const { src } = address;
     if (src) {
       const filename = src.file.replaceAll("\\", "/");
+      const repoPath = repoRelativePath(filename);
       const code_view = await getCodeView(commit, src.file, src.line).catch(() => null);
       return {
         filename,
@@ -169,7 +215,11 @@ async function toStackFrame(address: Address, commit: string): Promise<Sentry.St
         in_app: object === "bun" && !filename.includes("src/deps/zig"),
         function: fn,
         module: object,
-        source_link: `https://raw.githubusercontent.com/oven-sh/bun/${commit}/${src.file}#L${src.line}`,
+        ...(repoPath
+          ? {
+              source_link: `https://raw.githubusercontent.com/oven-sh/bun/${commit}/${repoPath}#L${src.line}`,
+            }
+          : {}),
         ...(code_view
           ? {
               pre_context: code_view.above,
@@ -185,6 +235,7 @@ async function toStackFrame(address: Address, commit: string): Promise<Sentry.St
     module: object,
     function: fn ?? "<anonymous>",
     in_app: object === "bun",
+    ...("address" in address ? { instruction_addr: "0x" + address.address.toString(16) } : {}),
   };
 }
 
@@ -231,7 +282,6 @@ export async function sendToSentry(parse: Parse, remap: Remap) {
   if (!url) {
     return;
   }
-  parse.cache_key ??= parseCacheKey(parse);
   const event = await remapToPayload(parse, remap);
   const body = event.map((x) => JSON.stringify(x)).join("\n");
 

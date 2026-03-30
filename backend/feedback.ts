@@ -40,7 +40,7 @@ async function createTarball(formData: FormData, serverId: string): Promise<Uint
     const chunks: Uint8Array[] = [];
     const stream = new PassThrough();
 
-    stream.on("data", (chunk) => {
+    stream.on("data", chunk => {
       chunks.push(new Uint8Array(chunk));
     });
 
@@ -125,11 +125,7 @@ async function uploadToS3(
   return presignedUrl;
 }
 
-async function sendToDiscord(
-  feedbackData: FeedbackData,
-  tarballUrl: string | null,
-  fileList: string[],
-) {
+async function sendToDiscord(feedbackData: FeedbackData, tarballUrl: string | null, fileList: string[]) {
   if (!DISCORD_WEBHOOK_URL) {
     console.warn("Discord webhook URL not configured");
     return;
@@ -286,11 +282,7 @@ async function sendToDiscord(
           allowed_mentions: {},
         }),
       );
-      errorForm.append(
-        "file[1]",
-        new Blob([JSON.stringify(webhookPayload, null, 2)]),
-        "discord-payload.json",
-      );
+      errorForm.append("file[1]", new Blob([JSON.stringify(webhookPayload, null, 2)]), "discord-payload.json");
       errorForm.append(
         "file[2]",
         new Blob([JSON.stringify({ feedbackData, tarballUrl, fileList }, null, 2)]),
@@ -306,7 +298,7 @@ async function sendToDiscord(
   }
 }
 
-export async function onFeedbackRequest(request: Request, server: Server) {
+export async function onFeedbackRequest(request: Request, server: Server<unknown>) {
   try {
     const formData = await request.formData();
 
