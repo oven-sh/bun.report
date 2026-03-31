@@ -178,6 +178,18 @@ export async function remapUncached(
   if (debug_info.feature_config?.is_canary && !display_version.includes("canary")) {
     display_version += "-canary";
   }
+  const features = debug_info.feature_config ? decodeFeatures(parse.features, debug_info.feature_config) : [];
+
+  // Standalone (bun build --compile) binaries report whatever Cli.cmd
+  // happened to be set to — '_' on older builds that skipped the assignment,
+  // 'a' (AutoCommand) on fixed builds. Neither is a useful label. The feature
+  // flag is the real signal, so use it as the source of truth and give these
+  // crashes their own transaction name in Sentry so they're distinguishable
+  // from `bun run` at a glance.
+  const command = features.includes("standalone_executable")
+    ? "StandaloneExecutable"
+    : (command_map[parse.command] ?? parse.command);
+
   const remap = {
     version: display_version,
     message: parse.message,
@@ -185,8 +197,8 @@ export async function remapUncached(
     arch: parse.arch,
     commit: commit,
     addresses: mapped_addrs,
-    command: command_map[parse.command] ?? parse.command,
-    features: debug_info.feature_config ? decodeFeatures(parse.features, debug_info.feature_config) : [],
+    command,
+    features,
   };
   putCachedRemap(key, remap);
 
