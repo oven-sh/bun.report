@@ -283,7 +283,13 @@ export async function parse(str: string): Promise<Parse | null> {
 function parsePanicMessage(message_compressed: string): Promise<string> | string {
   if (typeof Bun !== "undefined") {
     try {
-      return "panic: " + new TextDecoder().decode(Bun.inflateSync(Buffer.from(message_compressed, "base64url")));
+      // crash_handler.zig uses zlib.compress2() which emits a zlib-wrapped
+      // stream (78 xx header + adler32 trailer). Bun.inflateSync defaults to
+      // raw deflate; windowBits:0 enables header auto-detect so both work.
+      // @types/bun's ZlibCompressionOptions enumerates 9..15/-9..-15/25..31
+      // but omits 0 — the types are wrong, libdeflate accepts it.
+      const opts = { windowBits: 0 } as unknown as Bun.ZlibCompressionOptions;
+      return "panic: " + new TextDecoder().decode(Bun.inflateSync(Buffer.from(message_compressed, "base64url"), opts));
     } catch (e) {
       console.warn(message_compressed);
       throw e;
