@@ -7,6 +7,7 @@ export interface FeatureConfig {
   revision?: string;
   generated_at?: number;
   is_pr: boolean;
+  embedder?: string;
 }
 
 export function decodeFeatures([high, low]: EncodedFeatureList, config: FeatureConfig): string[] {

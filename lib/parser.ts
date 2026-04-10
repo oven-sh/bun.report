@@ -86,6 +86,7 @@ export interface Remap {
   issue?: number;
   command: string;
   features: string[];
+  embedder?: string;
 }
 
 export type Address = RemappedAddress | UnknownAddress;

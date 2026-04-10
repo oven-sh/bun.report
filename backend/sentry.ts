@@ -1,8 +1,11 @@
-import { MD5 } from "bun";
+import { MD5, spawnSync } from "bun";
 import type { Address, Parse, Remap } from "../lib";
 import type { Platform } from "../lib/util";
 import type * as Sentry from "./sentry-types";
 import { getCodeView } from "./code-view";
+
+const BUN_REPORT_VERSION =
+  spawnSync(["git", "-C", import.meta.dir, "rev-parse", "--short=9", "HEAD"]).stdout.toString().trim() || "unknown";
 
 async function remapToPayload(parse: Parse, remap: Remap): Promise<Sentry.Payload> {
   const event_id = MD5.hash(parse.cache_key!, "hex");
@@ -11,7 +14,7 @@ async function remapToPayload(parse: Parse, remap: Remap): Promise<Sentry.Payloa
     {
       event_id,
       sent_at: new Date().toISOString(),
-      sdk: { name: "sentry.javascript.bun", version: Bun.version },
+      sdk: { name: "bun-report", version: BUN_REPORT_VERSION },
       trace: {
         environment: process.env.NODE_ENV! as Sentry.NodeEnv,
         public_key: process.env.SENTRY_PUBLIC_KEY!,
@@ -40,11 +43,11 @@ async function remapToPayload(parse: Parse, remap: Remap): Promise<Sentry.Payloa
         device: getOSDeviceContext(parse),
       },
       timestamp: new Date().getTime() / 1000,
-      environment: parse.is_canary ? "canary" : "production",
+      environment: remap.embedder ?? (parse.is_canary ? "canary" : "production"),
       sdk: {
         integrations: [],
-        name: "bun",
-        version: Bun.version,
+        name: "bun-report",
+        version: BUN_REPORT_VERSION,
         packages: [],
       },
     },
@@ -75,7 +78,8 @@ function getTags(parse: Parse, remap: Remap): any {
     tags.baseline = true;
   }
 
-  if (parse.is_canary) tags.canary = true;
+  if (remap.embedder) tags.embedder = remap.embedder;
+  else if (parse.is_canary) tags.canary = true;
 
   if (parse.env_flags != null) {
     if (parse.env_flags & 0b0001) tags.wsl = true;
