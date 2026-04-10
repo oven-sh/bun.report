@@ -44,7 +44,7 @@ export interface PayloadEvent {
   server_name?: string;
   /** seconds */
   timestamp: number;
-  environment: NodeEnv;
+  environment: string;
   sdk: {
     integrations: string[];
     name: string;

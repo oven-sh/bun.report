@@ -1,0 +1,38 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      wipe_db:
+        description: "Delete bun-remap.db before restart"
+        type: boolean
+        default: false
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 10
+    steps:
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:bun-report-deploy
+          use-cache: "true"
+
+      - name: Deploy
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          EXTRA: ${{ github.event_name == 'workflow_dispatch' && inputs.wipe_db && 'wipe-db' || '' }}
+        run: |
+          ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=15 \
+            bun@"$DEPLOY_HOST" \
+            '~/.bun/bin/bun ~/bun.report/scripts/deploy.ts' "$EXTRA"
