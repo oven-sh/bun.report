@@ -1,5 +1,5 @@
 import type { Parse, RemapAPIResponse } from "../lib/parser";
-import { os_names } from "../lib/format";
+import { os_names, addrsToPlainText } from "../lib/format";
 
 import { parse } from "../lib/parser";
 import { parseCacheKey, debounce, escapeHTML as eschtml } from "../lib/util";
@@ -191,11 +191,31 @@ const screens: Record<UIState, () => void> = {
     out.innerHTML = /* html */ `
       <div class='card'>
         ${cardHead()}
-        <table><tbody>${list}</tbody></table>
+        <div class='table-wrapper'>
+          <table><tbody>${list}</tbody></table>
+          <button class='copy-btn' title='Copy stack trace'>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
         ${cardFooter()}
         <div class='spacing'>${issue}</div>
       </div>
     `;
+
+    const copyBtn = out.querySelector(".copy-btn") as HTMLButtonElement;
+    if (copyBtn) {
+      copyBtn.addEventListener("click", () => {
+        const lines = addrsToPlainText(fetched!.commit.oid, fetched!.addresses);
+        const text = `${parsed!.message}\n\n${lines.join("\n")}`;
+        navigator.clipboard.writeText(text).then(() => {
+          copyBtn.querySelector("span")!.textContent = "Copied!";
+          setTimeout(() => {
+            copyBtn.querySelector("span")!.textContent = "Copy";
+          }, 2000);
+        });
+      });
+    }
   },
 
   // When fetch fails, fallback to this screen.
