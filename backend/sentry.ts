@@ -1,10 +1,11 @@
+import { MD5 } from "bun";
 import type { Address, Parse, Remap } from "../lib";
 import type { Platform } from "../lib/util";
 import type * as Sentry from "./sentry-types";
 import { getCodeView } from "./code-view";
 
 async function remapToPayload(parse: Parse, remap: Remap): Promise<Sentry.Payload> {
-  const event_id = crypto.randomUUID().replaceAll("-", "");
+  const event_id = MD5.hash(parse.cache_key!, "hex");
 
   return [
     {
