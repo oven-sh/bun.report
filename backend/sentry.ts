@@ -32,7 +32,7 @@ async function remapToPayload(parse: Parse, remap: Remap, trace_str: string): Pr
       dist: buildDist(parse),
       level: "fatal",
       transaction: remap.command,
-      tags: { ...getTags(parse, remap), ...(view_url.length <= 200 ? { view_url } : {}) },
+      tags: getTags(parse, remap),
       fingerprint: buildFingerprint(parse, remap),
       extra: buildExtra(remap, view_url),
       contexts: {
