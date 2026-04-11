@@ -4,7 +4,7 @@ import path from "node:path";
 import { parse } from "../lib/parser";
 
 const dir = path.join(import.meta.dir, "fixtures", "parse");
-const glob = new Glob("*.json");
+const glob = new Glob("**/*.json");
 const files = [...glob.scanSync({ cwd: dir })].sort();
 
 if (files.length === 0) {

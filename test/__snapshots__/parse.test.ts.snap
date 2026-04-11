@@ -1,5 +1,7915 @@
 // Bun Snapshot v1, https://bun.sh/docs/test/snapshots
 
+exports[`parse fixtures real-001-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 2793711,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 50161795,
+      "object": "bun",
+    },
+    {
+      "address": 50162847,
+      "object": "bun",
+    },
+    {
+      "address": 50161795,
+      "object": "bun",
+    },
+    {
+      "address": 50002359,
+      "object": "bun",
+    },
+    {
+      "address": 38241687,
+      "object": "bun",
+    },
+    {
+      "address": 42272879,
+      "object": "bun",
+    },
+    {
+      "address": 42258843,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 50167227,
+      "object": "bun",
+    },
+    {
+      "address": 50167227,
+      "object": "bun",
+    },
+    {
+      "address": 50161795,
+      "object": "bun",
+    },
+    {
+      "address": 50002359,
+      "object": "bun",
+    },
+    {
+      "address": 42234735,
+      "object": "bun",
+    },
+    {
+      "address": 44544051,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "a",
+  "commitish": "af24e28",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2048,
+    1048576,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000000",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-002-macos-aarch64-1.3.11-panic-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 49217555,
+      "object": "bun",
+    },
+    {
+      "address": 49656407,
+      "object": "bun",
+    },
+    {
+      "address": 4452351,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 5678719,
+      "object": "bun",
+    },
+    {
+      "address": 6900955,
+      "object": "bun",
+    },
+    {
+      "address": 10827415,
+      "object": "bun",
+    },
+    {
+      "address": 137939,
+      "object": "bun",
+    },
+    {
+      "address": 8206159,
+      "object": "bun",
+    },
+    {
+      "address": 8422635,
+      "object": "bun",
+    },
+    {
+      "address": 5678591,
+      "object": "bun",
+    },
+    {
+      "address": 5673971,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "t",
+  "commitish": "af24e28",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    265264,
+    1048576,
+  ],
+  "is_canary": false,
+  "message": "panic: A C++ exception occurred",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-003-macos-aarch64-1.3.11-segv-sm-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 21931895,
+      "object": "bun",
+    },
+    {
+      "address": 21931895,
+      "object": "bun",
+    },
+    {
+      "address": 13951879,
+      "object": "bun",
+    },
+    {
+      "address": 11144895,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "_",
+  "commitish": "a2743b6",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2099203,
+    1183767,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x1B2DF662B0634B46",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-004-macos-aarch64-1.3.11-segv-md-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 10393615,
+      "object": "bun",
+    },
+    {
+      "address": 10393615,
+      "object": "bun",
+    },
+    {
+      "address": 8725147,
+      "object": "bun",
+    },
+    {
+      "address": 6304615,
+      "object": "bun",
+    },
+    {
+      "address": 5857911,
+      "object": "bun",
+    },
+    {
+      "address": 22119259,
+      "object": "bun",
+    },
+    {
+      "address": 2941335,
+      "object": "bun",
+    },
+    {
+      "address": 2925259,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "_",
+  "commitish": "a2743b6",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2099203,
+    1576991,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000040",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-005-macos-aarch64-1.3.6-panic-md-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 46110523,
+      "object": "bun",
+    },
+    {
+      "address": 3234887,
+      "object": "bun",
+    },
+    {
+      "address": 3213507,
+      "object": "bun",
+    },
+    {
+      "address": 2818179,
+      "object": "bun",
+    },
+    {
+      "address": 18097935,
+      "object": "bun",
+    },
+    {
+      "address": 2470835,
+      "object": "bun",
+    },
+    {
+      "address": 2583447,
+      "object": "bun",
+    },
+    {
+      "address": 17003,
+      "object": "bun",
+    },
+    {
+      "address": 11919,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "a",
+  "commitish": "d530ed9",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    48,
+    1048581,
+  ],
+  "is_canary": false,
+  "message": "panic: unreachable",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.6",
+}
+`;
+
+exports[`parse fixtures real-006-macos-aarch64-1.3.2-ill-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 11956055,
+      "object": "bun",
+    },
+    {
+      "address": 17683523,
+      "object": "bun",
+    },
+    {
+      "address": 23559083,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 49778099,
+      "object": "bun",
+    },
+    {
+      "address": 35018115,
+      "object": "bun",
+    },
+    {
+      "address": 39404619,
+      "object": "bun",
+    },
+    {
+      "address": 42584275,
+      "object": "bun",
+    },
+    {
+      "address": 19601015,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "_",
+  "commitish": "b131639",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    512,
+    -1073477625,
+  ],
+  "is_canary": false,
+  "message": "Illegal instruction at address 0x18FC6CC94",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.2",
+}
+`;
+
+exports[`parse fixtures real-007-macos-x86_64-1.3.2-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 55912898,
+      "object": "bun",
+    },
+    {
+      "address": 55912898,
+      "object": "bun",
+    },
+    {
+      "address": 55780541,
+      "object": "bun",
+    },
+    {
+      "address": 39086313,
+      "object": "bun",
+    },
+    {
+      "address": 43953139,
+      "object": "bun",
+    },
+    {
+      "address": 43935320,
+      "object": "bun",
+    },
+    {
+      "address": 43928686,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 55917582,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "a",
+  "commitish": "b131639",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    0,
+    1074003968,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000000",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.2",
+}
+`;
+
+exports[`parse fixtures real-008-macos-x86_64-1.3.0-segv-md-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 38225587,
+      "object": "bun",
+    },
+    {
+      "address": 38182728,
+      "object": "bun",
+    },
+    {
+      "address": 37907870,
+      "object": "bun",
+    },
+    {
+      "address": 47112159,
+      "object": "bun",
+    },
+    {
+      "address": 25232476,
+      "object": "bun",
+    },
+    {
+      "address": 15901236,
+      "object": "bun",
+    },
+    {
+      "address": 15905718,
+      "object": "bun",
+    },
+    {
+      "address": 21266483,
+      "object": "bun",
+    },
+    {
+      "address": 15898478,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "n",
+  "commitish": "b0a6fec",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    732,
+    1074006023,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x0001F139",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.0",
+}
+`;
+
+exports[`parse fixtures real-009-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "n",
+  "commitish": "af24e28",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2097,
+    1052679,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x16A93BFF0",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-010-macos-aarch64-1.3.2-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 34397727,
+      "object": "bun",
+    },
+    {
+      "address": 34397727,
+      "object": "bun",
+    },
+    {
+      "address": 34435519,
+      "object": "bun",
+    },
+    {
+      "address": 34206095,
+      "object": "bun",
+    },
+    {
+      "address": 34204791,
+      "object": "bun",
+    },
+    {
+      "address": 34189771,
+      "object": "bun",
+    },
+    {
+      "address": 34196255,
+      "object": "bun",
+    },
+    {
+      "address": 34189307,
+      "object": "bun",
+    },
+    {
+      "address": 34351015,
+      "object": "bun",
+    },
+    {
+      "address": 34404403,
+      "object": "bun",
+    },
+    {
+      "address": 34204915,
+      "object": "bun",
+    },
+    {
+      "address": 34204695,
+      "object": "bun",
+    },
+    {
+      "address": 19442327,
+      "object": "bun",
+    },
+    {
+      "address": 18629411,
+      "object": "bun",
+    },
+    {
+      "address": 2668059,
+      "object": "bun",
+    },
+    {
+      "address": 18823619,
+      "object": "bun",
+    },
+    {
+      "address": 2371435,
+      "object": "bun",
+    },
+    {
+      "address": 19079,
+      "object": "bun",
+    },
+    {
+      "address": 14015,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "_",
+  "commitish": "b131639",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    0,
+    -1073477609,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000008",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.2",
+}
+`;
+
+exports[`parse fixtures real-011-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 21886315,
+      "object": "bun",
+    },
+    {
+      "address": 13944279,
+      "object": "bun",
+    },
+    {
+      "address": 17859983,
+      "object": "bun",
+    },
+    {
+      "address": 19736051,
+      "object": "bun",
+    },
+    {
+      "address": 19723875,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "_",
+  "commitish": "a2743b6",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2099203,
+    1576991,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x73746E657665227B",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-012-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 21849963,
+      "object": "bun",
+    },
+    {
+      "address": 18043215,
+      "object": "bun",
+    },
+    {
+      "address": 23422559,
+      "object": "bun",
+    },
+    {
+      "address": 24035895,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 53171639,
+      "object": "bun",
+    },
+    {
+      "address": 42136111,
+      "object": "bun",
+    },
+    {
+      "address": 44445427,
+      "object": "bun",
+    },
+    {
+      "address": 22948527,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 53171639,
+      "object": "bun",
+    },
+    {
+      "address": 38140379,
+      "object": "bun",
+    },
+    {
+      "address": 40641747,
+      "object": "bun",
+    },
+    {
+      "address": 23674559,
+      "object": "bun",
+    },
+    {
+      "address": 26355771,
+      "object": "bun",
+    },
+    {
+      "address": 6304087,
+      "object": "bun",
+    },
+    {
+      "address": 7244835,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "_",
+  "commitish": "a2743b6",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2099203,
+    1576991,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x632E627568746967",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-013-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 21849067,
+      "object": "bun",
+    },
+    {
+      "address": 18042731,
+      "object": "bun",
+    },
+    {
+      "address": 23421607,
+      "object": "bun",
+    },
+    {
+      "address": 24034943,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 53171639,
+      "object": "bun",
+    },
+    {
+      "address": 42197639,
+      "object": "bun",
+    },
+    {
+      "address": 42196455,
+      "object": "bun",
+    },
+    {
+      "address": 42134527,
+      "object": "bun",
+    },
+    {
+      "address": 44444243,
+      "object": "bun",
+    },
+    {
+      "address": 22947687,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 53171639,
+      "object": "bun",
+    },
+    {
+      "address": 38134995,
+      "object": "bun",
+    },
+    {
+      "address": 40637539,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "_",
+  "commitish": "01210fb",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2099203,
+    1576991,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x68746E612E697061",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-014-macos-aarch64-1.3.10-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 20901079,
+      "object": "bun",
+    },
+    {
+      "address": 20915215,
+      "object": "bun",
+    },
+    {
+      "address": 20949311,
+      "object": "bun",
+    },
+    {
+      "address": 1245527,
+      "object": "bun",
+    },
+    {
+      "address": 2987607,
+      "object": "bun",
+    },
+    {
+      "address": 19228199,
+      "object": "bun",
+    },
+    {
+      "address": 2657607,
+      "object": "bun",
+    },
+    {
+      "address": 2664695,
+      "object": "bun",
+    },
+    {
+      "address": 2659543,
+      "object": "bun",
+    },
+    {
+      "address": 2767803,
+      "object": "bun",
+    },
+    {
+      "address": 22043,
+      "object": "bun",
+    },
+    {
+      "address": 17423,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "a",
+  "commitish": "30e609e",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2096,
+    1048583,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x000000CC",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.10",
+}
+`;
+
+exports[`parse fixtures real-015-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 18776739,
+      "object": "bun",
+    },
+    {
+      "address": 18776739,
+      "object": "bun",
+    },
+    {
+      "address": 18644419,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 53286019,
+      "object": "bun",
+    },
+    {
+      "address": 53286019,
+      "object": "bun",
+    },
+    {
+      "address": 53286019,
+      "object": "bun",
+    },
+    {
+      "address": 53286019,
+      "object": "bun",
+    },
+    {
+      "address": 53286019,
+      "object": "bun",
+    },
+    {
+      "address": 53286019,
+      "object": "bun",
+    },
+    {
+      "address": 53286019,
+      "object": "bun",
+    },
+    {
+      "address": 53286019,
+      "object": "bun",
+    },
+    {
+      "address": 53126583,
+      "object": "bun",
+    },
+    {
+      "address": 42088287,
+      "object": "bun",
+    },
+    {
+      "address": 44399571,
+      "object": "bun",
+    },
+    {
+      "address": 22906023,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 53126583,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "_",
+  "commitish": "548644a",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2099203,
+    1576991,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000028",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-016-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 21846759,
+      "object": "bun",
+    },
+    {
+      "address": 5900031,
+      "object": "bun",
+    },
+    {
+      "address": 18015943,
+      "object": "bun",
+    },
+    {
+      "address": 10195883,
+      "object": "bun",
+    },
+    {
+      "address": 18902515,
+      "object": "bun",
+    },
+    {
+      "address": 18751703,
+      "object": "bun",
+    },
+    {
+      "address": 18644215,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 53126583,
+      "object": "bun",
+    },
+    {
+      "address": 42088287,
+      "object": "bun",
+    },
+    {
+      "address": 44399571,
+      "object": "bun",
+    },
+    {
+      "address": 22906023,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 53126583,
+      "object": "bun",
+    },
+    {
+      "address": 38090323,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "_",
+  "commitish": "548644a",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2099203,
+    1576991,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x756F736464227B5B",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-017-macos-aarch64-1.3.10-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 52401335,
+      "object": "bun",
+    },
+    {
+      "address": 37550435,
+      "object": "bun",
+    },
+    {
+      "address": 23707955,
+      "object": "bun",
+    },
+    {
+      "address": 7194687,
+      "object": "bun",
+    },
+    {
+      "address": 5452691,
+      "object": "bun",
+    },
+    {
+      "address": 21584879,
+      "object": "bun",
+    },
+    {
+      "address": 2505599,
+      "object": "bun",
+    },
+    {
+      "address": 2489499,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "_",
+  "commitish": "89a8aa9",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2099203,
+    1183775,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000008",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.10",
+}
+`;
+
+exports[`parse fixtures real-018-macos-aarch64-1.3.10-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 21351803,
+      "object": "bun",
+    },
+    {
+      "address": 21223667,
+      "object": "bun",
+    },
+    {
+      "address": 23846387,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "_",
+  "commitish": "89a8aa9",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2051,
+    1052695,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x95E29095E29095E2",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.10",
+}
+`;
+
+exports[`parse fixtures real-019-macos-aarch64-1.3.9-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 20451831,
+      "object": "bun",
+    },
+    {
+      "address": 20465967,
+      "object": "bun",
+    },
+    {
+      "address": 20500111,
+      "object": "bun",
+    },
+    {
+      "address": 1233131,
+      "object": "bun",
+    },
+    {
+      "address": 7020715,
+      "object": "bun",
+    },
+    {
+      "address": 19616279,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 49470187,
+      "object": "bun",
+    },
+    {
+      "address": 49305271,
+      "object": "bun",
+    },
+    {
+      "address": 34677927,
+      "object": "bun",
+    },
+    {
+      "address": 37141987,
+      "object": "bun",
+    },
+    {
+      "address": 19568983,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 49470187,
+      "object": "bun",
+    },
+    {
+      "address": 49470187,
+      "object": "bun",
+    },
+    {
+      "address": 49305271,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "a",
+  "commitish": "cf6cdbb",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2097,
+    1183775,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x0003E940",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.9",
+}
+`;
+
+exports[`parse fixtures real-020-macos-aarch64-1.3.9-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 34147439,
+      "object": "bun",
+    },
+    {
+      "address": 34114727,
+      "object": "bun",
+    },
+    {
+      "address": 34114491,
+      "object": "bun",
+    },
+    {
+      "address": 34113795,
+      "object": "bun",
+    },
+    {
+      "address": 38068459,
+      "object": "bun",
+    },
+    {
+      "address": 35232319,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 49333943,
+      "object": "bun",
+    },
+    {
+      "address": 34706567,
+      "object": "bun",
+    },
+    {
+      "address": 2322859,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "_",
+  "commitish": "d5628db",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2051,
+    1052695,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0x00000204",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.9",
+}
+`;
+
+exports[`parse fixtures real-021-macos-aarch64-1.3.9-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 27638467,
+      "object": "bun",
+    },
+    {
+      "address": 27438119,
+      "object": "bun",
+    },
+    {
+      "address": 27423335,
+      "object": "bun",
+    },
+    {
+      "address": 27609059,
+      "object": "bun",
+    },
+    {
+      "address": 27605067,
+      "object": "bun",
+    },
+    {
+      "address": 27838607,
+      "object": "bun",
+    },
+    {
+      "address": 27762895,
+      "object": "bun",
+    },
+    {
+      "address": 35190119,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "_",
+  "commitish": "d5628db",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2099203,
+    1052695,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0x00000030",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.9",
+}
+`;
+
+exports[`parse fixtures real-022-macos-aarch64-1.3.9-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 34196467,
+      "object": "bun",
+    },
+    {
+      "address": 34110387,
+      "object": "bun",
+    },
+    {
+      "address": 34156951,
+      "object": "bun",
+    },
+    {
+      "address": 33919415,
+      "object": "bun",
+    },
+    {
+      "address": 33918139,
+      "object": "bun",
+    },
+    {
+      "address": 33903295,
+      "object": "bun",
+    },
+    {
+      "address": 33909483,
+      "object": "bun",
+    },
+    {
+      "address": 33902811,
+      "object": "bun",
+    },
+    {
+      "address": 34064019,
+      "object": "bun",
+    },
+    {
+      "address": 34117107,
+      "object": "bun",
+    },
+    {
+      "address": 33918263,
+      "object": "bun",
+    },
+    {
+      "address": 33887883,
+      "object": "bun",
+    },
+    {
+      "address": 34113775,
+      "object": "bun",
+    },
+    {
+      "address": 30374135,
+      "object": "bun",
+    },
+    {
+      "address": 30257075,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "_",
+  "commitish": "d5628db",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2099203,
+    1052703,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0x00000010",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.9",
+}
+`;
+
+exports[`parse fixtures real-023-macos-aarch64-1.3.6-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 19627803,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 19675775,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 47045287,
+      "object": "bun",
+    },
+    {
+      "address": 47045287,
+      "object": "bun",
+    },
+    {
+      "address": 47040907,
+      "object": "bun",
+    },
+    {
+      "address": 46879159,
+      "object": "bun",
+    },
+    {
+      "address": 33691239,
+      "object": "bun",
+    },
+    {
+      "address": 20055279,
+      "object": "bun",
+    },
+    {
+      "address": 4451175,
+      "object": "bun",
+    },
+    {
+      "address": 13681267,
+      "object": "bun",
+    },
+    {
+      "address": 18097935,
+      "object": "bun",
+    },
+    {
+      "address": 13675171,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "n",
+  "commitish": "d530ed9",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3953,
+    1184071,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000008",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.6",
+}
+`;
+
+exports[`parse fixtures real-024-macos-aarch64-1.3.6-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 39628339,
+      "object": "bun",
+    },
+    {
+      "address": 39628339,
+      "object": "bun",
+    },
+    {
+      "address": 19627023,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 19618187,
+      "object": "bun",
+    },
+    {
+      "address": 18715703,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 47045287,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 47039855,
+      "object": "bun",
+    },
+    {
+      "address": 46879159,
+      "object": "bun",
+    },
+    {
+      "address": 33691239,
+      "object": "bun",
+    },
+    {
+      "address": 19359171,
+      "object": "bun",
+    },
+    {
+      "address": 19381927,
+      "object": "bun",
+    },
+    {
+      "address": 19577051,
+      "object": "bun",
+    },
+    {
+      "address": 19585655,
+      "object": "bun",
+    },
+    {
+      "address": 19380667,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "n",
+  "commitish": "d530ed9",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3953,
+    1184071,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x20200A3B5D5B204D",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.6",
+}
+`;
+
+exports[`parse fixtures real-025-macos-aarch64-1.3.7-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 24215167,
+      "object": "bun",
+    },
+    {
+      "address": 33442231,
+      "object": "bun",
+    },
+    {
+      "address": 33433599,
+      "object": "bun",
+    },
+    {
+      "address": 18868355,
+      "object": "bun",
+    },
+    {
+      "address": 18898727,
+      "object": "bun",
+    },
+    {
+      "address": 1080751,
+      "object": "bun",
+    },
+    {
+      "address": 2850623,
+      "object": "bun",
+    },
+    {
+      "address": 18421703,
+      "object": "bun",
+    },
+    {
+      "address": 2494327,
+      "object": "bun",
+    },
+    {
+      "address": 2501403,
+      "object": "bun",
+    },
+    {
+      "address": 2496263,
+      "object": "bun",
+    },
+    {
+      "address": 2606719,
+      "object": "bun",
+    },
+    {
+      "address": 23195,
+      "object": "bun",
+    },
+    {
+      "address": 18575,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "a",
+  "commitish": "ba42621",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    8392752,
+    1184000,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000005",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.7",
+}
+`;
+
+exports[`parse fixtures real-026-macos-aarch64-1.3.5-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 33713611,
+      "object": "bun",
+    },
+    {
+      "address": 33688063,
+      "object": "bun",
+    },
+    {
+      "address": 33687819,
+      "object": "bun",
+    },
+    {
+      "address": 33687195,
+      "object": "bun",
+    },
+    {
+      "address": 37075067,
+      "object": "bun",
+    },
+    {
+      "address": 29570987,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "_",
+  "commitish": "1e86ceb",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2051,
+    1183775,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x000001F4",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.5",
+}
+`;
+
+exports[`parse fixtures real-027-macos-aarch64-1.3.5-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 33443623,
+      "object": "bun",
+    },
+    {
+      "address": 33643027,
+      "object": "bun",
+    },
+    {
+      "address": 33732679,
+      "object": "bun",
+    },
+    {
+      "address": 33499495,
+      "object": "bun",
+    },
+    {
+      "address": 33730387,
+      "object": "bun",
+    },
+    {
+      "address": 33728827,
+      "object": "bun",
+    },
+    {
+      "address": 33728311,
+      "object": "bun",
+    },
+    {
+      "address": 33478443,
+      "object": "bun",
+    },
+    {
+      "address": 33475451,
+      "object": "bun",
+    },
+    {
+      "address": 33637079,
+      "object": "bun",
+    },
+    {
+      "address": 33690467,
+      "object": "bun",
+    },
+    {
+      "address": 33490979,
+      "object": "bun",
+    },
+    {
+      "address": 33461419,
+      "object": "bun",
+    },
+    {
+      "address": 33687175,
+      "object": "bun",
+    },
+    {
+      "address": 20787087,
+      "object": "bun",
+    },
+    {
+      "address": 20786127,
+      "object": "bun",
+    },
+    {
+      "address": 21147291,
+      "object": "bun",
+    },
+    {
+      "address": 21172563,
+      "object": "bun",
+    },
+    {
+      "address": 20802847,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "n",
+  "commitish": "1e86ceb",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2400,
+    1048577,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000010",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.5",
+}
+`;
+
+exports[`parse fixtures real-028-macos-aarch64-1.3.3-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 33515851,
+      "object": "bun",
+    },
+    {
+      "address": 33490303,
+      "object": "bun",
+    },
+    {
+      "address": 33490059,
+      "object": "bun",
+    },
+    {
+      "address": 33489435,
+      "object": "bun",
+    },
+    {
+      "address": 41416239,
+      "object": "bun",
+    },
+    {
+      "address": 20068795,
+      "object": "bun",
+    },
+    {
+      "address": 9864071,
+      "object": "bun",
+    },
+    {
+      "address": 16821855,
+      "object": "bun",
+    },
+    {
+      "address": 22647439,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 48999859,
+      "object": "bun",
+    },
+    {
+      "address": 34106419,
+      "object": "bun",
+    },
+    {
+      "address": 38492923,
+      "object": "bun",
+    },
+    {
+      "address": 41672579,
+      "object": "bun",
+    },
+    {
+      "address": 18678679,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "_",
+  "commitish": "274e01c",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    49,
+    -2146954985,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x000001F4",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.3",
+}
+`;
+
+exports[`parse fixtures real-029-macos-aarch64-1.3.2-segv-sm-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 2071959,
+      "object": "bun",
+    },
+    {
+      "address": 2071959,
+      "object": "bun",
+    },
+    {
+      "address": 2424243,
+      "object": "bun",
+    },
+    {
+      "address": 19079,
+      "object": "bun",
+    },
+    {
+      "address": 14015,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "P",
+  "commitish": "b131639",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    0,
+    8388928,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x5067E6D15F8",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.2",
+}
+`;
+
+exports[`parse fixtures real-030-macos-aarch64-1.3.0-panic-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 116511,
+      "object": "bun",
+    },
+    {
+      "address": 49287903,
+      "object": "bun",
+    },
+    {
+      "address": 22739179,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 26019,
+      "object": "bun",
+    },
+    {
+      "address": 2791179,
+      "object": "bun",
+    },
+    {
+      "address": 4692223,
+      "object": "bun",
+    },
+    {
+      "address": 18615427,
+      "object": "bun",
+    },
+    {
+      "address": 2242999,
+      "object": "bun",
+    },
+    {
+      "address": 2447487,
+      "object": "bun",
+    },
+    {
+      "address": 25887,
+      "object": "bun",
+    },
+    {
+      "address": 20847,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "t",
+  "commitish": "b0a6fec",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    66304,
+    262144,
+  ],
+  "is_canary": false,
+  "message": "panic: A C++ exception occurred",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.0",
+}
+`;
+
+exports[`parse fixtures real-031-macos-aarch64-1.3.3-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 48313135,
+      "object": "bun",
+    },
+    {
+      "address": 9840543,
+      "object": "bun",
+    },
+    {
+      "address": 6901735,
+      "object": "bun",
+    },
+    {
+      "address": 5359367,
+      "object": "bun",
+    },
+    {
+      "address": 5351943,
+      "object": "bun",
+    },
+    {
+      "address": 4269951,
+      "object": "bun",
+    },
+    {
+      "address": 2995279,
+      "object": "bun",
+    },
+    {
+      "address": 772659,
+      "object": "bun",
+    },
+    {
+      "address": 13255479,
+      "object": "bun",
+    },
+    {
+      "address": 14409155,
+      "object": "bun",
+    },
+    {
+      "address": 14410503,
+      "object": "bun",
+    },
+    {
+      "address": 18986935,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 49161083,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 49161083,
+      "object": "bun",
+    },
+    {
+      "address": 49161083,
+      "object": "bun",
+    },
+    {
+      "address": 48999859,
+      "object": "bun",
+    },
+    {
+      "address": 34110571,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "r",
+  "commitish": "274e01c",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    0,
+    526336,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x8985C15A14",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.3",
+}
+`;
+
+exports[`parse fixtures real-032-macos-aarch64-1.3.1-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 34273931,
+      "object": "bun",
+    },
+    {
+      "address": 34248383,
+      "object": "bun",
+    },
+    {
+      "address": 34248139,
+      "object": "bun",
+    },
+    {
+      "address": 34247515,
+      "object": "bun",
+    },
+    {
+      "address": 39430343,
+      "object": "bun",
+    },
+    {
+      "address": 39430811,
+      "object": "bun",
+    },
+    {
+      "address": 30042783,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "_",
+  "commitish": "89fa0f3",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    512,
+    -1073477609,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x000001F4",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.1",
+}
+`;
+
+exports[`parse fixtures real-033-macos-aarch64-1.3.1-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "r",
+  "commitish": "89fa0f3",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    524,
+    262151,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x16BD7BFE0",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.1",
+}
+`;
+
+exports[`parse fixtures real-034-linux-x86_64-1.3.12-panic-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 45264120,
+      "object": "bun",
+    },
+    {
+      "address": 54989651,
+      "object": "bun",
+    },
+    {
+      "address": 54989981,
+      "object": "bun",
+    },
+    {
+      "address": 71448894,
+      "object": "bun",
+    },
+    {
+      "address": 63157253,
+      "object": "bun",
+    },
+    {
+      "address": 72562634,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 69510806,
+      "object": "bun",
+    },
+    {
+      "address": 69379523,
+      "object": "bun",
+    },
+    {
+      "address": 93730479,
+      "object": "bun",
+    },
+    {
+      "address": 95769163,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 69506347,
+      "object": "bun",
+    },
+    {
+      "address": 69379523,
+      "object": "bun",
+    },
+    {
+      "address": 95750129,
+      "object": "bun",
+    },
+    {
+      "address": 95743380,
+      "object": "bun",
+    },
+    {
+      "address": 98205196,
+      "object": "bun",
+    },
+    {
+      "address": 70308174,
+      "object": "bun",
+    },
+    {
+      "address": 49324903,
+      "object": "bun",
+    },
+    {
+      "address": 57981524,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "a",
+  "commitish": "700fc11",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    16416,
+    1048832,
+  ],
+  "is_canary": false,
+  "message": "panic: A JavaScript exception was thrown, but it was cleared before it could be read.",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.12",
+}
+`;
+
+exports[`parse fixtures real-035-linux-x86_64_baseline-1.3.11-segv-md 1`] = `
+{
+  "addresses": [
+    {
+      "address": 86520332,
+      "object": "bun",
+    },
+    {
+      "address": 283439,
+      "object": "bun",
+    },
+    {
+      "address": -96234438,
+      "object": "bun",
+    },
+    {
+      "address": 96237959,
+      "object": "bun",
+    },
+    {
+      "address": 96004255,
+      "object": "bun",
+    },
+    {
+      "address": 96164670,
+      "object": "bun",
+    },
+    {
+      "address": 96167043,
+      "object": "bun",
+    },
+    {
+      "address": 86523972,
+      "object": "bun",
+    },
+    {
+      "address": 641699,
+      "object": "bun",
+    },
+    {
+      "address": 1219691,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "0d72d5a",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2097155,
+    1052695,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x7B6EE74B0020",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-036-linux-x86_64_baseline-1.3.11-ill-lg 1`] = `
+{
+  "addresses": [
+    {
+      "address": 283439,
+      "object": "bun",
+    },
+    {
+      "address": 107204281,
+      "object": "bun",
+    },
+    {
+      "address": 107210548,
+      "object": "bun",
+    },
+    {
+      "address": 107152677,
+      "object": "bun",
+    },
+    {
+      "address": 107152933,
+      "object": "bun",
+    },
+    {
+      "address": 86239008,
+      "object": "bun",
+    },
+    {
+      "address": 85982227,
+      "object": "bun",
+    },
+    {
+      "address": 85633314,
+      "object": "bun",
+    },
+    {
+      "address": 85616795,
+      "object": "bun",
+    },
+    {
+      "address": 663250,
+      "object": "bun",
+    },
+    {
+      "address": 75065173,
+      "object": "bun",
+    },
+    {
+      "address": 663250,
+      "object": "bun",
+    },
+    {
+      "address": 75064993,
+      "object": "bun",
+    },
+    {
+      "address": 47237482,
+      "object": "bun",
+    },
+    {
+      "address": 47224116,
+      "object": "bun",
+    },
+    {
+      "address": 172489,
+      "object": "bun",
+    },
+    {
+      "address": 172682,
+      "object": "bun",
+    },
+    {
+      "address": 47222829,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "759ce80",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    0,
+    1048576,
+  ],
+  "is_canary": false,
+  "message": "Illegal instruction at address 0x0666103F",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-037-linux-x86_64-1.3.11-panic-md 1`] = `
+{
+  "addresses": [
+    {
+      "address": 45225464,
+      "object": "bun",
+    },
+    {
+      "address": 51745903,
+      "object": "bun",
+    },
+    {
+      "address": 67556880,
+      "object": "bun",
+    },
+    {
+      "address": 73584501,
+      "object": "bun",
+    },
+    {
+      "address": 71321621,
+      "object": "bun",
+    },
+    {
+      "address": 51745786,
+      "object": "bun",
+    },
+    {
+      "address": 62317554,
+      "object": "bun",
+    },
+    {
+      "address": 73281932,
+      "object": "bun",
+    },
+    {
+      "address": 62311256,
+      "object": "bun",
+    },
+    {
+      "address": 608962,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "r",
+  "commitish": "9e93bfa",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    256,
+    1048576,
+  ],
+  "is_canary": true,
+  "message": "panic: Uncaught exception while handling uncaught exception",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-038-linux-x86_64-1.3.11-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 80364492,
+      "object": "bun",
+    },
+    {
+      "address": 261615,
+      "object": "bun",
+    },
+    {
+      "address": 63933170,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 69228337,
+      "object": "bun",
+    },
+    {
+      "address": 69229196,
+      "object": "bun",
+    },
+    {
+      "address": 69102275,
+      "object": "bun",
+    },
+    {
+      "address": 90444246,
+      "object": "bun",
+    },
+    {
+      "address": 73189461,
+      "object": "bun",
+    },
+    {
+      "address": 57448613,
+      "object": "bun",
+    },
+    {
+      "address": 57452588,
+      "object": "bun",
+    },
+    {
+      "address": 57453431,
+      "object": "bun",
+    },
+    {
+      "address": 55204635,
+      "object": "bun",
+    },
+    {
+      "address": 55499537,
+      "object": "bun",
+    },
+    {
+      "address": 52578195,
+      "object": "bun",
+    },
+    {
+      "address": 73219468,
+      "object": "bun",
+    },
+    {
+      "address": 48142902,
+      "object": "bun",
+    },
+    {
+      "address": 48418232,
+      "object": "bun",
+    },
+    {
+      "address": 45071965,
+      "object": "bun",
+    },
+    {
+      "address": 45066996,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "t",
+  "commitish": "af24e28",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    96,
+    1048640,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000200",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-039-linux-x86_64_baseline-1.3.11-segv-sm 1`] = `
+{
+  "addresses": [
+    {
+      "address": 79813196,
+      "object": "bun",
+    },
+    {
+      "address": 261615,
+      "object": "bun",
+    },
+    {
+      "address": 53370680,
+      "object": "bun",
+    },
+    {
+      "address": 80610619,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "n",
+  "commitish": "af24e28",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3937,
+    1052677,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00015350",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-040-linux-x86_64_baseline-1.3.10-segv-xs 1`] = `
+{
+  "addresses": [
+    {
+      "address": 76775756,
+      "object": "bun",
+    },
+    {
+      "address": 261615,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "n",
+  "commitish": "30e609e",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2913,
+    1052997,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00013CD0",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.10",
+}
+`;
+
+exports[`parse fixtures real-041-linux-x86_64_baseline-1.3.10-fpe-sm 1`] = `
+{
+  "addresses": [
+    {
+      "address": 248495,
+      "object": "bun",
+    },
+    {
+      "address": 87321974,
+      "object": "bun",
+    },
+    {
+      "address": 87326188,
+      "object": "bun",
+    },
+    {
+      "address": 87040767,
+      "object": "bun",
+    },
+    {
+      "address": 87248158,
+      "object": "bun",
+    },
+    {
+      "address": 87251155,
+      "object": "bun",
+    },
+    {
+      "address": 76779460,
+      "object": "bun",
+    },
+    {
+      "address": 571088,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "30e609e",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    12290,
+    1183767,
+  ],
+  "is_canary": false,
+  "message": "Floating point exception at address 0x042DDD76",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.10",
+}
+`;
+
+exports[`parse fixtures real-042-linux-x86_64_baseline-1.3.9-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 75891706,
+      "object": "bun",
+    },
+    {
+      "address": 386467,
+      "object": "bun",
+    },
+    {
+      "address": 53943443,
+      "object": "bun",
+    },
+    {
+      "address": 61512599,
+      "object": "bun",
+    },
+    {
+      "address": 87344788,
+      "object": "bun",
+    },
+    {
+      "address": 87371650,
+      "object": "bun",
+    },
+    {
+      "address": 87373895,
+      "object": "bun",
+    },
+    {
+      "address": 84128018,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 66915267,
+      "object": "bun",
+    },
+    {
+      "address": 82518714,
+      "object": "bun",
+    },
+    {
+      "address": 84204254,
+      "object": "bun",
+    },
+    {
+      "address": 70391181,
+      "object": "bun",
+    },
+    {
+      "address": 50110409,
+      "object": "bun",
+    },
+    {
+      "address": 48082916,
+      "object": "bun",
+    },
+    {
+      "address": 67664202,
+      "object": "bun",
+    },
+    {
+      "address": 47667110,
+      "object": "bun",
+    },
+    {
+      "address": 47675031,
+      "object": "bun",
+    },
+    {
+      "address": 47673434,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "a",
+  "commitish": "cf6cdbb",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    18784,
+    1183829,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000000",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.9",
+}
+`;
+
+exports[`parse fixtures real-043-linux-x86_64-1.3.8-segv-sm 1`] = `
+{
+  "addresses": [
+    {
+      "address": 76103773,
+      "object": "bun",
+    },
+    {
+      "address": 283439,
+      "object": "bun",
+    },
+    {
+      "address": 724345,
+      "object": "bun",
+    },
+    {
+      "address": 96647,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "a",
+  "commitish": "b64edcb",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2097,
+    1048583,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x79524367ADD0",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.8",
+}
+`;
+
+exports[`parse fixtures real-044-linux-x86_64-1.3.7-fpe-md 1`] = `
+{
+  "addresses": [
+    {
+      "address": 283439,
+      "object": "bun",
+    },
+    {
+      "address": 85932246,
+      "object": "bun",
+    },
+    {
+      "address": 85936300,
+      "object": "bun",
+    },
+    {
+      "address": 85656479,
+      "object": "bun",
+    },
+    {
+      "address": 85858478,
+      "object": "bun",
+    },
+    {
+      "address": 85860931,
+      "object": "bun",
+    },
+    {
+      "address": 75684767,
+      "object": "bun",
+    },
+    {
+      "address": 641699,
+      "object": "bun",
+    },
+    {
+      "address": 1219691,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "t",
+  "commitish": "ba42621",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    49,
+    1048583,
+  ],
+  "is_canary": false,
+  "message": "Floating point exception at address 0x0423B58E",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.7",
+}
+`;
+
+exports[`parse fixtures real-045-linux-x86_64_baseline-1.3.5-panic-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 45054376,
+      "object": "bun",
+    },
+    {
+      "address": 48925833,
+      "object": "bun",
+    },
+    {
+      "address": 62899967,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 66784366,
+      "object": "bun",
+    },
+    {
+      "address": 66784366,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 66788825,
+      "object": "bun",
+    },
+    {
+      "address": 66784366,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 66656442,
+      "object": "bun",
+    },
+    {
+      "address": 85836885,
+      "object": "bun",
+    },
+    {
+      "address": 91017932,
+      "object": "bun",
+    },
+    {
+      "address": 94918161,
+      "object": "bun",
+    },
+    {
+      "address": 68178572,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 66656442,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "1e86ceb",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    1611796487,
+  ],
+  "is_canary": false,
+  "message": "panic: getrandom() failed to provide entropy",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.5",
+}
+`;
+
+exports[`parse fixtures real-046-linux-x86_64-1.3.6-segv-xs 1`] = `
+{
+  "addresses": [
+    {
+      "address": 75120445,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "_",
+  "commitish": "d530ed9",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    1184015,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000000",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.6",
+}
+`;
+
+exports[`parse fixtures real-047-linux-x86_64_baseline-1.3.8-segv-md-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 386467,
+      "object": "bun",
+    },
+    {
+      "address": 67172775,
+      "object": "bun",
+    },
+    {
+      "address": 67171067,
+      "object": "bun",
+    },
+    {
+      "address": 67169309,
+      "object": "bun",
+    },
+    {
+      "address": 67167630,
+      "object": "bun",
+    },
+    {
+      "address": 67166445,
+      "object": "bun",
+    },
+    {
+      "address": 44618013,
+      "object": "bun",
+    },
+    {
+      "address": 267413,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "b64edcb",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    0,
+    0,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x1BEFFFFDEA05990",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.8",
+}
+`;
+
+exports[`parse fixtures real-048-linux-aarch64-1.3.7-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 71876995,
+      "object": "bun",
+    },
+    {
+      "address": 2263,
+      "object": "bun",
+    },
+    {
+      "address": 65028687,
+      "object": "bun",
+    },
+    {
+      "address": 81425607,
+      "object": "bun",
+    },
+    {
+      "address": 65600491,
+      "object": "bun",
+    },
+    {
+      "address": 67718339,
+      "object": "bun",
+    },
+    {
+      "address": 67715847,
+      "object": "bun",
+    },
+    {
+      "address": 67717883,
+      "object": "bun",
+    },
+    {
+      "address": 67715847,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 65188927,
+      "object": "bun",
+    },
+    {
+      "address": 65188927,
+      "object": "bun",
+    },
+    {
+      "address": 65188927,
+      "object": "bun",
+    },
+    {
+      "address": 65028035,
+      "object": "bun",
+    },
+    {
+      "address": 85492099,
+      "object": "bun",
+    },
+    {
+      "address": 87789983,
+      "object": "bun",
+    },
+    {
+      "address": 66487567,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 65028035,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "n",
+  "commitish": "ba42621",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    113,
+    1179655,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0xFFFF27888000",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.7",
+}
+`;
+
+exports[`parse fixtures real-049-linux-x86_64-1.3.6-panic-sm 1`] = `
+{
+  "addresses": [
+    {
+      "address": 45009512,
+      "object": "bun",
+    },
+    {
+      "address": 48164135,
+      "object": "bun",
+    },
+    {
+      "address": 51289970,
+      "object": "bun",
+    },
+    {
+      "address": 641699,
+      "object": "bun",
+    },
+    {
+      "address": 1219691,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "I",
+  "commitish": "d530ed9",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    0,
+    33554432,
+  ],
+  "is_canary": false,
+  "message": "panic: Assertion failure: Expected metadata to be set",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.6",
+}
+`;
+
+exports[`parse fixtures real-050-linux-x86_64_baseline-1.3.6-ill-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 261615,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 66928573,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 66801347,
+      "object": "bun",
+    },
+    {
+      "address": 85083880,
+      "object": "bun",
+    },
+    {
+      "address": 87544034,
+      "object": "bun",
+    },
+    {
+      "address": 89295797,
+      "object": "bun",
+    },
+    {
+      "address": 91722471,
+      "object": "bun",
+    },
+    {
+      "address": 68192732,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 66801347,
+      "object": "bun",
+    },
+    {
+      "address": 85083880,
+      "object": "bun",
+    },
+    {
+      "address": 87543634,
+      "object": "bun",
+    },
+    {
+      "address": 68962787,
+      "object": "bun",
+    },
+    {
+      "address": 71593021,
+      "object": "bun",
+    },
+    {
+      "address": 50893165,
+      "object": "bun",
+    },
+    {
+      "address": 49695053,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "n",
+  "commitish": "d530ed9",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3169,
+    1611661319,
+  ],
+  "is_canary": false,
+  "message": "Illegal instruction at address 0x04001FB4",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.6",
+}
+`;
+
+exports[`parse fixtures real-051-linux-x86_64-1.3.2-segv-md 1`] = `
+{
+  "addresses": [
+    {
+      "address": 76182290,
+      "object": "bun",
+    },
+    {
+      "address": 271647,
+      "object": "bun",
+    },
+    {
+      "address": 84964075,
+      "object": "bun",
+    },
+    {
+      "address": 84960448,
+      "object": "bun",
+    },
+    {
+      "address": 84946187,
+      "object": "bun",
+    },
+    {
+      "address": 81008070,
+      "object": "bun",
+    },
+    {
+      "address": 88826775,
+      "object": "bun",
+    },
+    {
+      "address": 89047231,
+      "object": "bun",
+    },
+    {
+      "address": 86727315,
+      "object": "bun",
+    },
+    {
+      "address": 76185543,
+      "object": "bun",
+    },
+    {
+      "address": 608962,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "n",
+  "commitish": "b131639",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    732,
+    262149,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000050",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.2",
+}
+`;
+
+exports[`parse fixtures real-052-linux-x86_64-1.3.2-segv-sm-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 272655,
+      "object": "bun",
+    },
+    {
+      "address": 47543466,
+      "object": "bun",
+    },
+    {
+      "address": 48010932,
+      "object": "bun",
+    },
+    {
+      "address": 45074270,
+      "object": "bun",
+    },
+    {
+      "address": 45069089,
+      "object": "bun",
+    },
+    {
+      "address": 176890,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "P",
+  "commitish": "b131639",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    0,
+    8388608,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x2A318922648",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.2",
+}
+`;
+
+exports[`parse fixtures real-053-linux-x86_64_baseline-1.3.1-ill-xs 1`] = `
+{
+  "addresses": [
+    {
+      "address": 48742354,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "89fa0f3",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    0,
+    402915328,
+  ],
+  "is_canary": false,
+  "message": "Illegal instruction at address 0x0606F8BF",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.1",
+}
+`;
+
+exports[`parse fixtures real-054-linux-x86_64_baseline-1.3.1-panic-sm 1`] = `
+{
+  "addresses": [
+    {
+      "address": 44897512,
+      "object": "bun",
+    },
+    {
+      "address": 47846951,
+      "object": "bun",
+    },
+    {
+      "address": 51083361,
+      "object": "bun",
+    },
+    {
+      "address": 377678,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "I",
+  "commitish": "89fa0f3",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    0,
+    0,
+  ],
+  "is_canary": false,
+  "message": "panic: Assertion failure: Expected metadata to be set",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.1",
+}
+`;
+
+exports[`parse fixtures real-055-linux-x86_64_baseline-1.3.1-panic-xs 1`] = `
+{
+  "addresses": [
+    {
+      "address": 48742354,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "I",
+  "commitish": "89fa0f3",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    0,
+    0,
+  ],
+  "is_canary": false,
+  "message": "panic: Failed to start HTTP Client thread: Unexpected",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.1",
+}
+`;
+
+exports[`parse fixtures real-056-linux-aarch64-1.3.1-segv-xs 1`] = `
+{
+  "addresses": [
+    {
+      "address": 47700631,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "n",
+  "commitish": "89fa0f3",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    24,
+    262401,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000008",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.1",
+}
+`;
+
+exports[`parse fixtures real-057-linux-aarch64-1.3.0-ill-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 2015,
+      "object": "bun",
+    },
+    {
+      "address": 11424319,
+      "object": "bun",
+    },
+    {
+      "address": 11424319,
+      "object": "bun",
+    },
+    {
+      "address": 17479,
+      "object": "bun",
+    },
+    {
+      "address": 17747,
+      "object": "bun",
+    },
+    {
+      "address": 1260075,
+      "object": "bun",
+    },
+    {
+      "address": 41911,
+      "object": "bun",
+    },
+    {
+      "address": 1259983,
+      "object": "bun",
+    },
+    {
+      "address": 42843,
+      "object": "bun",
+    },
+    {
+      "address": 515939,
+      "object": "bun",
+    },
+    {
+      "address": 1259983,
+      "object": "bun",
+    },
+    {
+      "address": 1260195,
+      "object": "bun",
+    },
+    {
+      "address": 514531,
+      "object": "bun",
+    },
+    {
+      "address": 516159,
+      "object": "bun",
+    },
+    {
+      "address": 66643071,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 65491135,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 65485703,
+      "object": "bun",
+    },
+    {
+      "address": 65485703,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "n",
+  "commitish": "b0a6fec",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    520,
+    1074003975,
+  ],
+  "is_canary": false,
+  "message": "Illegal instruction at address 0xFFFF61CC5E9C",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.0",
+}
+`;
+
+exports[`parse fixtures real-058-linux-x86_64_baseline-1.3.0-segv-lg 1`] = `
+{
+  "addresses": [
+    {
+      "address": 75175074,
+      "object": "bun",
+    },
+    {
+      "address": 283439,
+      "object": "bun",
+    },
+    {
+      "address": 52847765,
+      "object": "bun",
+    },
+    {
+      "address": 52825716,
+      "object": "bun",
+    },
+    {
+      "address": 49685949,
+      "object": "bun",
+    },
+    {
+      "address": 48123828,
+      "object": "bun",
+    },
+    {
+      "address": 54620383,
+      "object": "bun",
+    },
+    {
+      "address": 54638490,
+      "object": "bun",
+    },
+    {
+      "address": 54634689,
+      "object": "bun",
+    },
+    {
+      "address": 52129014,
+      "object": "bun",
+    },
+    {
+      "address": 68181725,
+      "object": "bun",
+    },
+    {
+      "address": 47654738,
+      "object": "bun",
+    },
+    {
+      "address": 47957691,
+      "object": "bun",
+    },
+    {
+      "address": 45047482,
+      "object": "bun",
+    },
+    {
+      "address": 45042469,
+      "object": "bun",
+    },
+    {
+      "address": 172489,
+      "object": "bun",
+    },
+    {
+      "address": 172682,
+      "object": "bun",
+    },
+    {
+      "address": 45041453,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "t",
+  "commitish": "b0a6fec",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    28,
+    262215,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000038",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.0",
+}
+`;
+
+exports[`parse fixtures real-059-linux-x86_64_baseline-1.3.11-segv-md 1`] = `
+{
+  "addresses": [
+    {
+      "address": 86548108,
+      "object": "bun",
+    },
+    {
+      "address": 283439,
+      "object": "bun",
+    },
+    {
+      "address": 101294827,
+      "object": "bun",
+    },
+    {
+      "address": 101294455,
+      "object": "bun",
+    },
+    {
+      "address": 101294020,
+      "object": "bun",
+    },
+    {
+      "address": 100465241,
+      "object": "bun",
+    },
+    {
+      "address": 100541496,
+      "object": "bun",
+    },
+    {
+      "address": 96262214,
+      "object": "bun",
+    },
+    {
+      "address": 96265735,
+      "object": "bun",
+    },
+    {
+      "address": 96032031,
+      "object": "bun",
+    },
+    {
+      "address": 96192446,
+      "object": "bun",
+    },
+    {
+      "address": 96194819,
+      "object": "bun",
+    },
+    {
+      "address": 86551748,
+      "object": "bun",
+    },
+    {
+      "address": 641699,
+      "object": "bun",
+    },
+    {
+      "address": 1219691,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "6f0a17c",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2097155,
+    1052695,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x7FFFFFFFA9",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-060-linux-x86_64_baseline-1.3.10-segv-md 1`] = `
+{
+  "addresses": [
+    {
+      "address": 76775756,
+      "object": "bun",
+    },
+    {
+      "address": 248495,
+      "object": "bun",
+    },
+    {
+      "address": 87006537,
+      "object": "bun",
+    },
+    {
+      "address": 86985335,
+      "object": "bun",
+    },
+    {
+      "address": 87108588,
+      "object": "bun",
+    },
+    {
+      "address": 87278829,
+      "object": "bun",
+    },
+    {
+      "address": 87107993,
+      "object": "bun",
+    },
+    {
+      "address": 68774477,
+      "object": "bun",
+    },
+    {
+      "address": 48584841,
+      "object": "bun",
+    },
+    {
+      "address": 69051212,
+      "object": "bun",
+    },
+    {
+      "address": 48210500,
+      "object": "bun",
+    },
+    {
+      "address": 45114537,
+      "object": "bun",
+    },
+    {
+      "address": 45109555,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "30e609e",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    12290,
+    1183767,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0xE00000048",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.10",
+}
+`;
+
+exports[`parse fixtures real-061-linux-x86_64-1.3.10-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 77487388,
+      "object": "bun",
+    },
+    {
+      "address": 283439,
+      "object": "bun",
+    },
+    {
+      "address": 69535042,
+      "object": "bun",
+    },
+    {
+      "address": 70597853,
+      "object": "bun",
+    },
+    {
+      "address": 89755097,
+      "object": "bun",
+    },
+    {
+      "address": 89690911,
+      "object": "bun",
+    },
+    {
+      "address": 69087833,
+      "object": "bun",
+    },
+    {
+      "address": 69045955,
+      "object": "bun",
+    },
+    {
+      "address": 92997135,
+      "object": "bun",
+    },
+    {
+      "address": 95524385,
+      "object": "bun",
+    },
+    {
+      "address": 70740364,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 69045955,
+      "object": "bun",
+    },
+    {
+      "address": 88554136,
+      "object": "bun",
+    },
+    {
+      "address": 91172495,
+      "object": "bun",
+    },
+    {
+      "address": 71622327,
+      "object": "bun",
+    },
+    {
+      "address": 74496221,
+      "object": "bun",
+    },
+    {
+      "address": 52156615,
+      "object": "bun",
+    },
+    {
+      "address": 49284376,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "a",
+  "commitish": "30e609e",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2416,
+    1053007,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000005",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.10",
+}
+`;
+
+exports[`parse fixtures real-062-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 75930172,
+      "object": "bun",
+    },
+    {
+      "address": 283439,
+      "object": "bun",
+    },
+    {
+      "address": 68411478,
+      "object": "bun",
+    },
+    {
+      "address": 68411478,
+      "object": "bun",
+    },
+    {
+      "address": 68411478,
+      "object": "bun",
+    },
+    {
+      "address": 68411478,
+      "object": "bun",
+    },
+    {
+      "address": 68411478,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "48c5aa9",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2099203,
+    1052695,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x7FFF0E00E015",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.10",
+}
+`;
+
+exports[`parse fixtures real-063-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 75930172,
+      "object": "bun",
+    },
+    {
+      "address": 261615,
+      "object": "bun",
+    },
+    {
+      "address": 68411478,
+      "object": "bun",
+    },
+    {
+      "address": 68411478,
+      "object": "bun",
+    },
+    {
+      "address": 68411478,
+      "object": "bun",
+    },
+    {
+      "address": 68411478,
+      "object": "bun",
+    },
+    {
+      "address": 68411478,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "48c5aa9",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2051,
+    1052695,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x7FFDD5FB8B25",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.10",
+}
+`;
+
+exports[`parse fixtures real-064-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 75908236,
+      "object": "bun",
+    },
+    {
+      "address": 272271,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "1423d3c",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2099203,
+    1052695,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x7FFC1C7B06A5",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.10",
+}
+`;
+
+exports[`parse fixtures real-065-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 75908236,
+      "object": "bun",
+    },
+    {
+      "address": 283439,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 68081091,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "1423d3c",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2099203,
+    1052695,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x7FFCEDDCF925",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.10",
+}
+`;
+
+exports[`parse fixtures real-066-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 75908236,
+      "object": "bun",
+    },
+    {
+      "address": 261615,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "1423d3c",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2051,
+    1052695,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x7FFEEE9310D5",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.10",
+}
+`;
+
+exports[`parse fixtures real-067-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 75908236,
+      "object": "bun",
+    },
+    {
+      "address": 283439,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 68391510,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "1423d3c",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2051,
+    1052695,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x7FFBBD78E7D5",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.10",
+}
+`;
+
+exports[`parse fixtures real-068-windows-x86_64-1.3.11-panic-lg-foreign 1`] = `
+{
+  "addresses": [
+    {
+      "address": 3531119,
+      "object": "bun",
+    },
+    {
+      "address": 427061,
+      "object": "bun",
+    },
+    {
+      "address": 4569136,
+      "object": "bun",
+    },
+    {
+      "address": 2675852,
+      "object": "bun",
+    },
+    {
+      "address": 4346672,
+      "object": "bun",
+    },
+    {
+      "address": 4303070,
+      "object": "bun",
+    },
+    {
+      "address": 4297920,
+      "object": "bun",
+    },
+    {
+      "address": 2079367,
+      "object": "bun",
+    },
+    {
+      "address": 2257617,
+      "object": "bun",
+    },
+    {
+      "address": 2653956,
+      "object": "bun",
+    },
+    {
+      "address": 2670403,
+      "object": "bun",
+    },
+    {
+      "address": 1442840,
+      "object": "bun",
+    },
+    {
+      "address": 1417813,
+      "object": "bun",
+    },
+    {
+      "address": 3108862,
+      "object": "bun",
+    },
+    {
+      "address": 14087,
+      "object": "bun",
+    },
+    {
+      "address": 6201,
+      "object": "bun",
+    },
+    {
+      "address": 59698852,
+      "object": "bun",
+    },
+    {
+      "address": 190679,
+      "object": "KERNEL32.DLL",
+    },
+    {
+      "address": 574460,
+      "object": "ntdll.dll",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "I",
+  "commitish": "af24e28",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    0,
+    134217824,
+  ],
+  "is_canary": false,
+  "message": "panic: Internal assertion failure at install\\bin.zig:733:83",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-069-windows-x86_64_baseline-1.3.11-panic-sm-foreign 1`] = `
+{
+  "addresses": [
+    {
+      "address": 8846290,
+      "object": "bun",
+    },
+    {
+      "address": 6920985,
+      "object": "bun",
+    },
+    {
+      "address": 3738832,
+      "object": "bun",
+    },
+    {
+      "address": 8700153,
+      "object": "bun",
+    },
+    {
+      "address": 10379408,
+      "object": "bun",
+    },
+    {
+      "address": 75165,
+      "object": "KERNEL32.DLL",
+    },
+    {
+      "address": 372600,
+      "object": "ntdll.dll",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "759ce80",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2097155,
+    1052679,
+  ],
+  "is_canary": false,
+  "message": "panic: invalid enum value",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-070-windows-x86_64-1.3.11-segv-md-foreign 1`] = `
+{
+  "addresses": [
+    {
+      "address": 306367,
+      "object": "TmUmEvt64.dll",
+    },
+    {
+      "address": 307157,
+      "object": "TmUmEvt64.dll",
+    },
+    {
+      "address": 304015,
+      "object": "TmUmEvt64.dll",
+    },
+    {
+      "address": 302854,
+      "object": "TmUmEvt64.dll",
+    },
+    {
+      "address": 315614,
+      "object": "TmUmEvt64.dll",
+    },
+    {
+      "address": 317887,
+      "object": "TmUmEvt64.dll",
+    },
+    {
+      "address": 269405,
+      "object": "TmUmEvt64.dll",
+    },
+    {
+      "address": 399250,
+      "object": "TmUmEvt64.dll",
+    },
+    {
+      "address": 5062,
+      "object": "tmmon64.dll",
+    },
+    {
+      "address": 448370,
+      "object": "tmmon64.dll",
+    },
+    {
+      "address": 449099,
+      "object": "tmmon64.dll",
+    },
+    {
+      "address": 1084913,
+      "object": "tmmon64.dll",
+    },
+    {
+      "address": 209213,
+      "object": "KERNEL32.DLL",
+    },
+    {
+      "address": 1524814,
+      "object": "tailwindcss-oxide.win32-x64-msvc.node",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "n",
+  "commitish": "af24e28",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2161,
+    1179655,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x0000022D",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-071-windows-x86_64_baseline-1.3.10-ill-lg-foreign 1`] = `
+{
+  "addresses": [
+    {
+      "address": 45738240,
+      "object": "bun",
+    },
+    {
+      "address": 45653229,
+      "object": "bun",
+    },
+    {
+      "address": 45709222,
+      "object": "bun",
+    },
+    {
+      "address": 45651602,
+      "object": "bun",
+    },
+    {
+      "address": 45650771,
+      "object": "bun",
+    },
+    {
+      "address": 52573094,
+      "object": "bun",
+    },
+    {
+      "address": 52416845,
+      "object": "bun",
+    },
+    {
+      "address": 52452671,
+      "object": "bun",
+    },
+    {
+      "address": 53044809,
+      "object": "bun",
+    },
+    {
+      "address": 53044529,
+      "object": "bun",
+    },
+    {
+      "address": 47109273,
+      "object": "bun",
+    },
+    {
+      "address": 47165105,
+      "object": "bun",
+    },
+    {
+      "address": 44360265,
+      "object": "bun",
+    },
+    {
+      "address": 43489392,
+      "object": "bun",
+    },
+    {
+      "address": 43891600,
+      "object": "bun",
+    },
+    {
+      "address": 32784073,
+      "object": "bun",
+    },
+    {
+      "address": 61905411,
+      "object": "bun",
+    },
+    {
+      "address": 190679,
+      "object": "KERNEL32.DLL",
+    },
+    {
+      "address": 574604,
+      "object": "ntdll.dll",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "89a8aa9",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2051,
+    1052695,
+  ],
+  "is_canary": false,
+  "message": "Illegal instruction at address 0x7FF7519EE900",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.10",
+}
+`;
+
+exports[`parse fixtures real-072-windows-x86_64_baseline-1.3.11-ill-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 46663019,
+      "object": "bun",
+    },
+    {
+      "address": 46314948,
+      "object": "bun",
+    },
+    {
+      "address": 46262622,
+      "object": "bun",
+    },
+    {
+      "address": 46261843,
+      "object": "bun",
+    },
+    {
+      "address": 44502666,
+      "object": "bun",
+    },
+    {
+      "address": 44097046,
+      "object": "bun",
+    },
+    {
+      "address": 44097609,
+      "object": "bun",
+    },
+    {
+      "address": 44092945,
+      "object": "bun",
+    },
+    {
+      "address": 44092272,
+      "object": "bun",
+    },
+    {
+      "address": 29728871,
+      "object": "bun",
+    },
+    {
+      "address": 29726973,
+      "object": "bun",
+    },
+    {
+      "address": 29743805,
+      "object": "bun",
+    },
+    {
+      "address": 29711081,
+      "object": "bun",
+    },
+    {
+      "address": 30206769,
+      "object": "bun",
+    },
+    {
+      "address": 24813625,
+      "object": "bun",
+    },
+    {
+      "address": 26419299,
+      "object": "bun",
+    },
+    {
+      "address": 40547637,
+      "object": "bun",
+    },
+    {
+      "address": 40524042,
+      "object": "bun",
+    },
+    {
+      "address": 39424922,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "01210fb",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2099203,
+    1052703,
+  ],
+  "is_canary": false,
+  "message": "Illegal instruction at address 0x7FF777AE056B",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-073-windows-x86_64_baseline-1.3.10-panic-md-foreign 1`] = `
+{
+  "addresses": [
+    {
+      "address": 8454618,
+      "object": "bun",
+    },
+    {
+      "address": 14413980,
+      "object": "bun",
+    },
+    {
+      "address": 11430325,
+      "object": "bun",
+    },
+    {
+      "address": 10836232,
+      "object": "bun",
+    },
+    {
+      "address": 221563,
+      "object": "bun",
+    },
+    {
+      "address": 10514891,
+      "object": "bun",
+    },
+    {
+      "address": 7425939,
+      "object": "bun",
+    },
+    {
+      "address": 7418017,
+      "object": "bun",
+    },
+    {
+      "address": 58779208,
+      "object": "bun",
+    },
+    {
+      "address": 190679,
+      "object": "KERNEL32.DLL",
+    },
+    {
+      "address": 574604,
+      "object": "ntdll.dll",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "1979c94",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2099203,
+    1052703,
+  ],
+  "is_canary": true,
+  "message": "panic: switch on corrupt value",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.10",
+}
+`;
+
+exports[`parse fixtures real-074-windows-x86_64_baseline-1.3.11-segv-lg-foreign 1`] = `
+{
+  "addresses": [
+    {
+      "address": 43019456,
+      "object": "bun",
+    },
+    {
+      "address": 43019315,
+      "object": "bun",
+    },
+    {
+      "address": 43018739,
+      "object": "bun",
+    },
+    {
+      "address": 43017126,
+      "object": "bun",
+    },
+    {
+      "address": 28967624,
+      "object": "bun",
+    },
+    {
+      "address": 3277409,
+      "object": "bun",
+    },
+    {
+      "address": 15557185,
+      "object": "bun",
+    },
+    {
+      "address": 16465380,
+      "object": "bun",
+    },
+    {
+      "address": 6566698,
+      "object": "bun",
+    },
+    {
+      "address": 10969331,
+      "object": "bun",
+    },
+    {
+      "address": 10973134,
+      "object": "bun",
+    },
+    {
+      "address": 28071124,
+      "object": "bun",
+    },
+    {
+      "address": 28133982,
+      "object": "bun",
+    },
+    {
+      "address": 29486337,
+      "object": "bun",
+    },
+    {
+      "address": 29418021,
+      "object": "bun",
+    },
+    {
+      "address": 29416909,
+      "object": "bun",
+    },
+    {
+      "address": 11940791,
+      "object": "bun",
+    },
+    {
+      "address": 9161228,
+      "object": "bun",
+    },
+    {
+      "address": 190679,
+      "object": "KERNEL32.DLL",
+    },
+    {
+      "address": 574604,
+      "object": "ntdll.dll",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "a2743b6",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2097155,
+    1052695,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x44924010000",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-075-windows-x86_64_baseline-1.3.11-oom-md-foreign 1`] = `
+{
+  "addresses": [
+    {
+      "address": 16465700,
+      "object": "bun",
+    },
+    {
+      "address": 6566698,
+      "object": "bun",
+    },
+    {
+      "address": 10969331,
+      "object": "bun",
+    },
+    {
+      "address": 10973134,
+      "object": "bun",
+    },
+    {
+      "address": 28071124,
+      "object": "bun",
+    },
+    {
+      "address": 28133982,
+      "object": "bun",
+    },
+    {
+      "address": 29486337,
+      "object": "bun",
+    },
+    {
+      "address": 29418021,
+      "object": "bun",
+    },
+    {
+      "address": 29416909,
+      "object": "bun",
+    },
+    {
+      "address": 11940791,
+      "object": "bun",
+    },
+    {
+      "address": 9161228,
+      "object": "bun",
+    },
+    {
+      "address": 190679,
+      "object": "KERNEL32.DLL",
+    },
+    {
+      "address": 246604,
+      "object": "ntdll.dll",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "a2743b6",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    1052695,
+  ],
+  "is_canary": false,
+  "message": "Bun ran out of memory",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-076-windows-x86_64-1.3.10-panic-sm-foreign 1`] = `
+{
+  "addresses": [
+    {
+      "address": 3384295,
+      "object": "bun",
+    },
+    {
+      "address": 3383768,
+      "object": "bun",
+    },
+    {
+      "address": 6891600,
+      "object": "bun",
+    },
+    {
+      "address": 75165,
+      "object": "KERNEL32.DLL",
+    },
+    {
+      "address": 372600,
+      "object": "ntdll.dll",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "a",
+  "commitish": "30e609e",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    32,
+    1048640,
+  ],
+  "is_canary": false,
+  "message": "panic: attempt to use null value",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.10",
+}
+`;
+
+exports[`parse fixtures real-077-windows-x86_64_baseline-1.3.10-segv-lg-unk-foreign 1`] = `
+{
+  "addresses": [
+    {
+      "address": 76448,
+      "object": "MSVCP140.dll",
+    },
+    {
+      "address": 9215660,
+      "object": "onnxruntime.dll",
+    },
+    {
+      "address": 7509,
+      "object": "onnxruntime.dll",
+    },
+    {
+      "address": -282,
+      "object": "bun",
+    },
+    {
+      "address": 124019,
+      "object": "ucrtbase.dll",
+    },
+    {
+      "address": 9304554,
+      "object": "onnxruntime.dll",
+    },
+    {
+      "address": 9304919,
+      "object": "onnxruntime.dll",
+    },
+    {
+      "address": 104989,
+      "object": "ntdll.dll",
+    },
+    {
+      "address": 447223,
+      "object": "ntdll.dll",
+    },
+    {
+      "address": 446602,
+      "object": "ntdll.dll",
+    },
+    {
+      "address": 446736,
+      "object": "ntdll.dll",
+    },
+    {
+      "address": 252231,
+      "object": "ntdll.dll",
+    },
+    {
+      "address": 129966,
+      "object": "ntdll.dll",
+    },
+    {
+      "address": 95210,
+      "object": "ntdll.dll",
+    },
+    {
+      "address": 92916,
+      "object": "ntdll.dll",
+    },
+    {
+      "address": 187250,
+      "object": "KERNELBASE.dll",
+    },
+    {
+      "address": 15581515,
+      "object": "bun",
+    },
+    {
+      "address": 23044967,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 41980408,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "a",
+  "commitish": "30e609e",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3347,
+    -1609560041,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000000",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.10",
+}
+`;
+
+exports[`parse fixtures real-078-windows-x86_64_baseline-1.3.11-so-md-foreign 1`] = `
+{
+  "addresses": [
+    {
+      "address": 30000320,
+      "object": "bun",
+    },
+    {
+      "address": 29972541,
+      "object": "bun",
+    },
+    {
+      "address": 29994507,
+      "object": "bun",
+    },
+    {
+      "address": 26319795,
+      "object": "bun",
+    },
+    {
+      "address": 3108545,
+      "object": "bun",
+    },
+    {
+      "address": 14611,
+      "object": "bun",
+    },
+    {
+      "address": 6160,
+      "object": "bun",
+    },
+    {
+      "address": 62713448,
+      "object": "bun",
+    },
+    {
+      "address": 190679,
+      "object": "KERNEL32.DLL",
+    },
+    {
+      "address": 574476,
+      "object": "ntdll.dll",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "548644a",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2,
+    1048576,
+  ],
+  "is_canary": false,
+  "message": "Stack overflow",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-079-windows-x86_64_baseline-1.3.11-segv-md-unk-foreign 1`] = `
+{
+  "addresses": [
+    {
+      "address": 10089,
+      "object": "npggNT64.des",
+    },
+    {
+      "address": 2330745,
+      "object": "npggNT64.des",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 256200,
+      "object": "npggNT64.des",
+    },
+    {
+      "address": 784944,
+      "object": "USER32.dll",
+    },
+    {
+      "address": 291872,
+      "object": "npggNT64.des",
+    },
+    {
+      "address": 62896,
+      "object": "npggNT64.des",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 363684,
+      "object": "npggNT64.des",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "dea015e",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2097155,
+    1052679,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x0000003C",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
+exports[`parse fixtures real-080-windows-x86_64_baseline-1.3.10-segv-md-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 57552658,
+      "object": "bun",
+    },
+    {
+      "address": 57102306,
+      "object": "bun",
+    },
+    {
+      "address": 57102612,
+      "object": "bun",
+    },
+    {
+      "address": 56756604,
+      "object": "bun",
+    },
+    {
+      "address": 44873091,
+      "object": "bun",
+    },
+    {
+      "address": 30836177,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "d885ce7",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2099203,
+    1052695,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000018",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.10",
+}
+`;
+
+exports[`parse fixtures real-081-windows-aarch64-1.3.10-panic-md-foreign 1`] = `
+{
+  "addresses": [
+    {
+      "address": 16442984,
+      "object": "bun",
+    },
+    {
+      "address": 18065496,
+      "object": "bun",
+    },
+    {
+      "address": 24352,
+      "object": "bun",
+    },
+    {
+      "address": 44408,
+      "object": "bun",
+    },
+    {
+      "address": 24168,
+      "object": "bun",
+    },
+    {
+      "address": 25524,
+      "object": "bun",
+    },
+    {
+      "address": 41356,
+      "object": "bun",
+    },
+    {
+      "address": 36700920,
+      "object": "bun",
+    },
+    {
+      "address": 36613992,
+      "object": "bun",
+    },
+    {
+      "address": 36612652,
+      "object": "bun",
+    },
+    {
+      "address": 18932640,
+      "object": "bun",
+    },
+    {
+      "address": 16484032,
+      "object": "bun",
+    },
+    {
+      "address": 34624,
+      "object": "KERNEL32.DLL",
+    },
+    {
+      "address": 869540,
+      "object": "ntdll.dll",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "_",
+  "commitish": "1423d3c",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2051,
+    1052687,
+  ],
+  "is_canary": false,
+  "message": "panic: incorrect alignment",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.10",
+}
+`;
+
+exports[`parse fixtures real-082-windows-x86_64-1.3.9-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 16771135,
+      "object": "bun",
+    },
+    {
+      "address": 16770754,
+      "object": "bun",
+    },
+    {
+      "address": 21462318,
+      "object": "bun",
+    },
+    {
+      "address": 25549312,
+      "object": "bun",
+    },
+    {
+      "address": 25586185,
+      "object": "bun",
+    },
+    {
+      "address": 25777554,
+      "object": "bun",
+    },
+    {
+      "address": 25776235,
+      "object": "bun",
+    },
+    {
+      "address": 25760014,
+      "object": "bun",
+    },
+    {
+      "address": 25767108,
+      "object": "bun",
+    },
+    {
+      "address": 25759497,
+      "object": "bun",
+    },
+    {
+      "address": 25927997,
+      "object": "bun",
+    },
+    {
+      "address": 26218507,
+      "object": "bun",
+    },
+    {
+      "address": 25776370,
+      "object": "bun",
+    },
+    {
+      "address": 25743593,
+      "object": "bun",
+    },
+    {
+      "address": 26215153,
+      "object": "bun",
+    },
+    {
+      "address": 20923561,
+      "object": "bun",
+    },
+    {
+      "address": 21321836,
+      "object": "bun",
+    },
+    {
+      "address": 21322776,
+      "object": "bun",
+    },
+    {
+      "address": 17110835,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "a",
+  "commitish": "cf6cdbb",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3331,
+    -2146430953,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x43C881E0100",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.9",
+}
+`;
+
+exports[`parse fixtures real-083-windows-x86_64_baseline-1.3.10-segv-md-foreign 1`] = `
+{
+  "addresses": [
+    {
+      "address": 11909744,
+      "object": "bun",
+    },
+    {
+      "address": 23941090,
+      "object": "bun",
+    },
+    {
+      "address": 38790732,
+      "object": "bun",
+    },
+    {
+      "address": 38717276,
+      "object": "bun",
+    },
+    {
+      "address": 38715981,
+      "object": "bun",
+    },
+    {
+      "address": 12228212,
+      "object": "bun",
+    },
+    {
+      "address": 10819524,
+      "object": "bun",
+    },
+    {
+      "address": 221563,
+      "object": "bun",
+    },
+    {
+      "address": 10498703,
+      "object": "bun",
+    },
+    {
+      "address": 7425843,
+      "object": "bun",
+    },
+    {
+      "address": 7417973,
+      "object": "bun",
+    },
+    {
+      "address": 58361928,
+      "object": "bun",
+    },
+    {
+      "address": 190679,
+      "object": "KERNEL32.DLL",
+    },
+    {
+      "address": 574780,
+      "object": "ntdll.dll",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "1423d3c",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2099203,
+    1052695,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0xFFFFFFFFFFFFFFFF",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.10",
+}
+`;
+
+exports[`parse fixtures real-084-windows-x86_64_baseline-1.3.9-panic-sm-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 10627791,
+      "object": "bun",
+    },
+    {
+      "address": 7413503,
+      "object": "bun",
+    },
+    {
+      "address": 24632263,
+      "object": "bun",
+    },
+    {
+      "address": 24528073,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 40774869,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "d5628db",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2,
+    1048578,
+  ],
+  "is_canary": true,
+  "message": "panic: Internal assertion failure",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.9",
+}
+`;
+
+exports[`parse fixtures real-085-windows-x86_64_baseline-1.3.9-ill-lg 1`] = `
+{
+  "addresses": [
+    {
+      "address": 48234378,
+      "object": "bun",
+    },
+    {
+      "address": 42834420,
+      "object": "bun",
+    },
+    {
+      "address": 42864839,
+      "object": "bun",
+    },
+    {
+      "address": 42807538,
+      "object": "bun",
+    },
+    {
+      "address": 42806707,
+      "object": "bun",
+    },
+    {
+      "address": 25331731,
+      "object": "bun",
+    },
+    {
+      "address": 25302327,
+      "object": "bun",
+    },
+    {
+      "address": 25927941,
+      "object": "bun",
+    },
+    {
+      "address": 25931502,
+      "object": "bun",
+    },
+    {
+      "address": 20804649,
+      "object": "bun",
+    },
+    {
+      "address": 21252058,
+      "object": "bun",
+    },
+    {
+      "address": 21255986,
+      "object": "bun",
+    },
+    {
+      "address": 13885813,
+      "object": "bun",
+    },
+    {
+      "address": 13515404,
+      "object": "bun",
+    },
+    {
+      "address": 15768277,
+      "object": "bun",
+    },
+    {
+      "address": 22953805,
+      "object": "bun",
+    },
+    {
+      "address": 22953541,
+      "object": "bun",
+    },
+    {
+      "address": 24172317,
+      "object": "bun",
+    },
+    {
+      "address": 24171736,
+      "object": "bun",
+    },
+    {
+      "address": 24159400,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "cf6cdbb",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    538054671,
+  ],
+  "is_canary": false,
+  "message": "Illegal instruction at address 0x7FF6E3FDFF8A",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.9",
+}
+`;
+
+exports[`parse fixtures real-086-windows-x86_64-1.3.8-panic-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 5242591,
+      "object": "bun",
+    },
+    {
+      "address": 3352009,
+      "object": "bun",
+    },
+    {
+      "address": 183616,
+      "object": "bun",
+    },
+    {
+      "address": 5437954,
+      "object": "bun",
+    },
+    {
+      "address": 6733438,
+      "object": "bun",
+    },
+    {
+      "address": 6729666,
+      "object": "bun",
+    },
+    {
+      "address": 5457626,
+      "object": "bun",
+    },
+    {
+      "address": 3678172,
+      "object": "bun",
+    },
+    {
+      "address": 922600,
+      "object": "bun",
+    },
+    {
+      "address": 15234873,
+      "object": "bun",
+    },
+    {
+      "address": 16675121,
+      "object": "bun",
+    },
+    {
+      "address": 16677365,
+      "object": "bun",
+    },
+    {
+      "address": 16676909,
+      "object": "bun",
+    },
+    {
+      "address": 23039651,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 41693124,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "n",
+  "commitish": "b64edcb",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    112,
+    1048903,
+  ],
+  "is_canary": false,
+  "message": "panic: invalid enum value",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.8",
+}
+`;
+
+exports[`parse fixtures real-087-windows-x86_64-1.3.9-segv-xs 1`] = `
+{
+  "addresses": [],
+  "arch": "x86_64",
+  "command": "a",
+  "commitish": "35f8154",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3427,
+    -2146430697,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0x00000000",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.9",
+}
+`;
+
+exports[`parse fixtures real-088-windows-x86_64-1.3.7-panic-md-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 5118845,
+      "object": "bun",
+    },
+    {
+      "address": 5066669,
+      "object": "bun",
+    },
+    {
+      "address": 15275702,
+      "object": "bun",
+    },
+    {
+      "address": 15283586,
+      "object": "bun",
+    },
+    {
+      "address": 22927170,
+      "object": "bun",
+    },
+    {
+      "address": 22926518,
+      "object": "bun",
+    },
+    {
+      "address": 22047535,
+      "object": "bun",
+    },
+    {
+      "address": 28848121,
+      "object": "bun",
+    },
+    {
+      "address": 28844624,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "r",
+  "commitish": "ba42621",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    112,
+    1048641,
+  ],
+  "is_canary": false,
+  "message": "panic: start index 2 is larger than end index 1",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.7",
+}
+`;
+
+exports[`parse fixtures real-089-windows-x86_64_baseline-1.3.6-ill-xs 1`] = `
+{
+  "addresses": [
+    {
+      "address": 47612156,
+      "object": "bun",
+    },
+    {
+      "address": 31082368,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "d530ed9",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    1611665415,
+  ],
+  "is_canary": false,
+  "message": "Illegal instruction at address 0x7FF7F28A80FC",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.6",
+}
+`;
+
+exports[`parse fixtures real-090-windows-x86_64-1.3.6-segv-sm-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 19178028,
+      "object": "bun",
+    },
+    {
+      "address": 19171065,
+      "object": "bun",
+    },
+    {
+      "address": 20636485,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "n",
+  "commitish": "d530ed9",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    112,
+    1048837,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0xFFFFFFFFFFFFFFFF",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.6",
+}
+`;
+
+exports[`parse fixtures real-091-windows-x86_64-1.3.5-segv-md-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 58744048,
+      "object": "bun",
+    },
+    {
+      "address": 59744144,
+      "object": "bun",
+    },
+    {
+      "address": 59744190,
+      "object": "bun",
+    },
+    {
+      "address": 59743913,
+      "object": "bun",
+    },
+    {
+      "address": 59743862,
+      "object": "bun",
+    },
+    {
+      "address": 58743477,
+      "object": "bun",
+    },
+    {
+      "address": 54253857,
+      "object": "bun",
+    },
+    {
+      "address": 31189142,
+      "object": "bun",
+    },
+    {
+      "address": 31549489,
+      "object": "bun",
+    },
+    {
+      "address": 31547040,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "r",
+  "commitish": "1e86ceb",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    352,
+    1049088,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000008",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.5",
+}
+`;
+
+exports[`parse fixtures real-092-windows-x86_64_baseline-1.3.5-segv-xs 1`] = `
+{
+  "addresses": [],
+  "arch": "x86_64_baseline",
+  "command": "a",
+  "commitish": "1e86ceb",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3443,
+    -2146299625,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000000",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.5",
+}
+`;
+
+exports[`parse fixtures real-093-windows-x86_64_baseline-1.3.5-segv-lg-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 15993615,
+      "object": "bun",
+    },
+    {
+      "address": 15993362,
+      "object": "bun",
+    },
+    {
+      "address": 20825596,
+      "object": "bun",
+    },
+    {
+      "address": 24516144,
+      "object": "bun",
+    },
+    {
+      "address": 24551048,
+      "object": "bun",
+    },
+    {
+      "address": 24801106,
+      "object": "bun",
+    },
+    {
+      "address": 24799739,
+      "object": "bun",
+    },
+    {
+      "address": 24783278,
+      "object": "bun",
+    },
+    {
+      "address": 24790353,
+      "object": "bun",
+    },
+    {
+      "address": 24782825,
+      "object": "bun",
+    },
+    {
+      "address": 24956349,
+      "object": "bun",
+    },
+    {
+      "address": 25208075,
+      "object": "bun",
+    },
+    {
+      "address": 24799874,
+      "object": "bun",
+    },
+    {
+      "address": 24768409,
+      "object": "bun",
+    },
+    {
+      "address": 25204753,
+      "object": "bun",
+    },
+    {
+      "address": 20280809,
+      "object": "bun",
+    },
+    {
+      "address": 28982151,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "a",
+  "commitish": "1e86ceb",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    275,
+    -2146299881,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x499AA1E0100",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.5",
+}
+`;
+
+exports[`parse fixtures real-094-windows-x86_64-1.3.5-segv-lg-foreign 1`] = `
+{
+  "addresses": [
+    {
+      "address": 60721174,
+      "object": "bun",
+    },
+    {
+      "address": 11624647,
+      "object": "bun",
+    },
+    {
+      "address": 10901842,
+      "object": "bun",
+    },
+    {
+      "address": 10035300,
+      "object": "bun",
+    },
+    {
+      "address": 10036239,
+      "object": "bun",
+    },
+    {
+      "address": 6658889,
+      "object": "bun",
+    },
+    {
+      "address": 3840093,
+      "object": "bun",
+    },
+    {
+      "address": 3326712,
+      "object": "bun",
+    },
+    {
+      "address": 20297723,
+      "object": "bun",
+    },
+    {
+      "address": 2870405,
+      "object": "bun",
+    },
+    {
+      "address": 2880274,
+      "object": "bun",
+    },
+    {
+      "address": 2878171,
+      "object": "bun",
+    },
+    {
+      "address": 3028866,
+      "object": "bun",
+    },
+    {
+      "address": 14071,
+      "object": "bun",
+    },
+    {
+      "address": 6192,
+      "object": "bun",
+    },
+    {
+      "address": 60333716,
+      "object": "bun",
+    },
+    {
+      "address": 75133,
+      "object": "KERNEL32.DLL",
+    },
+    {
+      "address": 372488,
+      "object": "ntdll.dll",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "a",
+  "commitish": "1e86ceb",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2080,
+    1179664,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x29F14210080",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.5",
+}
+`;
+
+exports[`parse fixtures real-095-windows-x86_64_baseline-1.3.3-segv-sm-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 9528177,
+      "object": "bun",
+    },
+    {
+      "address": 31453404,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 41933877,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "a",
+  "commitish": "274e01c",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    385,
+    -1073082345,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000130",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.3",
+}
+`;
+
+exports[`parse fixtures real-096-windows-x86_64-1.3.3-panic-md-foreign 1`] = `
+{
+  "addresses": [
+    {
+      "address": 9619916,
+      "object": "bun",
+    },
+    {
+      "address": 9614781,
+      "object": "bun",
+    },
+    {
+      "address": 8655364,
+      "object": "bun",
+    },
+    {
+      "address": 10438875,
+      "object": "bun",
+    },
+    {
+      "address": 23370181,
+      "object": "bun",
+    },
+    {
+      "address": 23369591,
+      "object": "bun",
+    },
+    {
+      "address": 23371925,
+      "object": "bun",
+    },
+    {
+      "address": 23371827,
+      "object": "bun",
+    },
+    {
+      "address": 23436086,
+      "object": "bun",
+    },
+    {
+      "address": 24674461,
+      "object": "bun",
+    },
+    {
+      "address": 24604773,
+      "object": "bun",
+    },
+    {
+      "address": 24603725,
+      "object": "bun",
+    },
+    {
+      "address": 11292985,
+      "object": "bun",
+    },
+    {
+      "address": 8697770,
+      "object": "bun",
+    },
+    {
+      "address": 190679,
+      "object": "KERNEL32.DLL",
+    },
+    {
+      "address": 574780,
+      "object": "ntdll.dll",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "_",
+  "commitish": "274e01c",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    49,
+    -2146823929,
+  ],
+  "is_canary": false,
+  "message": "panic: index out of bounds: index 438088856, len 1676",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.3",
+}
+`;
+
+exports[`parse fixtures real-097-windows-x86_64_baseline-1.3.2-ill-md-foreign 1`] = `
+{
+  "addresses": [
+    {
+      "address": 42170790,
+      "object": "bun",
+    },
+    {
+      "address": 42165045,
+      "object": "bun",
+    },
+    {
+      "address": 42160798,
+      "object": "bun",
+    },
+    {
+      "address": 42155733,
+      "object": "bun",
+    },
+    {
+      "address": 42151735,
+      "object": "bun",
+    },
+    {
+      "address": 42150257,
+      "object": "bun",
+    },
+    {
+      "address": 42138357,
+      "object": "bun",
+    },
+    {
+      "address": 42137706,
+      "object": "bun",
+    },
+    {
+      "address": 42136406,
+      "object": "bun",
+    },
+    {
+      "address": 3099986,
+      "object": "bun",
+    },
+    {
+      "address": 15054,
+      "object": "bun",
+    },
+    {
+      "address": 4366,
+      "object": "bun",
+    },
+    {
+      "address": 62848548,
+      "object": "bun",
+    },
+    {
+      "address": 95092,
+      "object": "KERNEL32.DLL",
+    },
+    {
+      "address": 314513,
+      "object": "ntdll.dll",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "b131639",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    0,
+    402653184,
+  ],
+  "is_canary": false,
+  "message": "Illegal instruction at address 0x7FF791BB79A6",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.2",
+}
+`;
+
+exports[`parse fixtures real-098-windows-x86_64-1.3.3-panic-sm-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 16177164,
+      "object": "bun",
+    },
+    {
+      "address": 17541818,
+      "object": "bun",
+    },
+    {
+      "address": 21144117,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 42672586,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "a",
+  "commitish": "e0aae8a",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    1096,
+    329729,
+  ],
+  "is_canary": true,
+  "message": "panic: integer does not fit in destination type",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.3",
+}
+`;
+
+exports[`parse fixtures real-099-windows-x86_64-1.3.0-segv-sm-unk-foreign 1`] = `
+{
+  "addresses": [
+    {
+      "address": 3417288,
+      "object": "node.exe",
+    },
+    {
+      "address": 1356496,
+      "object": "wrtc.node",
+    },
+    {
+      "address": 1406907,
+      "object": "wrtc.node",
+    },
+    {
+      "address": 4164,
+      "object": "wrtc.node",
+    },
+    {
+      "address": 25043137,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 45242165,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "a",
+  "commitish": "b0a6fec",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    512,
+    262144,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0xFFFFFFFFFFFFFFFF",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.0",
+}
+`;
+
+exports[`parse fixtures real-100-windows-x86_64-1.3.1-segv-xs-unk 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "n",
+  "commitish": "89fa0f3",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    524,
+    1074069511,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x0000001A",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.1",
+}
+`;
+
 exports[`parse fixtures v1-linux-aarch64-segfault 1`] = `
 {
   "addresses": [
