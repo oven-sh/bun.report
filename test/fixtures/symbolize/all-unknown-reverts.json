@@ -1,0 +1,9 @@
+{
+  "description": "filterAddresses reverts to original when all frames would be stripped",
+  "os": "linux",
+  "addresses": [
+    { "address": 1000, "object": "bun" },
+    { "address": 2000, "object": "bun" }
+  ],
+  "stdout": "??\n??:0:0\n??\n??:0:0\n"
+}

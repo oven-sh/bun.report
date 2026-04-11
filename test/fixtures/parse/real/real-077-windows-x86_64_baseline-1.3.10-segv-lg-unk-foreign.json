@@ -1,0 +1,5 @@
+{
+  "description": "real-077-windows-x86_64_baseline-1.3.10-segv-lg-unk-foreign",
+  "source_issue": 28008,
+  "input": "1.3.10/ea130e609emxGz+3/9/CCYMSVCP140.dllgq1ECeonnxruntime.dll4qvyRCeonnxruntime.dllq1O1RCYucrtbase.dllmnyHCeonnxruntime.dll0+83RCeonnxruntime.dllu193RCSntdll.dll6htGCSntdll.dlluvpbCSntdll.dll0oobCSntdll.dllgxobCSntdll.dllu0sPCSntdll.dll869HCSntdll.dll0+5FCSntdll.dllov1FCcKERNELBASE.dllk3tL20g3du2x+rB__w/oiwCA2AA"
+}

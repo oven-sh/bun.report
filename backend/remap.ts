@@ -1,4 +1,4 @@
-import type { Address, Parse, Remap, ResolvedCommit } from "../lib/parser";
+import type { Parse, Remap, ResolvedCommit } from "../lib/parser";
 import { getCommit } from "./git";
 import { fetchDebugFile } from "./debug-store";
 import { getCachedRemap, putCachedRemap } from "./db";
@@ -7,6 +7,7 @@ import { llvm_symbolizer, pdb_addr2line } from "./system-deps";
 import { formatMarkdown } from "./markdown";
 import { decodeFeatures } from "./feature";
 import { AsyncMutexMap } from "./mutex";
+import { adjustBunAddresses, processSymbolizerOutput, filterAddresses } from "./symbolize";
 
 const command_map: { [key: string]: string } = {
   I: "AddCommand",
@@ -63,8 +64,6 @@ export async function remap(parsed_string: string, parse: Parse): Promise<Remap>
   return in_progress_remaps.get(key, () => remapUncached(parsed_string, parse));
 }
 
-const macho_first_offset = 0x100000000;
-
 export async function remapUncached(
   parsed_string: string,
   parse: Parse,
@@ -92,11 +91,9 @@ export async function remapUncached(
     throw e;
   }
 
-  let lines: string[] = [];
+  let stdout = "";
 
-  const bun_addrs = parse.addresses
-    .filter(a => a.object === "bun")
-    .map(a => "0x" + (parse.os === "macos" ? macho_first_offset + a.address : a.address).toString(16));
+  const bun_addrs = adjustBunAddresses(parse.addresses, parse.os);
   if (bun_addrs.length > 0) {
     const cmd = [
       parse.os === "windows" ? pdb_addr2line : llvm_symbolizer,
@@ -120,58 +117,10 @@ export async function remapUncached(
       e.code = "PdbAddr2LineFailed";
     }
 
-    const stdout = await Bun.readableStreamToText(subproc.stdout);
-    lines = stdout.split("\n").filter(l => l.length > 0);
+    stdout = await Bun.readableStreamToText(subproc.stdout);
   }
 
-  let mapped_addrs: Address[] = parse.addresses.map(addr => {
-    if (addr.object === "bun") {
-      const fn_line = lines.shift();
-      const source_line = lines.shift();
-      if (fn_line && source_line) {
-        const parsed_line = parsePdb2AddrLineFile(source_line);
-
-        return {
-          remapped: true,
-          src: parsed_line
-            ? {
-                file: parsed_line.file,
-                line: parsed_line.line,
-              }
-            : null,
-          function: cleanFunctionName(fn_line),
-          object: "bun",
-        } satisfies Address;
-      }
-    }
-
-    return {
-      remapped: false,
-      object: addr.object,
-      address: addr.address,
-    } satisfies Address;
-  });
-
-  const old = mapped_addrs.slice();
-  // This appears pretty often, and it does not provide much value
-  if (mapped_addrs[0]?.function?.includes("WTF::jscSignalHandler")) {
-    const old = mapped_addrs.slice();
-
-    mapped_addrs.shift();
-
-    console.log(mapped_addrs);
-    // remove additional `???` lines
-    while (mapped_addrs.length > 0 && (!mapped_addrs[0].remapped || mapped_addrs[0].function === "??")) {
-      mapped_addrs.shift();
-    }
-
-    // if this operation somehow removes all addresses, revert
-    if (mapped_addrs.length === 0) {
-      mapped_addrs = old;
-    }
-  }
-
-  mapped_addrs = filterAddresses(mapped_addrs);
+  const mapped_addrs = processSymbolizerOutput(parse.addresses, stdout);
 
   const key = parseCacheKey(parse);
   let display_version = debug_info.feature_config?.version ?? parse.version;
@@ -199,7 +148,6 @@ export async function remapUncached(
     addresses: mapped_addrs,
     command,
     features,
-    embedder: debug_info.feature_config?.embedder,
   };
   putCachedRemap(key, remap);
 
@@ -224,95 +172,4 @@ export async function remapUncached(
   return remap;
 }
 
-export function filterAddresses(addrs: Address[]): Address[] {
-  const old = addrs.slice();
-
-  while (
-    addrs[0]?.function?.includes?.("WTF::jscSignalHandler") ||
-    addrs[0]?.function?.includes?.("assertionFailure") ||
-    addrs[0]?.function?.includes?.("panic") ||
-    addrs[0]?.function?.endsWith?.("assert")
-  ) {
-    addrs.shift();
-
-    // remove additional `??` lines
-    while (addrs.length > 0 && (!addrs[0].remapped || addrs[0].function === "??")) {
-      addrs.shift();
-    }
-  }
-
-  // remove trailing ?? lines
-  while (addrs.length > 0 && (!addrs[addrs.length - 1].remapped || addrs[addrs.length - 1].function === "??")) {
-    addrs.pop();
-  }
-
-  // if this operation somehow removes all addresses, revert
-  if (addrs.length === 0) {
-    return old;
-  }
-
-  return addrs;
-}
-
-function withoutZigAnon(str: string): string {
-  if (str && !str.startsWith("__anon_")) {
-    // Remove all __anon_${number} patterns
-    str = str.replace(/__anon_\d+/g, "");
-  }
-
-  if (str && !str.startsWith("__struct_")) {
-    // Remove all __struct_${number} patterns
-    str = str.replace(/__struct_\d+/g, "");
-  }
-
-  return str;
-}
-
-export function cleanFunctionName(str: string): string {
-  const last_paren = str.lastIndexOf(")");
-  if (last_paren === -1) {
-    return withoutZigAnon(str);
-  }
-  let last_open_paren = last_paren;
-  let n = 1;
-  while (last_open_paren > 0) {
-    last_open_paren--;
-    if (str[last_open_paren] === ")") {
-      n++;
-    } else if (str[last_open_paren] === "(") {
-      n--;
-      if (n === 0) {
-        break;
-      }
-    }
-  }
-  return withoutZigAnon(str.slice(0, last_open_paren).replace(/\(.+?\)/g, "(...)"));
-}
-
-export function parsePdb2AddrLineFile(str: string): { file: string; line: number } | null {
-  if (str.startsWith("??:")) return null;
-
-  const last_colon = str.lastIndexOf(":");
-  if (last_colon === -1) {
-    return null;
-  }
-
-  const second_colon = str.lastIndexOf(":", last_colon - 1);
-  if (second_colon === -1) {
-    return null;
-  }
-
-  const line = Math.floor(Number(str.slice(second_colon + 1, last_colon)));
-  if (isNaN(line)) {
-    return null;
-  }
-
-  const file_full = str.slice(0, second_colon).replace(/\\/g, "/");
-  // Strip the CI build root, keeping the first repo-level dir (src, vendor,
-  // packages) onward. The old `.*?/src/` regex ate `vendor/libuv/` off paths
-  // like `.../vendor/libuv/src/win/process.c`.
-  const m = file_full.match(/(?:^|\/)(src|vendor|packages)\/(.*)$/);
-  const file = m ? `${m[1]}/${m[2]}` : file_full;
-
-  return { file, line };
-}
+export { filterAddresses, cleanFunctionName, parsePdb2AddrLineFile } from "./symbolize";

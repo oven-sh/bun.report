@@ -1,0 +1,13 @@
+{
+  "description": "linux: bun frames interleaved with js and foreign-object frames",
+  "os": "linux",
+  "addresses": [
+    { "address": 8192000, "object": "bun" },
+    { "address": 0, "object": "js" },
+    { "address": 0, "object": "js" },
+    { "address": 8390000, "object": "bun" },
+    { "address": 12345, "object": "libc.so.6" },
+    { "address": 8590000, "object": "bun" }
+  ],
+  "stdout": "src.js.node.fs.NodeFS.readFile\n/home/runner/work/bun/bun/src/js/node/fs.zig:412:0\nsrc.bun.js.module_loader.ModuleLoader.transpileSourceCode\n/home/runner/work/bun/bun/src/bun.js/module_loader.zig:2048:0\nmain\n/home/runner/work/bun/bun/src/main.zig:42:0\n"
+}

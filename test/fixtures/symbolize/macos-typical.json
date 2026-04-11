@@ -1,0 +1,10 @@
+{
+  "description": "macos: typical llvm-symbolizer output, 3 bun frames",
+  "os": "macos",
+  "addresses": [
+    { "address": 36223112, "object": "bun" },
+    { "address": 36287456, "object": "bun" },
+    { "address": 25166040, "object": "bun" }
+  ],
+  "stdout": "Bun::jsFunctionResolveSync(JSC::JSGlobalObject*, JSC::CallFrame*)\n/Users/runner/work/bun/bun/src/bun.js/bindings/ModuleLoader.cpp:642:5\nJSC::callJSFunction(JSC::JSGlobalObject*, JSC::CallFrame*)\n/Users/runner/work/bun/bun/vendor/WebKit/Source/JavaScriptCore/runtime/JSFunction.cpp:89:12\nsrc.bun.js.event_loop.EventLoop.tick\n/Users/runner/work/bun/bun/src/bun.js/event_loop.zig:1281:0\n"
+}

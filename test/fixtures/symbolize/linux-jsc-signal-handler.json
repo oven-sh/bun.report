@@ -1,0 +1,12 @@
+{
+  "description": "linux: stack starts with WTF::jscSignalHandler then unknown frames before real frames",
+  "os": "linux",
+  "addresses": [
+    { "address": 70291584, "object": "bun" },
+    { "address": 0, "object": "?" },
+    { "address": 0, "object": "?" },
+    { "address": 53428112, "object": "bun" },
+    { "address": 53430000, "object": "bun" }
+  ],
+  "stdout": "WTF::jscSignalHandler(int, siginfo_t*, void*)\n/home/runner/work/bun/bun/vendor/WebKit/Source/WTF/wtf/threads/Signals.cpp:237:5\nJSC::JSValue::get(JSC::JSGlobalObject*, JSC::PropertyName) const\n/home/runner/work/bun/bun/vendor/WebKit/Source/JavaScriptCore/runtime/JSCJSValueInlines.h:1024:9\nBun::ReadableStream::pipeTo(JSC::JSGlobalObject*)\n/home/runner/work/bun/bun/src/bun.js/bindings/webcore/ReadableStream.cpp:88:3\n"
+}
