@@ -8,9 +8,22 @@ const macho_first_offset = 0x100000000;
  * should be passed to the symbolizer for `object === "bun"` frames.
  */
 export function adjustBunAddresses(addresses: ParsedAddress[], os: Platform): string[] {
-  return addresses
-    .filter(a => a.object === "bun")
-    .map(a => "0x" + (os === "macos" ? macho_first_offset + a.address : a.address).toString(16));
+  // crash_handler.zig already encodes `addr - 1` on macOS/Linux but emits raw
+  // return addresses on Windows. Decrement here for Windows only (all bun
+  // frames after the first — the first is ExceptionAddress, the exact fault
+  // PC). Doing it server-side retroactively fixes existing traces and avoids
+  // a wire-format version bump.
+  let first_bun_seen = false;
+  const out: string[] = [];
+  for (const a of addresses) {
+    if (a.object !== "bun") continue;
+    let addr = a.address;
+    if (os === "windows" && first_bun_seen) addr -= 1;
+    first_bun_seen = true;
+    if (os === "macos") addr += macho_first_offset;
+    out.push("0x" + addr.toString(16));
+  }
+  return out;
 }
 
 /**
@@ -22,35 +35,37 @@ export function adjustBunAddresses(addresses: ParsedAddress[], os: Platform): st
  * process or fetching debug files.
  */
 export function processSymbolizerOutput(addresses: ParsedAddress[], stdout: string): Address[] {
-  const lines = stdout.split("\n").filter(l => l.length > 0);
+  // llvm-symbolizer outputs one block per input address, blocks separated by a
+  // blank line. With --inlines a block holds N (function, source) line-pairs,
+  // innermost first; --no-inlines and pdb-addr2line emit exactly one pair.
+  const blocks = stdout
+    .replace(/\n+$/, "")
+    .split(/\n\n+/)
+    .map(b => b.split("\n"));
+  let blockIdx = 0;
 
-  let mapped_addrs: Address[] = addresses.map(addr => {
-    if (addr.object === "bun") {
-      const fn_line = lines.shift();
-      const source_line = lines.shift();
-      if (fn_line && source_line) {
-        const parsed_line = parsePdb2AddrLineFile(source_line);
-
-        return {
-          remapped: true,
-          src: parsed_line
-            ? {
-                file: parsed_line.file,
-                line: parsed_line.line,
-              }
-            : null,
-          function: cleanFunctionName(fn_line),
-          object: "bun",
-        } satisfies Address;
-      }
+  let mapped_addrs: Address[] = [];
+  for (const addr of addresses) {
+    if (addr.object !== "bun") {
+      mapped_addrs.push({ remapped: false, object: addr.object, address: addr.address });
+      continue;
     }
-
-    return {
-      remapped: false,
-      object: addr.object,
-      address: addr.address,
-    } satisfies Address;
-  });
+    const block = blocks[blockIdx++] ?? [];
+    let pushed = 0;
+    for (let i = 0; i + 1 < block.length; i += 2) {
+      const src = parsePdb2AddrLineFile(block[i + 1]);
+      mapped_addrs.push({
+        remapped: true,
+        src: src ? { file: src.file, line: src.line } : null,
+        function: cleanFunctionName(block[i]),
+        object: "bun",
+      });
+      pushed++;
+    }
+    if (pushed === 0) {
+      mapped_addrs.push({ remapped: false, object: addr.object, address: addr.address });
+    }
+  }
 
   if (mapped_addrs[0]?.function?.includes("WTF::jscSignalHandler")) {
     const old = mapped_addrs.slice();
@@ -131,7 +146,12 @@ export function cleanFunctionName(str: string): string {
       }
     }
   }
-  return withoutZigAnon(str.slice(0, last_open_paren).replace(/\(.+?\)/g, "(...)"));
+  const before = str.slice(0, last_open_paren).replace(/\(.+?\)/g, "(...)");
+  const after = str.slice(last_paren + 1);
+  // C++ args are the trailing group: `Foo::bar(int, char)` -> drop entirely.
+  // Zig generic type params sit before the method: `Queue(Job,.next).push` ->
+  // collapse to `Queue(...).push` so the method name survives.
+  return withoutZigAnon(after ? before + "(...)" + after : before);
 }
 
 export function parsePdb2AddrLineFile(str: string): { file: string; line: number } | null {

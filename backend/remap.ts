@@ -99,7 +99,7 @@ export async function remapUncached(
       parse.os === "windows" ? pdb_addr2line : llvm_symbolizer,
       "--exe",
       debug_info.file_path,
-      ...(parse.os !== "windows" ? ["--no-inlines", "--relative-address"] : ["--llvm"]),
+      ...(parse.os !== "windows" ? ["--inlines", "--relative-address"] : ["--llvm", "-i"]),
       "-f",
       ...bun_addrs,
     ];

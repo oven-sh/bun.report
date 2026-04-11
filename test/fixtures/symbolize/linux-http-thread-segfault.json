@@ -1,0 +1,31 @@
+{
+  "description": "linux-http-thread-segfault",
+  "os": "linux",
+  "addresses": [
+    {
+      "address": 86642156,
+      "object": "bun"
+    },
+    {
+      "address": 106559,
+      "object": "bun"
+    },
+    {
+      "address": 60096454,
+      "object": "bun"
+    },
+    {
+      "address": 56911368,
+      "object": "bun"
+    },
+    {
+      "address": 466707,
+      "object": "bun"
+    },
+    {
+      "address": 1004331,
+      "object": "bun"
+    }
+  ],
+  "stdout": "WTF::jscSignalHandler(int, siginfo_t*, void*)\n/webkitbuild/vendor/WebKit/Source/WTF/wtf/threads/Signals.cpp:0:0\n\n??\n??:0:0\n\nhttp.HTTPThread.drainQueuedShutdowns\n/tmpfs/bun/src/http/HTTPThread.zig:376:37\nhttp.HTTPThread.drainEvents\n/tmpfs/bun/src/http/HTTPThread.zig:467:30\nhttp.HTTPThread.processEvents\n/tmpfs/bun/src/http/HTTPThread.zig:516:25\n\nhttp.HTTPThread.onStart\n/tmpfs/bun/src/http/HTTPThread.zig:229:39\nThread.callFn__anon_967792\n/tmpfs/bun/vendor/zig/lib/std/Thread.zig:509:13\nThread.PosixThreadImpl.spawn__anon_814209.Instance.entryFn\n/tmpfs/bun/vendor/zig/lib/std/Thread.zig:781:30\n\n??\n??:0:0\n\n??\n??:0:0\n\n"
+}

@@ -5,5 +5,5 @@
     { "address": 1000, "object": "bun" },
     { "address": 2000, "object": "bun" }
   ],
-  "stdout": "??\n??:0:0\n??\n??:0:0\n"
+  "stdout": "??\n??:0:0\n\n??\n??:0:0\n\n"
 }

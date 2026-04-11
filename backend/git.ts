@@ -3,7 +3,6 @@ import { existsSync } from "node:fs";
 import { Octokit } from "octokit";
 import { join } from "path";
 import type { ResolvedCommit } from "../lib/parser";
-import { cache_root } from "./debug-store";
 import { AsyncMutex } from "./mutex";
 import { git } from "./system-deps";
 
@@ -11,7 +10,7 @@ export const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
 
-const local_clone_dir = process.env.CI_CLONE_DIR ?? join(cache_root, "bun");
+const local_clone_dir = process.env.CI_CLONE_DIR ?? join(import.meta.dir, "..", ".cache", "bun");
 const local_clone_git_dir = join(local_clone_dir, ".git");
 const commitish_cache = new Map<string, ResolvedCommit>();
 
