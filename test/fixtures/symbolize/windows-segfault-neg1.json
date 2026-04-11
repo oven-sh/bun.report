@@ -1,0 +1,27 @@
+{
+  "description": "windows-segfault-neg1",
+  "os": "windows",
+  "addresses": [
+    {
+      "address": 8930599,
+      "object": "bun"
+    },
+    {
+      "address": 6990411,
+      "object": "bun"
+    },
+    {
+      "address": 10540979,
+      "object": "bun"
+    },
+    {
+      "address": 190679,
+      "object": "KERNEL32.DLL"
+    },
+    {
+      "address": 574780,
+      "object": "ntdll.dll"
+    }
+  ],
+  "stdout": "eventLoop()\nD:\\bun\\src\\bun.js\\VirtualMachine.zig:781:0\ndispatchToMainThread(bun.js.RuntimeTranspilerStore.RuntimeTranspilerStore.TranspilerJob*)\nD:\\bun\\src\\bun.js\\RuntimeTranspilerStore.zig:241:0\n\nrun(bun.js.RuntimeTranspilerStore.RuntimeTranspilerStore.TranspilerJob*)\nD:\\bun\\src\\bun.js\\RuntimeTranspilerStore.zig:294:0\nrunFromWorkerThread(threading.ThreadPool.Task*)\nD:\\bun\\src\\bun.js\\RuntimeTranspilerStore.zig:286:0\n\nrun(threading.ThreadPool*)\nD:\\bun\\src\\threading\\ThreadPool.zig:581:0\ncallFn__anon_702590(struct { *threading.ThreadPool }*)\nD:\\bun\\vendor\\zig\\lib\\std\\Thread.zig:509:0\nentryFn(<NoType>*)\nD:\\bun\\vendor\\zig\\lib\\std\\Thread.zig:622:0\n\n"
+}

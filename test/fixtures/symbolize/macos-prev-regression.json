@@ -1,0 +1,19 @@
+{
+  "description": "macos-prev-regression",
+  "os": "macos",
+  "addresses": [
+    {
+      "address": 13083216,
+      "object": "bun"
+    },
+    {
+      "address": 13083248,
+      "object": "bun"
+    },
+    {
+      "address": 11617296,
+      "object": "bun"
+    }
+  ],
+  "stdout": "threading.unbounded_queue.UnboundedQueue(bun.js.RuntimeTranspilerStore.RuntimeTranspilerStore.TranspilerJob,.next).pushBatch\n/Users/runner/work/bun/bun/src/threading/unbounded_queue.zig:100:32\nthreading.unbounded_queue.UnboundedQueue(bun.js.RuntimeTranspilerStore.RuntimeTranspilerStore.TranspilerJob,.next).push\n/Users/runner/work/bun/bun/src/threading/unbounded_queue.zig:87:27\nbun.js.RuntimeTranspilerStore.RuntimeTranspilerStore.TranspilerJob.dispatchToMainThread\n/Users/runner/work/bun/bun/src/bun.js/RuntimeTranspilerStore.zig:240:48\n\nallocators.basic.MimallocAllocator.alignedAlloc\n/Users/runner/work/bun/bun/src/allocators/basic.zig:30:66\nallocators.basic.MimallocAllocator.alloc_with_default_allocator\n/Users/runner/work/bun/bun/src/allocators/basic.zig:52:28\nmem.Allocator.rawAlloc\n/Users/runner/work/bun/bun/vendor/zig/lib/std/mem/Allocator.zig:129:26\nmem.Allocator.allocBytesWithAlignment__anon_241842\n/Users/runner/work/bun/bun/vendor/zig/lib/std/mem/Allocator.zig:298:35\nmem.Allocator.create__anon_648618\n/Users/runner/work/bun/bun/vendor/zig/lib/std/mem/Allocator.zig:167:59\nbun.tryNew\n/Users/runner/work/bun/bun/src/bun.zig:2641:53\nbun.new\n/Users/runner/work/bun/bun/src/bun.zig:2633:28\nbun.TrivialNew__struct_500571.new\n/Users/runner/work/bun/bun/src/bun.zig:2690:27\nbun.js.event_loop.ConcurrentTask.create\n/Users/runner/work/bun/bun/src/bun.js/event_loop/ConcurrentTask.zig:82:30\nbun.js.event_loop.ConcurrentTask.createFrom__anon_498043\n/Users/runner/work/bun/bun/src/bun.js/event_loop/ConcurrentTask.zig:90:18\nbun.js.RuntimeTranspilerStore.RuntimeTranspilerStore.TranspilerJob.dispatchToMainThread\n/Users/runner/work/bun/bun/src/bun.js/RuntimeTranspilerStore.zig:241:84\n\nheap.arena_allocator.ArenaAllocator.State.promote\n/Users/runner/work/bun/bun/vendor/zig/lib/std/heap/arena_allocator.zig:22:13\nheap.arena_allocator.ArenaAllocator.init\n/Users/runner/work/bun/bun/vendor/zig/lib/std/heap/arena_allocator.zig:48:33\nbun.js.RuntimeTranspilerStore.RuntimeTranspilerStore.TranspilerJob.run\n/Users/runner/work/bun/bun/src/bun.js/RuntimeTranspilerStore.zig:290:48\nbun.js.RuntimeTranspilerStore.RuntimeTranspilerStore.TranspilerJob.runFromWorkerThread\n/Users/runner/work/bun/bun/src/bun.js/RuntimeTranspilerStore.zig:286:77\n\n"
+}

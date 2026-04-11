@@ -8,5 +8,5 @@
     { "address": 4444, "object": "bun" },
     { "address": 5555, "object": "bun" }
   ],
-  "stdout": "src.report.panic\n/home/runner/work/bun/bun/src/report.zig:101:0\nstd.debug.assert\n/home/runner/zig/lib/std/debug.zig:403:0\nsrc.string_immutable.eqlLong\n/home/runner/work/bun/bun/src/string_immutable.zig:55:0\nsrc.resolver.resolver.Resolver.resolve\n/home/runner/work/bun/bun/src/resolver/resolver.zig:1820:0\n??\n??:0:0\n"
+  "stdout": "src.report.panic\n/home/runner/work/bun/bun/src/report.zig:101:0\n\nstd.debug.assert\n/home/runner/zig/lib/std/debug.zig:403:0\n\nsrc.string_immutable.eqlLong\n/home/runner/work/bun/bun/src/string_immutable.zig:55:0\n\nsrc.resolver.resolver.Resolver.resolve\n/home/runner/work/bun/bun/src/resolver/resolver.zig:1820:0\n\n??\n??:0:0\n\n"
 }

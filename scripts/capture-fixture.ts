@@ -69,7 +69,7 @@ const cmd = [
   parsed.os === "windows" ? pdb_addr2line : llvm_symbolizer,
   "--exe",
   debug_info.file_path,
-  ...(parsed.os !== "windows" ? ["--no-inlines", "--relative-address"] : ["--llvm"]),
+  ...(parsed.os !== "windows" ? ["--inlines", "--relative-address"] : ["--llvm", "-i"]),
   "-f",
   ...bun_addrs,
 ];

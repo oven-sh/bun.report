@@ -1,5 +1,187 @@
 // Bun Snapshot v1, https://bun.sh/docs/test/snapshots
 
+exports[`parse fixtures linux-http-thread-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 86642156,
+      "object": "bun",
+    },
+    {
+      "address": 106559,
+      "object": "bun",
+    },
+    {
+      "address": 60096454,
+      "object": "bun",
+    },
+    {
+      "address": 56911368,
+      "object": "bun",
+    },
+    {
+      "address": 466707,
+      "object": "bun",
+    },
+    {
+      "address": 1004331,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "_",
+  "commitish": "e38b41d",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    2097155,
+    1052695,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000010",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.12",
+}
+`;
+
+exports[`parse fixtures macos-prev-regression 1`] = `
+{
+  "addresses": [
+    {
+      "address": 13083216,
+      "object": "bun",
+    },
+    {
+      "address": 13083248,
+      "object": "bun",
+    },
+    {
+      "address": 11617296,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "a",
+  "commitish": "1b55f1d",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    96,
+    1048711,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0xFFFFFFFFFFFFFFFF",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.13",
+}
+`;
+
+exports[`parse fixtures macos-remap-stack-frames 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 28143423,
+      "object": "bun",
+    },
+    {
+      "address": 28166551,
+      "object": "bun",
+    },
+    {
+      "address": 28166735,
+      "object": "bun",
+    },
+    {
+      "address": 20078891,
+      "object": "bun",
+    },
+    {
+      "address": 1242859,
+      "object": "bun",
+    },
+    {
+      "address": 1253419,
+      "object": "bun",
+    },
+    {
+      "address": 1245707,
+      "object": "bun",
+    },
+    {
+      "address": 41056387,
+      "object": "bun",
+    },
+    {
+      "address": 41056235,
+      "object": "bun",
+    },
+    {
+      "address": 37586551,
+      "object": "bun",
+    },
+    {
+      "address": 37422795,
+      "object": "bun",
+    },
+    {
+      "address": 37440403,
+      "object": "bun",
+    },
+    {
+      "address": 37434931,
+      "object": "bun",
+    },
+    {
+      "address": 37596979,
+      "object": "bun",
+    },
+    {
+      "address": 37650091,
+      "object": "bun",
+    },
+    {
+      "address": 37450383,
+      "object": "bun",
+    },
+    {
+      "address": 37420003,
+      "object": "bun",
+    },
+    {
+      "address": 37421819,
+      "object": "bun",
+    },
+    {
+      "address": 34221763,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "a",
+  "commitish": "af24e28",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3331,
+    1052695,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x00000000",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.11",
+}
+`;
+
 exports[`parse fixtures real-001-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
 {
   "addresses": [
@@ -8707,5 +8889,47 @@ exports[`parse fixtures v2-windows-x86_64_baseline-segfault 1`] = `
   "os_version": undefined,
   "total_ram_mb": undefined,
   "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures windows-segfault-neg1 1`] = `
+{
+  "addresses": [
+    {
+      "address": 8930599,
+      "object": "bun",
+    },
+    {
+      "address": 6990411,
+      "object": "bun",
+    },
+    {
+      "address": 10540979,
+      "object": "bun",
+    },
+    {
+      "address": 190679,
+      "object": "KERNEL32.DLL",
+    },
+    {
+      "address": 574780,
+      "object": "ntdll.dll",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "a",
+  "commitish": "1b55f1d",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    96,
+    1048711,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0xFFFFFFFFFFFFFFFF",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.3.13",
 }
 `;

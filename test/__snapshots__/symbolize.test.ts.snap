@@ -23,11 +23,80 @@ exports[`symbolize fixtures filterAddresses reverts to original when all frames 
 }
 `;
 
+exports[`symbolize fixtures linux-http-thread-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "function": "http.HTTPThread.drainQueuedShutdowns",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/http/HTTPThread.zig",
+        "line": 376,
+      },
+    },
+    {
+      "function": "http.HTTPThread.drainEvents",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/http/HTTPThread.zig",
+        "line": 467,
+      },
+    },
+    {
+      "function": "http.HTTPThread.processEvents",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/http/HTTPThread.zig",
+        "line": 516,
+      },
+    },
+    {
+      "function": "http.HTTPThread.onStart",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/http/HTTPThread.zig",
+        "line": 229,
+      },
+    },
+    {
+      "function": "Thread.callFn",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/zig/lib/std/Thread.zig",
+        "line": 509,
+      },
+    },
+    {
+      "function": "Thread.PosixThreadImpl.spawn.Instance.entryFn",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/zig/lib/std/Thread.zig",
+        "line": 781,
+      },
+    },
+  ],
+  "symbolizer_input": [
+    "0x52a0dec",
+    "0x1a03f",
+    "0x394ffc6",
+    "0x3646608",
+    "0x71f13",
+    "0xf532b",
+  ],
+}
+`;
+
 exports[`symbolize fixtures linux: stack starts with WTF::jscSignalHandler then unknown frames before real frames 1`] = `
 {
   "addresses": [
     {
-      "function": "JSC::JSValue::get",
+      "function": "JSC::JSValue::get(...) const",
       "object": "bun",
       "remapped": true,
       "src": {
@@ -49,6 +118,672 @@ exports[`symbolize fixtures linux: stack starts with WTF::jscSignalHandler then 
     "0x4309080",
     "0x32f3f90",
     "0x32f46f0",
+  ],
+}
+`;
+
+exports[`symbolize fixtures macos-prev-regression 1`] = `
+{
+  "addresses": [
+    {
+      "function": "threading.unbounded_queue.UnboundedQueue(...).pushBatch",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/threading/unbounded_queue.zig",
+        "line": 100,
+      },
+    },
+    {
+      "function": "threading.unbounded_queue.UnboundedQueue(...).push",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/threading/unbounded_queue.zig",
+        "line": 87,
+      },
+    },
+    {
+      "function": "bun.js.RuntimeTranspilerStore.RuntimeTranspilerStore.TranspilerJob.dispatchToMainThread",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/RuntimeTranspilerStore.zig",
+        "line": 240,
+      },
+    },
+    {
+      "function": "allocators.basic.MimallocAllocator.alignedAlloc",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/allocators/basic.zig",
+        "line": 30,
+      },
+    },
+    {
+      "function": "allocators.basic.MimallocAllocator.alloc_with_default_allocator",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/allocators/basic.zig",
+        "line": 52,
+      },
+    },
+    {
+      "function": "mem.Allocator.rawAlloc",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/zig/lib/std/mem/Allocator.zig",
+        "line": 129,
+      },
+    },
+    {
+      "function": "mem.Allocator.allocBytesWithAlignment",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/zig/lib/std/mem/Allocator.zig",
+        "line": 298,
+      },
+    },
+    {
+      "function": "mem.Allocator.create",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/zig/lib/std/mem/Allocator.zig",
+        "line": 167,
+      },
+    },
+    {
+      "function": "bun.tryNew",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.zig",
+        "line": 2641,
+      },
+    },
+    {
+      "function": "bun.new",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.zig",
+        "line": 2633,
+      },
+    },
+    {
+      "function": "bun.TrivialNew.new",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.zig",
+        "line": 2690,
+      },
+    },
+    {
+      "function": "bun.js.event_loop.ConcurrentTask.create",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/event_loop/ConcurrentTask.zig",
+        "line": 82,
+      },
+    },
+    {
+      "function": "bun.js.event_loop.ConcurrentTask.createFrom",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/event_loop/ConcurrentTask.zig",
+        "line": 90,
+      },
+    },
+    {
+      "function": "bun.js.RuntimeTranspilerStore.RuntimeTranspilerStore.TranspilerJob.dispatchToMainThread",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/RuntimeTranspilerStore.zig",
+        "line": 241,
+      },
+    },
+    {
+      "function": "heap.arena_allocator.ArenaAllocator.State.promote",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/zig/lib/std/heap/arena_allocator.zig",
+        "line": 22,
+      },
+    },
+    {
+      "function": "heap.arena_allocator.ArenaAllocator.init",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/zig/lib/std/heap/arena_allocator.zig",
+        "line": 48,
+      },
+    },
+    {
+      "function": "bun.js.RuntimeTranspilerStore.RuntimeTranspilerStore.TranspilerJob.run",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/RuntimeTranspilerStore.zig",
+        "line": 290,
+      },
+    },
+    {
+      "function": "bun.js.RuntimeTranspilerStore.RuntimeTranspilerStore.TranspilerJob.runFromWorkerThread",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/RuntimeTranspilerStore.zig",
+        "line": 286,
+      },
+    },
+  ],
+  "symbolizer_input": [
+    "0x100c7a250",
+    "0x100c7a270",
+    "0x100b14410",
+  ],
+}
+`;
+
+exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
+{
+  "addresses": [
+    {
+      "address": 0,
+      "object": "?",
+      "remapped": false,
+    },
+    {
+      "function": "WTF::threadSpecificGet",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/WTF/wtf/ThreadingPrimitives.h",
+        "line": 142,
+      },
+    },
+    {
+      "function": "WTF::Thread::currentMayBeNull",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/WTF/wtf/Threading.h",
+        "line": 443,
+      },
+    },
+    {
+      "function": "WTF::Thread::currentSingleton",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/WTF/wtf/Threading.h",
+        "line": 462,
+      },
+    },
+    {
+      "function": "WTF::stringTable",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/WTF/wtf/text/AtomStringImpl.cpp",
+        "line": 69,
+      },
+    },
+    {
+      "function": "WTF::AtomStringImpl::remove",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/WTF/wtf/text/AtomStringImpl.cpp",
+        "line": 455,
+      },
+    },
+    {
+      "function": "WTF::StringImpl::~StringImpl",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/WTF/wtf/text/StringImpl.cpp",
+        "line": 133,
+      },
+    },
+    {
+      "function": "WTF::StringImpl::~StringImpl",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/WTF/wtf/text/StringImpl.cpp",
+        "line": 123,
+      },
+    },
+    {
+      "function": "WTF::StringImpl::destroy",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/WTF/wtf/text/StringImpl.cpp",
+        "line": 163,
+      },
+    },
+    {
+      "function": "string.wtf.WTFStringImplStruct.deref",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/string/wtf.zig",
+        "line": 93,
+      },
+    },
+    {
+      "function": "string.wtf.StringImplAllocator.free",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/string/wtf.zig",
+        "line": 255,
+      },
+    },
+    {
+      "function": "mem.Allocator.rawFree",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/zig/lib/std/mem/Allocator.zig",
+        "line": 147,
+      },
+    },
+    {
+      "function": "allocators.NullableAllocator.free",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/allocators/NullableAllocator.zig",
+        "line": 33,
+      },
+    },
+    {
+      "function": "bun.js.bindings.ZigString.ZigString.Slice.deinit",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/bindings/ZigString.zig",
+        "line": 426,
+      },
+    },
+    {
+      "function": "bun.js.VirtualMachine.remapStackFramePositions",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/VirtualMachine.zig",
+        "line": 2652,
+      },
+    },
+    {
+      "function": "Bun__remapStackFramePositions",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/VirtualMachine.zig",
+        "line": 2645,
+      },
+    },
+    {
+      "function": "Bun::formatStackTrace",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/bindings/FormatStackTraceForJS.cpp",
+        "line": 282,
+      },
+    },
+    {
+      "function": "Bun::computeErrorInfoWithoutPrepareStackTrace",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/bindings/FormatStackTraceForJS.cpp",
+        "line": 389,
+      },
+    },
+    {
+      "function": "Bun::computeErrorInfoToString",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/bindings/FormatStackTraceForJS.cpp",
+        "line": 469,
+      },
+    },
+    {
+      "function": "Bun::computeErrorInfoWrapperToString",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/bindings/FormatStackTraceForJS.cpp",
+        "line": 530,
+      },
+    },
+    {
+      "function": "WTF::Function<WTF::String (...)>::operator()(...) const",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "/Users/runner/work/_temp/webkit-release/WTF/Headers/wtf/Function.h",
+        "line": 103,
+      },
+    },
+    {
+      "function": "JSC::ErrorInstance::computeErrorInfo",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/runtime/ErrorInstance.cpp",
+        "line": 379,
+      },
+    },
+    {
+      "function": "JSC::ErrorInstance::finalizeUnconditionally",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/runtime/ErrorInstance.cpp",
+        "line": 358,
+      },
+    },
+    {
+      "function": "void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)::operator()(...) const",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/Heap.cpp",
+        "line": 766,
+      },
+    },
+    {
+      "function": "void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)::operator(...) const::'lambda'(...)::operator()(...) const",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/SubspaceInlines.h",
+        "line": 76,
+      },
+    },
+    {
+      "function": "WTF::IterationStatus JSC::MarkedBlock::Handle::forEachMarkedCell<void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)::operator(...) const::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)::operator()(...) const",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/MarkedBlockInlines.h",
+        "line": 497,
+      },
+    },
+    {
+      "function": "void WTF::forEachSetBit<unsigned long long, 16ul, WTF::IterationStatus JSC::MarkedBlock::Handle::forEachMarkedCell<void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)::operator(...) const::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)>",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "/Users/runner/work/_temp/webkit-release/WTF/Headers/wtf/StdLibExtras.h",
+        "line": 1408,
+      },
+    },
+    {
+      "function": "void WTF::BitSet<1024ul, unsigned long long>::forEachSetBit<WTF::IterationStatus JSC::MarkedBlock::Handle::forEachMarkedCell<void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)::operator(...) const::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)>(...) const",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "/Users/runner/work/_temp/webkit-release/WTF/Headers/wtf/BitSet.h",
+        "line": 408,
+      },
+    },
+    {
+      "function": "WTF::IterationStatus JSC::MarkedBlock::Handle::forEachMarkedCell<void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)::operator(...) const::'lambda'(...)>",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/MarkedBlockInlines.h",
+        "line": 495,
+      },
+    },
+    {
+      "function": "void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)::operator()(...) const",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/SubspaceInlines.h",
+        "line": 74,
+      },
+    },
+    {
+      "function": "void JSC::BlockDirectory::forEachNotEmptyBlock<void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)::operator()(...) const",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/BlockDirectoryInlines.h",
+        "line": 48,
+      },
+    },
+    {
+      "function": "void WTF::FastBitVectorImpl<JSC::BlockDirectoryBits::BlockDirectoryBitVectorWordView<(...)8>>::forEachSetBit<void JSC::BlockDirectory::forEachNotEmptyBlock<void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)>(...) const",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "/Users/runner/work/_temp/webkit-release/WTF/Headers/wtf/FastBitVector.h",
+        "line": 331,
+      },
+    },
+    {
+      "function": "void JSC::BlockDirectory::forEachNotEmptyBlock<void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)>",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/BlockDirectoryInlines.h",
+        "line": 46,
+      },
+    },
+    {
+      "function": "void JSC::Subspace::forEachNotEmptyMarkedBlock<void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)::operator()(...) const",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/SubspaceInlines.h",
+        "line": 58,
+      },
+    },
+    {
+      "function": "void JSC::Subspace::forEachDirectory<void JSC::Subspace::forEachNotEmptyMarkedBlock<void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)>",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/SubspaceInlines.h",
+        "line": 41,
+      },
+    },
+    {
+      "function": "void JSC::Subspace::forEachNotEmptyMarkedBlock<void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)>",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/SubspaceInlines.h",
+        "line": 56,
+      },
+    },
+    {
+      "function": "void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/SubspaceInlines.h",
+        "line": 72,
+      },
+    },
+    {
+      "function": "void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/Heap.cpp",
+        "line": 764,
+      },
+    },
+    {
+      "function": "JSC::Heap::finalizeUnconditionalFinalizers",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/Heap.cpp",
+        "line": 806,
+      },
+    },
+    {
+      "function": "JSC::Heap::runEndPhase",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/Heap.cpp",
+        "line": 1738,
+      },
+    },
+    {
+      "function": "JSC::Heap::runCurrentPhase",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/Heap.cpp",
+        "line": 1431,
+      },
+    },
+    {
+      "function": "JSC::Heap::collectInMutatorThread(...)(...) const",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/Heap.cpp",
+        "line": 2063,
+      },
+    },
+    {
+      "function": "WTF::ScopedLambdaFunctor<void (...), JSC::Heap::collectInMutatorThread()::$_0>::implFunction",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "/Users/runner/work/_temp/webkit-release/WTF/Headers/wtf/ScopedLambda.h",
+        "line": 106,
+      },
+    },
+    {
+      "function": "void WTF::ScopedLambda<void (...)>::operator()<JSC::CurrentThreadState&>(...) const",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "/Users/runner/work/_temp/webkit-release/WTF/Headers/wtf/ScopedLambda.h",
+        "line": 58,
+      },
+    },
+    {
+      "function": "JSC::callWithCurrentThreadState",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/MachineStackMarker.cpp",
+        "line": 235,
+      },
+    },
+    {
+      "function": "JSC::Heap::collectInMutatorThread",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/Heap.cpp",
+        "line": 2075,
+      },
+    },
+    {
+      "function": "JSC::Heap::stopIfNecessarySlow",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/Heap.cpp",
+        "line": 2044,
+      },
+    },
+    {
+      "function": "JSC::Heap::stopIfNecessarySlow",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/Heap.cpp",
+        "line": 2016,
+      },
+    },
+    {
+      "function": "JSC::Heap::stopIfNecessary",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/HeapInlines.h",
+        "line": 272,
+      },
+    },
+    {
+      "function": "JSC::Heap::collectIfNecessaryOrDefer",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/Heap.cpp",
+        "line": 2856,
+      },
+    },
+    {
+      "function": "JSC::Heap::addReference",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/heap/Heap.cpp",
+        "line": 756,
+      },
+    },
+    {
+      "function": "JSC::JSGenericTypedArrayView<JSC::Uint8Adaptor>::create",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/runtime/JSGenericTypedArrayViewInlines.h",
+        "line": 132,
+      },
+    },
+  ],
+  "symbolizer_input": [
+    "0x101ad6f3f",
+    "0x101adc997",
+    "0x101adca4f",
+    "0x10132612b",
+    "0x10012f6eb",
+    "0x10013202b",
+    "0x10013020b",
+    "0x102727883",
+    "0x1027277eb",
+    "0x1023d8677",
+    "0x1023b06cb",
+    "0x1023b4b93",
+    "0x1023b3633",
+    "0x1023daf33",
+    "0x1023e7eab",
+    "0x1023b728f",
+    "0x1023afbe3",
+    "0x1023b02fb",
+    "0x1020a2ec3",
   ],
 }
 `;
@@ -202,8 +937,83 @@ exports[`symbolize fixtures windows: pdb-addr2line backslash paths and ??:0 for 
   ],
   "symbolizer_input": [
     "0xe1e241",
-    "0xe4d880",
-    "0x400",
+    "0xe4d87f",
+    "0x3ff",
+  ],
+}
+`;
+
+exports[`symbolize fixtures windows-segfault-neg1 1`] = `
+{
+  "addresses": [
+    {
+      "function": "eventLoop",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/VirtualMachine.zig",
+        "line": 781,
+      },
+    },
+    {
+      "function": "dispatchToMainThread",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/RuntimeTranspilerStore.zig",
+        "line": 241,
+      },
+    },
+    {
+      "function": "run",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/RuntimeTranspilerStore.zig",
+        "line": 294,
+      },
+    },
+    {
+      "function": "runFromWorkerThread",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/RuntimeTranspilerStore.zig",
+        "line": 286,
+      },
+    },
+    {
+      "function": "run",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/threading/ThreadPool.zig",
+        "line": 581,
+      },
+    },
+    {
+      "function": "callFn",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/zig/lib/std/Thread.zig",
+        "line": 509,
+      },
+    },
+    {
+      "function": "entryFn",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/zig/lib/std/Thread.zig",
+        "line": 622,
+      },
+    },
+  ],
+  "symbolizer_input": [
+    "0x884527",
+    "0x6aaa4a",
+    "0xa0d7b2",
   ],
 }
 `;
