@@ -44,7 +44,7 @@ async function remapToPayload(parse: Parse, remap: Remap, trace_str: string): Pr
         device: getOSDeviceContext(parse),
       },
       timestamp: new Date().getTime() / 1000,
-      environment: remap.embedder ?? (parse.is_canary ? "canary" : "production"),
+      environment: parse.is_canary ? "canary" : "production",
       sdk: {
         integrations: [],
         name: "bun-report",
@@ -79,7 +79,7 @@ function getTags(parse: Parse, remap: Remap): any {
     tags.baseline = true;
   }
 
-  if (!remap.embedder && parse.is_canary) tags.canary = true;
+  if (parse.is_canary) tags.canary = true;
 
   if (parse.env_flags != null) {
     if (parse.env_flags & 0b0001) tags.wsl = true;

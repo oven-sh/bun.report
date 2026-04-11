@@ -148,7 +148,6 @@ export async function remapUncached(
     addresses: mapped_addrs,
     command,
     features,
-    embedder: debug_info.feature_config?.embedder,
   };
   putCachedRemap(key, remap);
 
