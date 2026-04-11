@@ -7,3 +7,4 @@
 /frontend/dist
 /node_modules
 /pdb-addr2line/target
+scripts/harvested.json
