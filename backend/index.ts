@@ -179,7 +179,7 @@ export default {
 
           remap(str, parsed)
             .then(remap => {
-              return sendToSentry(parsed, remap);
+              return sendToSentry(parsed, remap, str);
             })
             .catch(() => {});
 
@@ -305,7 +305,7 @@ async function remapAndRedirect(url: URL, parsed_str: string, parsed: Parse, hea
     let sentryDetails: { id: string } | { shortId: string; permalink: string } | undefined;
 
     try {
-      sentryDetails = await sendToSentry(parsed, remapped);
+      sentryDetails = await sendToSentry(parsed, remapped, parsed_str);
     } catch (e) {
       console.error("Failed to send to sentry", e);
     }

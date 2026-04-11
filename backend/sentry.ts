@@ -7,8 +7,9 @@ import { getCodeView } from "./code-view";
 const BUN_REPORT_VERSION =
   spawnSync(["git", "-C", import.meta.dir, "rev-parse", "--short=9", "HEAD"]).stdout.toString().trim() || "unknown";
 
-async function remapToPayload(parse: Parse, remap: Remap): Promise<Sentry.Payload> {
+async function remapToPayload(parse: Parse, remap: Remap, trace_str: string): Promise<Sentry.Payload> {
   const event_id = MD5.hash(parse.cache_key!, "hex");
+  const view_url = `https://bun.report/${trace_str}/view`;
 
   return [
     {
@@ -31,9 +32,9 @@ async function remapToPayload(parse: Parse, remap: Remap): Promise<Sentry.Payloa
       dist: buildDist(parse),
       level: "fatal",
       transaction: remap.command,
-      tags: getTags(parse, remap),
+      tags: { ...getTags(parse, remap), ...(view_url.length <= 200 ? { view_url } : {}) },
       fingerprint: buildFingerprint(parse, remap),
-      extra: buildExtra(remap),
+      extra: buildExtra(remap, view_url),
       contexts: {
         runtime: {
           name: "bun",
@@ -153,15 +154,16 @@ function getOSContext(parse: Parse): Sentry.OS {
  * away. Surfacing it means clicking any crash shows the PR that introduced
  * the crashing code (or at least, the PR the build was cut from).
  */
-function buildExtra(remap: Remap): Record<string, unknown> | undefined {
+function buildExtra(remap: Remap, view_url: string): Record<string, unknown> {
+  const extra: Record<string, unknown> = { view_url };
   const pr = remap.commit.pr;
-  if (!pr) return undefined;
-  return {
-    pr_number: pr.number,
-    pr_title: pr.title,
-    pr_branch: pr.ref,
-    pr_url: `https://github.com/oven-sh/bun/pull/${pr.number}`,
-  };
+  if (pr) {
+    extra.pr_number = pr.number;
+    extra.pr_title = pr.title;
+    extra.pr_branch = pr.ref;
+    extra.pr_url = `https://github.com/oven-sh/bun/pull/${pr.number}`;
+  }
+  return extra;
 }
 
 function getOSDeviceContext(parse: Parse): Sentry.PayloadEventContexts["device"] {
@@ -424,12 +426,12 @@ async function fetchEventDetails(eventId: string): Promise<any> {
   };
 }
 
-export async function sendToSentry(parse: Parse, remap: Remap) {
+export async function sendToSentry(parse: Parse, remap: Remap, trace_str: string) {
   const url = process.env.SENTRY_DSN;
   if (!url) {
     return;
   }
-  const event = await remapToPayload(parse, remap);
+  const event = await remapToPayload(parse, remap, trace_str);
   const body = event.map(x => JSON.stringify(x)).join("\n");
 
   console.log(body);

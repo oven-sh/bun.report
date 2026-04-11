@@ -1,0 +1,801 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`parse fixtures v1-linux-aarch64-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v1-linux-x86_64-foreign-object 1`] = `
+{
+  "addresses": [
+    {
+      "address": 4369,
+      "object": "bun",
+    },
+    {
+      "address": 43981,
+      "object": "libc.so.6",
+    },
+    {
+      "address": 8738,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    0,
+    0,
+  ],
+  "is_canary": false,
+  "message": "Stack overflow",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v1-linux-x86_64-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v1-linux-x86_64-with-js-and-unknown-frames 1`] = `
+{
+  "addresses": [
+    {
+      "address": 4369,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "js",
+    },
+    {
+      "address": 0,
+      "object": "js",
+    },
+    {
+      "address": 8738,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 13107,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "t",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    0,
+    0,
+  ],
+  "is_canary": false,
+  "message": "panic: reached unreachable code",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v1-linux-x86_64_baseline-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v1-macos-aarch64-oom 1`] = `
+{
+  "addresses": [
+    {
+      "address": 43690,
+      "object": "bun",
+    },
+    {
+      "address": 48059,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    0,
+    0,
+  ],
+  "is_canary": false,
+  "message": "Bun ran out of memory",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v1-macos-aarch64-panic-compressed 1`] = `
+{
+  "addresses": [
+    {
+      "address": 4096,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "i",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    0,
+    0,
+  ],
+  "is_canary": false,
+  "message": "panic: Integer overflow in allocator",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v1-macos-aarch64-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v1-macos-aarch64-with-url-prefix 1`] = `
+{
+  "addresses": [
+    {
+      "address": 4660,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    0,
+    0,
+  ],
+  "is_canary": false,
+  "message": "panic: reached unreachable code",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v1-macos-x86_64-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v1-macos-x86_64_baseline-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v1-windows-aarch64-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v1-windows-x86_64-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v1-windows-x86_64_baseline-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v2-linux-aarch64-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v2-linux-x86_64-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v2-linux-x86_64_baseline-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "linux",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v2-macos-aarch64-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v2-macos-x86_64-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v2-macos-x86_64_baseline-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "macos",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v2-windows-aarch64-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v2-windows-x86_64-error-reason 1`] = `
+{
+  "addresses": [
+    {
+      "address": 21930,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "b",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    0,
+    0,
+  ],
+  "is_canary": true,
+  "message": "error: ENOENT: no such file or directory",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v2-windows-x86_64-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v2-windows-x86_64_baseline-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_baseline",
+  "command": "r",
+  "commitish": "abc1234",
+  "cpu_flags": undefined,
+  "env_flags": undefined,
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "windows",
+  "os_version": undefined,
+  "total_ram_mb": undefined,
+  "version": "1.1.30",
+}
+`;

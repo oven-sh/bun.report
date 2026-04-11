@@ -1,0 +1,209 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`symbolize fixtures filterAddresses reverts to original when all frames would be stripped 1`] = `
+{
+  "addresses": [
+    {
+      "function": "??",
+      "object": "bun",
+      "remapped": true,
+      "src": null,
+    },
+    {
+      "function": "??",
+      "object": "bun",
+      "remapped": true,
+      "src": null,
+    },
+  ],
+  "symbolizer_input": [
+    "0x3e8",
+    "0x7d0",
+  ],
+}
+`;
+
+exports[`symbolize fixtures linux: stack starts with WTF::jscSignalHandler then unknown frames before real frames 1`] = `
+{
+  "addresses": [
+    {
+      "function": "JSC::JSValue::get",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/runtime/JSCJSValueInlines.h",
+        "line": 1024,
+      },
+    },
+    {
+      "function": "Bun::ReadableStream::pipeTo",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/bindings/webcore/ReadableStream.cpp",
+        "line": 88,
+      },
+    },
+  ],
+  "symbolizer_input": [
+    "0x4309080",
+    "0x32f3f90",
+    "0x32f46f0",
+  ],
+}
+`;
+
+exports[`symbolize fixtures macos: typical llvm-symbolizer output, 3 bun frames 1`] = `
+{
+  "addresses": [
+    {
+      "function": "Bun::jsFunctionResolveSync",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/bindings/ModuleLoader.cpp",
+        "line": 642,
+      },
+    },
+    {
+      "function": "JSC::callJSFunction",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/WebKit/Source/JavaScriptCore/runtime/JSFunction.cpp",
+        "line": 89,
+      },
+    },
+    {
+      "function": "src.bun.js.event_loop.EventLoop.tick",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/event_loop.zig",
+        "line": 1281,
+      },
+    },
+  ],
+  "symbolizer_input": [
+    "0x10228b888",
+    "0x10229b3e0",
+    "0x1018000d8",
+  ],
+}
+`;
+
+exports[`symbolize fixtures linux: bun frames interleaved with js and foreign-object frames 1`] = `
+{
+  "addresses": [
+    {
+      "function": "src.js.node.fs.NodeFS.readFile",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/js/node/fs.zig",
+        "line": 412,
+      },
+    },
+    {
+      "address": 0,
+      "object": "js",
+      "remapped": false,
+    },
+    {
+      "address": 0,
+      "object": "js",
+      "remapped": false,
+    },
+    {
+      "function": "src.bun.js.module_loader.ModuleLoader.transpileSourceCode",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/bun.js/module_loader.zig",
+        "line": 2048,
+      },
+    },
+    {
+      "address": 12345,
+      "object": "libc.so.6",
+      "remapped": false,
+    },
+    {
+      "function": "main",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/main.zig",
+        "line": 42,
+      },
+    },
+  ],
+  "symbolizer_input": [
+    "0x7d0000",
+    "0x800570",
+    "0x8312b0",
+  ],
+}
+`;
+
+exports[`symbolize fixtures leading panic/assert frames are stripped, trailing ?? frames are stripped 1`] = `
+{
+  "addresses": [
+    {
+      "function": "src.string_immutable.eqlLong",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/string_immutable.zig",
+        "line": 55,
+      },
+    },
+    {
+      "function": "src.resolver.resolver.Resolver.resolve",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/resolver/resolver.zig",
+        "line": 1820,
+      },
+    },
+  ],
+  "symbolizer_input": [
+    "0x457",
+    "0x8ae",
+    "0xd05",
+    "0x115c",
+    "0x15b3",
+  ],
+}
+`;
+
+exports[`symbolize fixtures windows: pdb-addr2line backslash paths and ??:0 for one frame 1`] = `
+{
+  "addresses": [
+    {
+      "function": "uv__process_reap",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "vendor/libuv/src/win/process.c",
+        "line": 812,
+      },
+    },
+    {
+      "function": "src.install.install.PackageManager.installPackages",
+      "object": "bun",
+      "remapped": true,
+      "src": {
+        "file": "src/install/install.zig",
+        "line": 9012,
+      },
+    },
+  ],
+  "symbolizer_input": [
+    "0xe1e241",
+    "0xe4d880",
+    "0x400",
+  ],
+}
+`;

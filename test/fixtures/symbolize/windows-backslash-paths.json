@@ -1,0 +1,10 @@
+{
+  "description": "windows: pdb-addr2line backslash paths and ??:0 for one frame",
+  "os": "windows",
+  "addresses": [
+    { "address": 14803521, "object": "bun" },
+    { "address": 14997632, "object": "bun" },
+    { "address": 1024, "object": "bun" }
+  ],
+  "stdout": "uv__process_reap\nC:\\a\\bun\\bun\\vendor\\libuv\\src\\win\\process.c:812:0\nsrc.install.install.PackageManager.installPackages__anon_1042\nC:\\a\\bun\\bun\\src\\install\\install.zig:9012:0\n??\n??:0:0\n"
+}
