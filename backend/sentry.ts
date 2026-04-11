@@ -78,8 +78,7 @@ function getTags(parse: Parse, remap: Remap): any {
     tags.baseline = true;
   }
 
-  if (remap.embedder) tags.embedder = remap.embedder;
-  else if (parse.is_canary) tags.canary = true;
+  if (!remap.embedder && parse.is_canary) tags.canary = true;
 
   if (parse.env_flags != null) {
     if (parse.env_flags & 0b0001) tags.wsl = true;
