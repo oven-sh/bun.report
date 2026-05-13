@@ -63,6 +63,7 @@ describe("parse(buildTraceString(x)) recovers x", () => {
       arch: "x86_64",
       command: "a",
       trace_version: "3",
+      trace_flags: 0,
       commitish: "4ad9e2b",
       addresses: [{ address: 0x9b580c9, object: "bun" }],
       reason: {
@@ -78,10 +79,11 @@ describe("parse(buildTraceString(x)) recovers x", () => {
       os: "macos",
       arch: "aarch64",
       command: "a",
-      trace_version: "4",
+      trace_version: "3",
+      trace_flags: 0b1,
       commitish: "4ad9e2b",
       addresses: [{ address: 0x3513413, object: "bun" }],
-      // v3/v4 segfault with no captured registers (count=0): the
+      // v3 segfault with no captured registers (count=0): the
       // FaultRegisters.supported=false path on FreeBSD/Android.
       reason: { kind: "segfault", addr_hi: 0, addr_lo: 0xdeadbeef | 0, regs: [] },
     },
@@ -99,7 +101,7 @@ describe("parse(buildTraceString(x)) recovers x", () => {
       expect(p.command).toBe(c.command);
       expect(p.commitish).toBe(c.commitish);
       expect(p.features).toEqual(c.features ?? [0, 0]);
-      expect(p.is_canary).toBe(c.trace_version === "2" || c.trace_version === "4");
+      expect(p.is_canary).toBe(c.trace_version === "2" || !!((c.trace_flags ?? 0) & 0b1));
 
       expect(p.addresses).toHaveLength(c.addresses.length);
       for (let i = 0; i < c.addresses.length; i++) {

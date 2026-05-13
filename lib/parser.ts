@@ -152,22 +152,19 @@ export async function parse(str: string): Promise<Parse | null> {
     const trace_version = str[first_slash + 3];
 
     let is_canary = false;
-    let has_regs = false;
+    let has_v3 = false;
     if (trace_version === "1") {
       // '1' - original. uses 7 char hash with VLQ encoded stack-frames
     } else if (trace_version === "2") {
       // '2' - same as '1' but this build is known to be a canary build
       is_canary = true;
     } else if (trace_version === "3") {
-      // '3' - same as '1' but for fault reasons (segfault/SIGILL/SIGBUS/SIGFPE)
-      //       a register block follows the fault address: one VLQ count `n`,
-      //       then `n` u64 values each as two VLQs, in `FaultRegisters.gp_names`
-      //       order followed by pc.
-      has_regs = true;
-    } else if (trace_version === "4") {
-      // '4' - same as '3' but this build is known to be a canary build
-      has_regs = true;
-      is_canary = true;
+      // '3' - after the sha: one TraceFlags VLQ (bit0=canary, rest reserved),
+      //       then the v1 body. For fault reasons (segfault/SIGILL/SIGBUS/
+      //       SIGFPE) a register block follows the fault address: one VLQ
+      //       count `n`, then `n` u64 values each as two VLQs, in
+      //       `FaultRegisters.gp_names` order followed by pc.
+      has_v3 = true;
     } else {
       DEBUG && debug("invalid version '%s'", trace_version);
       return null;
@@ -180,6 +177,16 @@ export async function parse(str: string): Promise<Parse | null> {
     const commitish = str.slice(first_slash + 4, i);
 
     let c, object, address, inc;
+
+    if (has_v3) {
+      const [flags, adv] = decodePart(str.slice(i));
+      if (flags == null) {
+        DEBUG && debug("invalid v3 trace flags %o", str.slice(i));
+        return null;
+      }
+      i += adv;
+      is_canary = !!(flags & 0b1);
+    }
 
     [c, inc] = decodePart(str.slice(i));
     i += inc;
@@ -249,7 +256,7 @@ export async function parse(str: string): Promise<Parse | null> {
       DEBUG && debug("invalid reason %o", str.slice(i));
       return null;
     }
-    const result = await reason(str.slice(i + 1), has_regs);
+    const result = await reason(str.slice(i + 1), has_v3);
     if (!result) {
       DEBUG && debug("invalid message %o", str.slice(i));
       return null;

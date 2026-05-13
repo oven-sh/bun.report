@@ -72,7 +72,9 @@ export interface BuildTraceOpts {
   os: Platform;
   arch: Arch;
   command: string;
-  trace_version: "1" | "2" | "3" | "4";
+  trace_version: "1" | "2" | "3";
+  /** v3 only: bit0=canary, rest reserved. */
+  trace_flags?: number;
   commitish: string;
   features?: [number, number];
   addresses: ParsedAddress[];
@@ -88,6 +90,7 @@ export function buildTraceString(opts: BuildTraceOpts): string {
   s += opts.command;
   s += opts.trace_version;
   s += opts.commitish;
+  if (opts.trace_version === "3") s += encodeVlq(opts.trace_flags ?? 0);
   s += encodeVlq(f0) + encodeVlq(f1);
   for (const a of opts.addresses) {
     if (a.object === "js") {
@@ -104,6 +107,6 @@ export function buildTraceString(opts: BuildTraceOpts): string {
     }
   }
   s += encodeVlq(0);
-  s += encodeReason(opts.reason, opts.trace_version === "3" || opts.trace_version === "4");
+  s += encodeReason(opts.reason, opts.trace_version === "3");
   return s;
 }

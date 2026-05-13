@@ -1,311 +1,5 @@
 // Bun Snapshot v1, https://bun.sh/docs/test/snapshots
 
-exports[`parse fixtures v4-linux-x86_64-segfault: real trace from a debug build with FaultRegisters (17 = 16 GP + pc) 1`] = `
-{
-  "addresses": [
-    {
-      "address": 162889929,
-      "object": "bun",
-    },
-    {
-      "address": 185657878,
-      "object": "bun",
-    },
-    {
-      "address": 254671,
-      "object": "bun",
-    },
-    {
-      "address": 174038456,
-      "object": "bun",
-    },
-    {
-      "address": 0,
-      "object": "?",
-    },
-    {
-      "address": 185874969,
-      "object": "bun",
-    },
-    {
-      "address": 185727356,
-      "object": "bun",
-    },
-    {
-      "address": 209299530,
-      "object": "bun",
-    },
-    {
-      "address": 209299897,
-      "object": "bun",
-    },
-    {
-      "address": 213887434,
-      "object": "bun",
-    },
-    {
-      "address": 213888004,
-      "object": "bun",
-    },
-    {
-      "address": 81085798,
-      "object": "bun",
-    },
-    {
-      "address": 81221409,
-      "object": "bun",
-    },
-    {
-      "address": 81219973,
-      "object": "bun",
-    },
-    {
-      "address": 80547143,
-      "object": "bun",
-    },
-    {
-      "address": 217682478,
-      "object": "bun",
-    },
-    {
-      "address": 217669152,
-      "object": "bun",
-    },
-    {
-      "address": 217566520,
-      "object": "bun",
-    },
-    {
-      "address": 217539160,
-      "object": "bun",
-    },
-    {
-      "address": 220622180,
-      "object": "bun",
-    },
-  ],
-  "arch": "x86_64",
-  "command": "a",
-  "commitish": "4ad9e2b",
-  "fault_registers": {
-    "gp": [
-      3735928559n,
-      0n,
-      140597980561408n,
-      140722616407872n,
-      140722616408376n,
-      0n,
-      140722616408064n,
-      140722616408016n,
-      132n,
-      55834574841n,
-      0n,
-      582n,
-      140597801846640n,
-      140597801599200n,
-      18446181123756130304n,
-      18446181123756130306n,
-    ],
-    "names": [
-      "rax",
-      "rbx",
-      "rcx",
-      "rdx",
-      "rdi",
-      "rsi",
-      "rbp",
-      "rsp",
-      "r8",
-      "r9",
-      "r10",
-      "r11",
-      "r12",
-      "r13",
-      "r14",
-      "r15",
-    ],
-    "pc": 162889930n,
-  },
-  "features": [
-    96,
-    1048640,
-  ],
-  "is_canary": true,
-  "message": "Segmentation fault at address 0xDEADBEEF",
-  "os": "linux",
-  "version": "1.3.14",
-}
-`;
-
-exports[`parse fixtures v4-macos-aarch64-segfault: real trace from a debug build with FaultRegisters (33 = 32 GP + pc) 1`] = `
-{
-  "addresses": [
-    {
-      "address": 55657491,
-      "object": "bun",
-    },
-    {
-      "address": 0,
-      "object": "?",
-    },
-    {
-      "address": 55657467,
-      "object": "bun",
-    },
-    {
-      "address": 87779411,
-      "object": "bun",
-    },
-    {
-      "address": 0,
-      "object": "?",
-    },
-    {
-      "address": 131674183,
-      "object": "bun",
-    },
-    {
-      "address": 131504219,
-      "object": "bun",
-    },
-    {
-      "address": 113076035,
-      "object": "bun",
-    },
-    {
-      "address": 4037747,
-      "object": "bun",
-    },
-    {
-      "address": 4151055,
-      "object": "bun",
-    },
-    {
-      "address": 4149871,
-      "object": "bun",
-    },
-    {
-      "address": 119191363,
-      "object": "bun",
-    },
-    {
-      "address": 119092923,
-      "object": "bun",
-    },
-    {
-      "address": 121493279,
-      "object": "bun",
-    },
-    {
-      "address": 121492895,
-      "object": "bun",
-    },
-    {
-      "address": 123132159,
-      "object": "bun",
-    },
-    {
-      "address": 18948467,
-      "object": "bun",
-    },
-    {
-      "address": 18948687,
-      "object": "bun",
-    },
-    {
-      "address": 68495771,
-      "object": "bun",
-    },
-    {
-      "address": 68329559,
-      "object": "bun",
-    },
-  ],
-  "arch": "aarch64",
-  "command": "a",
-  "commitish": "4ad9e2b",
-  "fault_registers": {
-    "gp": [
-      6126711616n,
-      0n,
-      6126711952n,
-      30420763456n,
-      166n,
-      6126711864n,
-      18446744072631617535n,
-      18446726482597246976n,
-      3735928559n,
-      3735928559n,
-      3735928559n,
-      0n,
-      216172812533053440n,
-      0n,
-      30418665864n,
-      1n,
-      194n,
-      30422089768n,
-      0n,
-      30422089728n,
-      30414668160n,
-      30414668160n,
-      0n,
-      0n,
-      6126713448n,
-      30420762864n,
-      30412816384n,
-      18446181123756130304n,
-      18446181123756130306n,
-      6126711536n,
-      4395779068n,
-      6126711488n,
-    ],
-    "names": [
-      "x0",
-      "x1",
-      "x2",
-      "x3",
-      "x4",
-      "x5",
-      "x6",
-      "x7",
-      "x8",
-      "x9",
-      "x10",
-      "x11",
-      "x12",
-      "x13",
-      "x14",
-      "x15",
-      "x16",
-      "x17",
-      "x18",
-      "x19",
-      "x20",
-      "x21",
-      "x22",
-      "x23",
-      "x24",
-      "x25",
-      "x26",
-      "x27",
-      "x28",
-      "fp",
-      "lr",
-      "sp",
-    ],
-    "pc": 4395779092n,
-  },
-  "features": [
-    96,
-    1048640,
-  ],
-  "is_canary": true,
-  "message": "Segmentation fault at address 0xDEADBEEF",
-  "os": "macos",
-  "version": "1.3.14",
-}
-`;
-
 exports[`parse fixtures linux-http-thread-segfault 1`] = `
 {
   "addresses": [
@@ -8814,6 +8508,312 @@ exports[`parse fixtures v2-windows-x86_64_baseline-segfault 1`] = `
   "message": "Segmentation fault at address 0x6EADBEEF",
   "os": "windows",
   "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v3-linux-x86_64-segfault: real trace from a debug build (TraceFlags + 17 registers) 1`] = `
+{
+  "addresses": [
+    {
+      "address": 163248649,
+      "object": "bun",
+    },
+    {
+      "address": 185656038,
+      "object": "bun",
+    },
+    {
+      "address": 254671,
+      "object": "bun",
+    },
+    {
+      "address": 174238264,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 185872921,
+      "object": "bun",
+    },
+    {
+      "address": 185725308,
+      "object": "bun",
+    },
+    {
+      "address": 209297482,
+      "object": "bun",
+    },
+    {
+      "address": 209297849,
+      "object": "bun",
+    },
+    {
+      "address": 213885386,
+      "object": "bun",
+    },
+    {
+      "address": 213885956,
+      "object": "bun",
+    },
+    {
+      "address": 81083750,
+      "object": "bun",
+    },
+    {
+      "address": 81219361,
+      "object": "bun",
+    },
+    {
+      "address": 81217925,
+      "object": "bun",
+    },
+    {
+      "address": 80545095,
+      "object": "bun",
+    },
+    {
+      "address": 217680430,
+      "object": "bun",
+    },
+    {
+      "address": 217667104,
+      "object": "bun",
+    },
+    {
+      "address": 217564472,
+      "object": "bun",
+    },
+    {
+      "address": 217537112,
+      "object": "bun",
+    },
+    {
+      "address": 220620132,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "a",
+  "commitish": "ce63afc",
+  "fault_registers": {
+    "gp": [
+      3735928559n,
+      0n,
+      140086252404736n,
+      140733107169136n,
+      140733107169640n,
+      0n,
+      140733107169328n,
+      140733107169280n,
+      132n,
+      55834574841n,
+      0n,
+      582n,
+      140086063205680n,
+      140086062645696n,
+      18446181123756130304n,
+      18446181123756130306n,
+    ],
+    "names": [
+      "rax",
+      "rbx",
+      "rcx",
+      "rdx",
+      "rdi",
+      "rsi",
+      "rbp",
+      "rsp",
+      "r8",
+      "r9",
+      "r10",
+      "r11",
+      "r12",
+      "r13",
+      "r14",
+      "r15",
+    ],
+    "pc": 163248650n,
+  },
+  "features": [
+    96,
+    1048640,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0xDEADBEEF",
+  "os": "linux",
+  "version": "1.3.14",
+}
+`;
+
+exports[`parse fixtures v3-macos-aarch64-segfault: real trace from a debug build (TraceFlags + 33 registers) 1`] = `
+{
+  "addresses": [
+    {
+      "address": 55654451,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 55654427,
+      "object": "bun",
+    },
+    {
+      "address": 87849883,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 131674183,
+      "object": "bun",
+    },
+    {
+      "address": 131504219,
+      "object": "bun",
+    },
+    {
+      "address": 113076051,
+      "object": "bun",
+    },
+    {
+      "address": 4037747,
+      "object": "bun",
+    },
+    {
+      "address": 4151055,
+      "object": "bun",
+    },
+    {
+      "address": 4149871,
+      "object": "bun",
+    },
+    {
+      "address": 119191379,
+      "object": "bun",
+    },
+    {
+      "address": 119092939,
+      "object": "bun",
+    },
+    {
+      "address": 121493295,
+      "object": "bun",
+    },
+    {
+      "address": 121492911,
+      "object": "bun",
+    },
+    {
+      "address": 123132175,
+      "object": "bun",
+    },
+    {
+      "address": 18948467,
+      "object": "bun",
+    },
+    {
+      "address": 18948687,
+      "object": "bun",
+    },
+    {
+      "address": 68106035,
+      "object": "bun",
+    },
+    {
+      "address": 68047983,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "a",
+  "commitish": "4ad9e2b",
+  "fault_registers": {
+    "gp": [
+      6136918928n,
+      0n,
+      6136919264n,
+      52029817664n,
+      166n,
+      6136919176n,
+      18446744072631617535n,
+      18446726482597246976n,
+      3735928559n,
+      3735928559n,
+      3735928559n,
+      0n,
+      216172834139912192n,
+      0n,
+      52024689032n,
+      1n,
+      194n,
+      52018561064n,
+      0n,
+      52018561024n,
+      52023820672n,
+      52023820672n,
+      0n,
+      0n,
+      6136920760n,
+      52029817072n,
+      52009418752n,
+      18446181123756130304n,
+      18446181123756130306n,
+      6136918848n,
+      4385568796n,
+      6136918800n,
+    ],
+    "names": [
+      "x0",
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "x5",
+      "x6",
+      "x7",
+      "x8",
+      "x9",
+      "x10",
+      "x11",
+      "x12",
+      "x13",
+      "x14",
+      "x15",
+      "x16",
+      "x17",
+      "x18",
+      "x19",
+      "x20",
+      "x21",
+      "x22",
+      "x23",
+      "x24",
+      "x25",
+      "x26",
+      "x27",
+      "x28",
+      "fp",
+      "lr",
+      "sp",
+    ],
+    "pc": 4385568820n,
+  },
+  "features": [
+    96,
+    1048640,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0xDEADBEEF",
+  "os": "macos",
+  "version": "1.3.14",
 }
 `;
 
