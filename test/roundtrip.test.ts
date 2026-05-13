@@ -57,6 +57,34 @@ describe("parse(buildTraceString(x)) recovers x", () => {
       addresses: [{ address: 0x42, object: "bun" }],
       reason: { kind: "panic", message: "Integer overflow in allocator" },
     },
+    {
+      version: "1.3.14",
+      os: "linux",
+      arch: "x86_64",
+      command: "a",
+      trace_version: "3",
+      commitish: "4ad9e2b",
+      addresses: [{ address: 0x9b580c9, object: "bun" }],
+      reason: {
+        kind: "segfault",
+        addr_hi: 0,
+        addr_lo: 0xdeadbeef | 0, // i32-cast — encodeVlq takes signed
+        // 16 GP + pc = 17. Values exercise 0, small, and full-64-bit ranges.
+        regs: [0xdeadbeefn, 0n, 0x7f5d_0e30_0000n, ...Array(13).fill(1n), 0x9b580can],
+      },
+    },
+    {
+      version: "1.3.14",
+      os: "macos",
+      arch: "aarch64",
+      command: "a",
+      trace_version: "4",
+      commitish: "4ad9e2b",
+      addresses: [{ address: 0x3513413, object: "bun" }],
+      // v3/v4 segfault with no captured registers (count=0): the
+      // FaultRegisters.supported=false path on FreeBSD/Android.
+      reason: { kind: "segfault", addr_hi: 0, addr_lo: 0xdeadbeef | 0, regs: [] },
+    },
   ];
 
   for (const c of cases) {
@@ -71,7 +99,7 @@ describe("parse(buildTraceString(x)) recovers x", () => {
       expect(p.command).toBe(c.command);
       expect(p.commitish).toBe(c.commitish);
       expect(p.features).toEqual(c.features ?? [0, 0]);
-      expect(p.is_canary).toBe(c.trace_version === "2");
+      expect(p.is_canary).toBe(c.trace_version === "2" || c.trace_version === "4");
 
       expect(p.addresses).toHaveLength(c.addresses.length);
       for (let i = 0; i < c.addresses.length; i++) {
@@ -82,7 +110,16 @@ describe("parse(buildTraceString(x)) recovers x", () => {
 
       if (c.reason.kind === "panic") expect(p.message).toBe(`panic: ${c.reason.message}`);
       if (c.reason.kind === "unreachable") expect(p.message).toContain("unreachable");
-      if (c.reason.kind === "segfault") expect(p.message).toContain(c.reason.addr_lo.toString(16).toUpperCase());
+      if (c.reason.kind === "segfault") {
+        expect(p.message).toContain((c.reason.addr_lo >>> 0).toString(16).toUpperCase());
+        if (c.reason.regs && c.reason.regs.length > 0) {
+          expect(p.fault_registers).toBeDefined();
+          expect(p.fault_registers!.pc).toBe(c.reason.regs.at(-1)!);
+          expect(p.fault_registers!.gp).toEqual(c.reason.regs.slice(0, -1));
+        } else {
+          expect(p.fault_registers).toBeUndefined();
+        }
+      }
     });
   }
 });

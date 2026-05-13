@@ -1,5 +1,311 @@
 // Bun Snapshot v1, https://bun.sh/docs/test/snapshots
 
+exports[`parse fixtures v4-linux-x86_64-segfault: real trace from a debug build with FaultRegisters (17 = 16 GP + pc) 1`] = `
+{
+  "addresses": [
+    {
+      "address": 162889929,
+      "object": "bun",
+    },
+    {
+      "address": 185657878,
+      "object": "bun",
+    },
+    {
+      "address": 254671,
+      "object": "bun",
+    },
+    {
+      "address": 174038456,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 185874969,
+      "object": "bun",
+    },
+    {
+      "address": 185727356,
+      "object": "bun",
+    },
+    {
+      "address": 209299530,
+      "object": "bun",
+    },
+    {
+      "address": 209299897,
+      "object": "bun",
+    },
+    {
+      "address": 213887434,
+      "object": "bun",
+    },
+    {
+      "address": 213888004,
+      "object": "bun",
+    },
+    {
+      "address": 81085798,
+      "object": "bun",
+    },
+    {
+      "address": 81221409,
+      "object": "bun",
+    },
+    {
+      "address": 81219973,
+      "object": "bun",
+    },
+    {
+      "address": 80547143,
+      "object": "bun",
+    },
+    {
+      "address": 217682478,
+      "object": "bun",
+    },
+    {
+      "address": 217669152,
+      "object": "bun",
+    },
+    {
+      "address": 217566520,
+      "object": "bun",
+    },
+    {
+      "address": 217539160,
+      "object": "bun",
+    },
+    {
+      "address": 220622180,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "a",
+  "commitish": "4ad9e2b",
+  "fault_registers": {
+    "gp": [
+      3735928559n,
+      0n,
+      140597980561408n,
+      140722616407872n,
+      140722616408376n,
+      0n,
+      140722616408064n,
+      140722616408016n,
+      132n,
+      55834574841n,
+      0n,
+      582n,
+      140597801846640n,
+      140597801599200n,
+      18446181123756130304n,
+      18446181123756130306n,
+    ],
+    "names": [
+      "rax",
+      "rbx",
+      "rcx",
+      "rdx",
+      "rdi",
+      "rsi",
+      "rbp",
+      "rsp",
+      "r8",
+      "r9",
+      "r10",
+      "r11",
+      "r12",
+      "r13",
+      "r14",
+      "r15",
+    ],
+    "pc": 162889930n,
+  },
+  "features": [
+    96,
+    1048640,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0xDEADBEEF",
+  "os": "linux",
+  "version": "1.3.14",
+}
+`;
+
+exports[`parse fixtures v4-macos-aarch64-segfault: real trace from a debug build with FaultRegisters (33 = 32 GP + pc) 1`] = `
+{
+  "addresses": [
+    {
+      "address": 55657491,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 55657467,
+      "object": "bun",
+    },
+    {
+      "address": 87779411,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 131674183,
+      "object": "bun",
+    },
+    {
+      "address": 131504219,
+      "object": "bun",
+    },
+    {
+      "address": 113076035,
+      "object": "bun",
+    },
+    {
+      "address": 4037747,
+      "object": "bun",
+    },
+    {
+      "address": 4151055,
+      "object": "bun",
+    },
+    {
+      "address": 4149871,
+      "object": "bun",
+    },
+    {
+      "address": 119191363,
+      "object": "bun",
+    },
+    {
+      "address": 119092923,
+      "object": "bun",
+    },
+    {
+      "address": 121493279,
+      "object": "bun",
+    },
+    {
+      "address": 121492895,
+      "object": "bun",
+    },
+    {
+      "address": 123132159,
+      "object": "bun",
+    },
+    {
+      "address": 18948467,
+      "object": "bun",
+    },
+    {
+      "address": 18948687,
+      "object": "bun",
+    },
+    {
+      "address": 68495771,
+      "object": "bun",
+    },
+    {
+      "address": 68329559,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64",
+  "command": "a",
+  "commitish": "4ad9e2b",
+  "fault_registers": {
+    "gp": [
+      6126711616n,
+      0n,
+      6126711952n,
+      30420763456n,
+      166n,
+      6126711864n,
+      18446744072631617535n,
+      18446726482597246976n,
+      3735928559n,
+      3735928559n,
+      3735928559n,
+      0n,
+      216172812533053440n,
+      0n,
+      30418665864n,
+      1n,
+      194n,
+      30422089768n,
+      0n,
+      30422089728n,
+      30414668160n,
+      30414668160n,
+      0n,
+      0n,
+      6126713448n,
+      30420762864n,
+      30412816384n,
+      18446181123756130304n,
+      18446181123756130306n,
+      6126711536n,
+      4395779068n,
+      6126711488n,
+    ],
+    "names": [
+      "x0",
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "x5",
+      "x6",
+      "x7",
+      "x8",
+      "x9",
+      "x10",
+      "x11",
+      "x12",
+      "x13",
+      "x14",
+      "x15",
+      "x16",
+      "x17",
+      "x18",
+      "x19",
+      "x20",
+      "x21",
+      "x22",
+      "x23",
+      "x24",
+      "x25",
+      "x26",
+      "x27",
+      "x28",
+      "fp",
+      "lr",
+      "sp",
+    ],
+    "pc": 4395779092n,
+  },
+  "features": [
+    96,
+    1048640,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0xDEADBEEF",
+  "os": "macos",
+  "version": "1.3.14",
+}
+`;
+
 exports[`parse fixtures linux-http-thread-segfault 1`] = `
 {
   "addresses": [
@@ -31,8 +337,7 @@ exports[`parse fixtures linux-http-thread-segfault 1`] = `
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "e38b41d",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2097155,
     1052695,
@@ -40,8 +345,6 @@ exports[`parse fixtures linux-http-thread-segfault 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000010",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.12",
 }
 `;
@@ -65,8 +368,7 @@ exports[`parse fixtures macos-prev-regression 1`] = `
   "arch": "aarch64",
   "command": "a",
   "commitish": "1b55f1d",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     96,
     1048711,
@@ -74,8 +376,6 @@ exports[`parse fixtures macos-prev-regression 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0xFFFFFFFFFFFFFFFF",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.13",
 }
 `;
@@ -167,8 +467,7 @@ exports[`parse fixtures macos-remap-stack-frames 1`] = `
   "arch": "aarch64",
   "command": "a",
   "commitish": "af24e28",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3331,
     1052695,
@@ -176,8 +475,6 @@ exports[`parse fixtures macos-remap-stack-frames 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000000",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -269,8 +566,7 @@ exports[`parse fixtures real-001-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "a",
   "commitish": "af24e28",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2048,
     1048576,
@@ -278,8 +574,6 @@ exports[`parse fixtures real-001-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000000",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -359,8 +653,7 @@ exports[`parse fixtures real-002-macos-aarch64-1.3.11-panic-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "t",
   "commitish": "af24e28",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     265264,
     1048576,
@@ -368,8 +661,6 @@ exports[`parse fixtures real-002-macos-aarch64-1.3.11-panic-lg-unk 1`] = `
   "is_canary": false,
   "message": "panic: A C++ exception occurred",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -409,8 +700,7 @@ exports[`parse fixtures real-003-macos-aarch64-1.3.11-segv-sm-unk 1`] = `
   "arch": "aarch64",
   "command": "_",
   "commitish": "a2743b6",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2099203,
     1183767,
@@ -418,8 +708,6 @@ exports[`parse fixtures real-003-macos-aarch64-1.3.11-segv-sm-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x1B2DF662B0634B46",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -475,8 +763,7 @@ exports[`parse fixtures real-004-macos-aarch64-1.3.11-segv-md-unk 1`] = `
   "arch": "aarch64",
   "command": "_",
   "commitish": "a2743b6",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2099203,
     1576991,
@@ -484,8 +771,6 @@ exports[`parse fixtures real-004-macos-aarch64-1.3.11-segv-md-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000040",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -541,8 +826,7 @@ exports[`parse fixtures real-005-macos-aarch64-1.3.6-panic-md-unk 1`] = `
   "arch": "aarch64",
   "command": "a",
   "commitish": "d530ed9",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     48,
     1048581,
@@ -550,8 +834,6 @@ exports[`parse fixtures real-005-macos-aarch64-1.3.6-panic-md-unk 1`] = `
   "is_canary": false,
   "message": "panic: unreachable",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.6",
 }
 `;
@@ -643,8 +925,7 @@ exports[`parse fixtures real-006-macos-aarch64-1.3.2-ill-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "_",
   "commitish": "b131639",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     512,
     -1073477625,
@@ -652,8 +933,6 @@ exports[`parse fixtures real-006-macos-aarch64-1.3.2-ill-lg-unk 1`] = `
   "is_canary": false,
   "message": "Illegal instruction at address 0x18FC6CC94",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.2",
 }
 `;
@@ -745,8 +1024,7 @@ exports[`parse fixtures real-007-macos-x86_64-1.3.2-segv-lg-unk 1`] = `
   "arch": "x86_64",
   "command": "a",
   "commitish": "b131639",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     0,
     1074003968,
@@ -754,8 +1032,6 @@ exports[`parse fixtures real-007-macos-x86_64-1.3.2-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000000",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.2",
 }
 `;
@@ -823,8 +1099,7 @@ exports[`parse fixtures real-008-macos-x86_64-1.3.0-segv-md-unk 1`] = `
   "arch": "x86_64",
   "command": "n",
   "commitish": "b0a6fec",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     732,
     1074006023,
@@ -832,8 +1107,6 @@ exports[`parse fixtures real-008-macos-x86_64-1.3.0-segv-md-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x0001F139",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.0",
 }
 `;
@@ -925,8 +1198,7 @@ exports[`parse fixtures real-009-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "n",
   "commitish": "af24e28",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2097,
     1052679,
@@ -934,8 +1206,6 @@ exports[`parse fixtures real-009-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x16A93BFF0",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -1027,8 +1297,7 @@ exports[`parse fixtures real-010-macos-aarch64-1.3.2-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "_",
   "commitish": "b131639",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     0,
     -1073477609,
@@ -1036,8 +1305,6 @@ exports[`parse fixtures real-010-macos-aarch64-1.3.2-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000008",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.2",
 }
 `;
@@ -1129,8 +1396,7 @@ exports[`parse fixtures real-011-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "_",
   "commitish": "a2743b6",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2099203,
     1576991,
@@ -1138,8 +1404,6 @@ exports[`parse fixtures real-011-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x73746E657665227B",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -1231,8 +1495,7 @@ exports[`parse fixtures real-012-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "_",
   "commitish": "a2743b6",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2099203,
     1576991,
@@ -1240,8 +1503,6 @@ exports[`parse fixtures real-012-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x632E627568746967",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -1333,8 +1594,7 @@ exports[`parse fixtures real-013-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "_",
   "commitish": "01210fb",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2099203,
     1576991,
@@ -1342,8 +1602,6 @@ exports[`parse fixtures real-013-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x68746E612E697061",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -1427,8 +1685,7 @@ exports[`parse fixtures real-014-macos-aarch64-1.3.10-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "a",
   "commitish": "30e609e",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2096,
     1048583,
@@ -1436,8 +1693,6 @@ exports[`parse fixtures real-014-macos-aarch64-1.3.10-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x000000CC",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.10",
 }
 `;
@@ -1529,8 +1784,7 @@ exports[`parse fixtures real-015-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "_",
   "commitish": "548644a",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2099203,
     1576991,
@@ -1538,8 +1792,6 @@ exports[`parse fixtures real-015-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000028",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -1631,8 +1883,7 @@ exports[`parse fixtures real-016-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "_",
   "commitish": "548644a",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2099203,
     1576991,
@@ -1640,8 +1891,6 @@ exports[`parse fixtures real-016-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x756F736464227B5B",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -1733,8 +1982,7 @@ exports[`parse fixtures real-017-macos-aarch64-1.3.10-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "_",
   "commitish": "89a8aa9",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2099203,
     1183775,
@@ -1742,8 +1990,6 @@ exports[`parse fixtures real-017-macos-aarch64-1.3.10-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000008",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.10",
 }
 `;
@@ -1835,8 +2081,7 @@ exports[`parse fixtures real-018-macos-aarch64-1.3.10-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "_",
   "commitish": "89a8aa9",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2051,
     1052695,
@@ -1844,8 +2089,6 @@ exports[`parse fixtures real-018-macos-aarch64-1.3.10-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x95E29095E29095E2",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.10",
 }
 `;
@@ -1937,8 +2180,7 @@ exports[`parse fixtures real-019-macos-aarch64-1.3.9-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "a",
   "commitish": "cf6cdbb",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2097,
     1183775,
@@ -1946,8 +2188,6 @@ exports[`parse fixtures real-019-macos-aarch64-1.3.9-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x0003E940",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.9",
 }
 `;
@@ -2039,8 +2279,7 @@ exports[`parse fixtures real-020-macos-aarch64-1.3.9-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "_",
   "commitish": "d5628db",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2051,
     1052695,
@@ -2048,8 +2287,6 @@ exports[`parse fixtures real-020-macos-aarch64-1.3.9-segv-lg-unk 1`] = `
   "is_canary": true,
   "message": "Segmentation fault at address 0x00000204",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.9",
 }
 `;
@@ -2141,8 +2378,7 @@ exports[`parse fixtures real-021-macos-aarch64-1.3.9-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "_",
   "commitish": "d5628db",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2099203,
     1052695,
@@ -2150,8 +2386,6 @@ exports[`parse fixtures real-021-macos-aarch64-1.3.9-segv-lg-unk 1`] = `
   "is_canary": true,
   "message": "Segmentation fault at address 0x00000030",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.9",
 }
 `;
@@ -2243,8 +2477,7 @@ exports[`parse fixtures real-022-macos-aarch64-1.3.9-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "_",
   "commitish": "d5628db",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2099203,
     1052703,
@@ -2252,8 +2485,6 @@ exports[`parse fixtures real-022-macos-aarch64-1.3.9-segv-lg-unk 1`] = `
   "is_canary": true,
   "message": "Segmentation fault at address 0x00000010",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.9",
 }
 `;
@@ -2345,8 +2576,7 @@ exports[`parse fixtures real-023-macos-aarch64-1.3.6-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "n",
   "commitish": "d530ed9",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3953,
     1184071,
@@ -2354,8 +2584,6 @@ exports[`parse fixtures real-023-macos-aarch64-1.3.6-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000008",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.6",
 }
 `;
@@ -2447,8 +2675,7 @@ exports[`parse fixtures real-024-macos-aarch64-1.3.6-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "n",
   "commitish": "d530ed9",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3953,
     1184071,
@@ -2456,8 +2683,6 @@ exports[`parse fixtures real-024-macos-aarch64-1.3.6-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x20200A3B5D5B204D",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.6",
 }
 `;
@@ -2537,8 +2762,7 @@ exports[`parse fixtures real-025-macos-aarch64-1.3.7-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "a",
   "commitish": "ba42621",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     8392752,
     1184000,
@@ -2546,8 +2770,6 @@ exports[`parse fixtures real-025-macos-aarch64-1.3.7-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000005",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.7",
 }
 `;
@@ -2639,8 +2861,7 @@ exports[`parse fixtures real-026-macos-aarch64-1.3.5-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "_",
   "commitish": "1e86ceb",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2051,
     1183775,
@@ -2648,8 +2869,6 @@ exports[`parse fixtures real-026-macos-aarch64-1.3.5-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x000001F4",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.5",
 }
 `;
@@ -2741,8 +2960,7 @@ exports[`parse fixtures real-027-macos-aarch64-1.3.5-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "n",
   "commitish": "1e86ceb",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2400,
     1048577,
@@ -2750,8 +2968,6 @@ exports[`parse fixtures real-027-macos-aarch64-1.3.5-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000010",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.5",
 }
 `;
@@ -2843,8 +3059,7 @@ exports[`parse fixtures real-028-macos-aarch64-1.3.3-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "_",
   "commitish": "274e01c",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     49,
     -2146954985,
@@ -2852,8 +3067,6 @@ exports[`parse fixtures real-028-macos-aarch64-1.3.3-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x000001F4",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.3",
 }
 `;
@@ -2897,8 +3110,7 @@ exports[`parse fixtures real-029-macos-aarch64-1.3.2-segv-sm-unk 1`] = `
   "arch": "aarch64",
   "command": "P",
   "commitish": "b131639",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     0,
     8388928,
@@ -2906,8 +3118,6 @@ exports[`parse fixtures real-029-macos-aarch64-1.3.2-segv-sm-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x5067E6D15F8",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.2",
 }
 `;
@@ -2999,8 +3209,7 @@ exports[`parse fixtures real-030-macos-aarch64-1.3.0-panic-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "t",
   "commitish": "b0a6fec",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     66304,
     262144,
@@ -3008,8 +3217,6 @@ exports[`parse fixtures real-030-macos-aarch64-1.3.0-panic-lg-unk 1`] = `
   "is_canary": false,
   "message": "panic: A C++ exception occurred",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.0",
 }
 `;
@@ -3101,8 +3308,7 @@ exports[`parse fixtures real-031-macos-aarch64-1.3.3-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "r",
   "commitish": "274e01c",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     0,
     526336,
@@ -3110,8 +3316,6 @@ exports[`parse fixtures real-031-macos-aarch64-1.3.3-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x8985C15A14",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.3",
 }
 `;
@@ -3203,8 +3407,7 @@ exports[`parse fixtures real-032-macos-aarch64-1.3.1-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "_",
   "commitish": "89fa0f3",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     512,
     -1073477609,
@@ -3212,8 +3415,6 @@ exports[`parse fixtures real-032-macos-aarch64-1.3.1-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x000001F4",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.1",
 }
 `;
@@ -3305,8 +3506,7 @@ exports[`parse fixtures real-033-macos-aarch64-1.3.1-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "r",
   "commitish": "89fa0f3",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     524,
     262151,
@@ -3314,8 +3514,6 @@ exports[`parse fixtures real-033-macos-aarch64-1.3.1-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x16BD7BFE0",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.1",
 }
 `;
@@ -3407,8 +3605,7 @@ exports[`parse fixtures real-034-linux-x86_64-1.3.12-panic-lg-unk 1`] = `
   "arch": "x86_64",
   "command": "a",
   "commitish": "700fc11",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     16416,
     1048832,
@@ -3416,8 +3613,6 @@ exports[`parse fixtures real-034-linux-x86_64-1.3.12-panic-lg-unk 1`] = `
   "is_canary": false,
   "message": "panic: A JavaScript exception was thrown, but it was cleared before it could be read.",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.12",
 }
 `;
@@ -3469,8 +3664,7 @@ exports[`parse fixtures real-035-linux-x86_64_baseline-1.3.11-segv-md 1`] = `
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "0d72d5a",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2097155,
     1052695,
@@ -3478,8 +3672,6 @@ exports[`parse fixtures real-035-linux-x86_64_baseline-1.3.11-segv-md 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x7B6EE74B0020",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -3563,8 +3755,7 @@ exports[`parse fixtures real-036-linux-x86_64_baseline-1.3.11-ill-lg 1`] = `
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "759ce80",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     0,
     1048576,
@@ -3572,8 +3763,6 @@ exports[`parse fixtures real-036-linux-x86_64_baseline-1.3.11-ill-lg 1`] = `
   "is_canary": false,
   "message": "Illegal instruction at address 0x0666103F",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -3625,8 +3814,7 @@ exports[`parse fixtures real-037-linux-x86_64-1.3.11-panic-md 1`] = `
   "arch": "x86_64",
   "command": "r",
   "commitish": "9e93bfa",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     256,
     1048576,
@@ -3634,8 +3822,6 @@ exports[`parse fixtures real-037-linux-x86_64-1.3.11-panic-md 1`] = `
   "is_canary": true,
   "message": "panic: Uncaught exception while handling uncaught exception",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -3727,8 +3913,7 @@ exports[`parse fixtures real-038-linux-x86_64-1.3.11-segv-lg-unk 1`] = `
   "arch": "x86_64",
   "command": "t",
   "commitish": "af24e28",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     96,
     1048640,
@@ -3736,8 +3921,6 @@ exports[`parse fixtures real-038-linux-x86_64-1.3.11-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000200",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -3765,8 +3948,7 @@ exports[`parse fixtures real-039-linux-x86_64_baseline-1.3.11-segv-sm 1`] = `
   "arch": "x86_64_baseline",
   "command": "n",
   "commitish": "af24e28",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3937,
     1052677,
@@ -3774,8 +3956,6 @@ exports[`parse fixtures real-039-linux-x86_64_baseline-1.3.11-segv-sm 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00015350",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -3795,8 +3975,7 @@ exports[`parse fixtures real-040-linux-x86_64_baseline-1.3.10-segv-xs 1`] = `
   "arch": "x86_64_baseline",
   "command": "n",
   "commitish": "30e609e",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2913,
     1052997,
@@ -3804,8 +3983,6 @@ exports[`parse fixtures real-040-linux-x86_64_baseline-1.3.10-segv-xs 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00013CD0",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.10",
 }
 `;
@@ -3849,8 +4026,7 @@ exports[`parse fixtures real-041-linux-x86_64_baseline-1.3.10-fpe-sm 1`] = `
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "30e609e",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     12290,
     1183767,
@@ -3858,8 +4034,6 @@ exports[`parse fixtures real-041-linux-x86_64_baseline-1.3.10-fpe-sm 1`] = `
   "is_canary": false,
   "message": "Floating point exception at address 0x042DDD76",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.10",
 }
 `;
@@ -3951,8 +4125,7 @@ exports[`parse fixtures real-042-linux-x86_64_baseline-1.3.9-segv-lg-unk 1`] = `
   "arch": "x86_64_baseline",
   "command": "a",
   "commitish": "cf6cdbb",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     18784,
     1183829,
@@ -3960,8 +4133,6 @@ exports[`parse fixtures real-042-linux-x86_64_baseline-1.3.9-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000000",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.9",
 }
 `;
@@ -3989,8 +4160,7 @@ exports[`parse fixtures real-043-linux-x86_64-1.3.8-segv-sm 1`] = `
   "arch": "x86_64",
   "command": "a",
   "commitish": "b64edcb",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2097,
     1048583,
@@ -3998,8 +4168,6 @@ exports[`parse fixtures real-043-linux-x86_64-1.3.8-segv-sm 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x79524367ADD0",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.8",
 }
 `;
@@ -4047,8 +4215,7 @@ exports[`parse fixtures real-044-linux-x86_64-1.3.7-fpe-md 1`] = `
   "arch": "x86_64",
   "command": "t",
   "commitish": "ba42621",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     49,
     1048583,
@@ -4056,8 +4223,6 @@ exports[`parse fixtures real-044-linux-x86_64-1.3.7-fpe-md 1`] = `
   "is_canary": false,
   "message": "Floating point exception at address 0x0423B58E",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.7",
 }
 `;
@@ -4149,8 +4314,7 @@ exports[`parse fixtures real-045-linux-x86_64_baseline-1.3.5-panic-lg-unk 1`] = 
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "1e86ceb",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     1611796487,
@@ -4158,8 +4322,6 @@ exports[`parse fixtures real-045-linux-x86_64_baseline-1.3.5-panic-lg-unk 1`] = 
   "is_canary": false,
   "message": "panic: getrandom() failed to provide entropy",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.5",
 }
 `;
@@ -4175,8 +4337,7 @@ exports[`parse fixtures real-046-linux-x86_64-1.3.6-segv-xs 1`] = `
   "arch": "x86_64",
   "command": "_",
   "commitish": "d530ed9",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     1184015,
@@ -4184,8 +4345,6 @@ exports[`parse fixtures real-046-linux-x86_64-1.3.6-segv-xs 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000000",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.6",
 }
 `;
@@ -4233,8 +4392,7 @@ exports[`parse fixtures real-047-linux-x86_64_baseline-1.3.8-segv-md-unk 1`] = `
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "b64edcb",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     0,
     0,
@@ -4242,8 +4400,6 @@ exports[`parse fixtures real-047-linux-x86_64_baseline-1.3.8-segv-md-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x1BEFFFFDEA05990",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.8",
 }
 `;
@@ -4335,8 +4491,7 @@ exports[`parse fixtures real-048-linux-aarch64-1.3.7-segv-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "n",
   "commitish": "ba42621",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     113,
     1179655,
@@ -4344,8 +4499,6 @@ exports[`parse fixtures real-048-linux-aarch64-1.3.7-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0xFFFF27888000",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.7",
 }
 `;
@@ -4377,8 +4530,7 @@ exports[`parse fixtures real-049-linux-x86_64-1.3.6-panic-sm 1`] = `
   "arch": "x86_64",
   "command": "I",
   "commitish": "d530ed9",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     0,
     33554432,
@@ -4386,8 +4538,6 @@ exports[`parse fixtures real-049-linux-x86_64-1.3.6-panic-sm 1`] = `
   "is_canary": false,
   "message": "panic: Assertion failure: Expected metadata to be set",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.6",
 }
 `;
@@ -4479,8 +4629,7 @@ exports[`parse fixtures real-050-linux-x86_64_baseline-1.3.6-ill-lg-unk 1`] = `
   "arch": "x86_64_baseline",
   "command": "n",
   "commitish": "d530ed9",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3169,
     1611661319,
@@ -4488,8 +4637,6 @@ exports[`parse fixtures real-050-linux-x86_64_baseline-1.3.6-ill-lg-unk 1`] = `
   "is_canary": false,
   "message": "Illegal instruction at address 0x04001FB4",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.6",
 }
 `;
@@ -4545,8 +4692,7 @@ exports[`parse fixtures real-051-linux-x86_64-1.3.2-segv-md 1`] = `
   "arch": "x86_64",
   "command": "n",
   "commitish": "b131639",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     732,
     262149,
@@ -4554,8 +4700,6 @@ exports[`parse fixtures real-051-linux-x86_64-1.3.2-segv-md 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000050",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.2",
 }
 `;
@@ -4595,8 +4739,7 @@ exports[`parse fixtures real-052-linux-x86_64-1.3.2-segv-sm-unk 1`] = `
   "arch": "x86_64",
   "command": "P",
   "commitish": "b131639",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     0,
     8388608,
@@ -4604,8 +4747,6 @@ exports[`parse fixtures real-052-linux-x86_64-1.3.2-segv-sm-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x2A318922648",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.2",
 }
 `;
@@ -4621,8 +4762,7 @@ exports[`parse fixtures real-053-linux-x86_64_baseline-1.3.1-ill-xs 1`] = `
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "89fa0f3",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     0,
     402915328,
@@ -4630,8 +4770,6 @@ exports[`parse fixtures real-053-linux-x86_64_baseline-1.3.1-ill-xs 1`] = `
   "is_canary": false,
   "message": "Illegal instruction at address 0x0606F8BF",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.1",
 }
 `;
@@ -4659,8 +4797,7 @@ exports[`parse fixtures real-054-linux-x86_64_baseline-1.3.1-panic-sm 1`] = `
   "arch": "x86_64_baseline",
   "command": "I",
   "commitish": "89fa0f3",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     0,
     0,
@@ -4668,8 +4805,6 @@ exports[`parse fixtures real-054-linux-x86_64_baseline-1.3.1-panic-sm 1`] = `
   "is_canary": false,
   "message": "panic: Assertion failure: Expected metadata to be set",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.1",
 }
 `;
@@ -4685,8 +4820,7 @@ exports[`parse fixtures real-055-linux-x86_64_baseline-1.3.1-panic-xs 1`] = `
   "arch": "x86_64_baseline",
   "command": "I",
   "commitish": "89fa0f3",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     0,
     0,
@@ -4694,8 +4828,6 @@ exports[`parse fixtures real-055-linux-x86_64_baseline-1.3.1-panic-xs 1`] = `
   "is_canary": false,
   "message": "panic: Failed to start HTTP Client thread: Unexpected",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.1",
 }
 `;
@@ -4711,8 +4843,7 @@ exports[`parse fixtures real-056-linux-aarch64-1.3.1-segv-xs 1`] = `
   "arch": "aarch64",
   "command": "n",
   "commitish": "89fa0f3",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     24,
     262401,
@@ -4720,8 +4851,6 @@ exports[`parse fixtures real-056-linux-aarch64-1.3.1-segv-xs 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000008",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.1",
 }
 `;
@@ -4813,8 +4942,7 @@ exports[`parse fixtures real-057-linux-aarch64-1.3.0-ill-lg-unk 1`] = `
   "arch": "aarch64",
   "command": "n",
   "commitish": "b0a6fec",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     520,
     1074003975,
@@ -4822,8 +4950,6 @@ exports[`parse fixtures real-057-linux-aarch64-1.3.0-ill-lg-unk 1`] = `
   "is_canary": false,
   "message": "Illegal instruction at address 0xFFFF61CC5E9C",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.0",
 }
 `;
@@ -4907,8 +5033,7 @@ exports[`parse fixtures real-058-linux-x86_64_baseline-1.3.0-segv-lg 1`] = `
   "arch": "x86_64_baseline",
   "command": "t",
   "commitish": "b0a6fec",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     28,
     262215,
@@ -4916,8 +5041,6 @@ exports[`parse fixtures real-058-linux-x86_64_baseline-1.3.0-segv-lg 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000038",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.0",
 }
 `;
@@ -4989,8 +5112,7 @@ exports[`parse fixtures real-059-linux-x86_64_baseline-1.3.11-segv-md 1`] = `
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "6f0a17c",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2097155,
     1052695,
@@ -4998,8 +5120,6 @@ exports[`parse fixtures real-059-linux-x86_64_baseline-1.3.11-segv-md 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x7FFFFFFFA9",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -5063,8 +5183,7 @@ exports[`parse fixtures real-060-linux-x86_64_baseline-1.3.10-segv-md 1`] = `
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "30e609e",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     12290,
     1183767,
@@ -5072,8 +5191,6 @@ exports[`parse fixtures real-060-linux-x86_64_baseline-1.3.10-segv-md 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0xE00000048",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.10",
 }
 `;
@@ -5165,8 +5282,7 @@ exports[`parse fixtures real-061-linux-x86_64-1.3.10-segv-lg-unk 1`] = `
   "arch": "x86_64",
   "command": "a",
   "commitish": "30e609e",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2416,
     1053007,
@@ -5174,8 +5290,6 @@ exports[`parse fixtures real-061-linux-x86_64-1.3.10-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000005",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.10",
 }
 `;
@@ -5267,8 +5381,7 @@ exports[`parse fixtures real-062-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = 
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "48c5aa9",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2099203,
     1052695,
@@ -5276,8 +5389,6 @@ exports[`parse fixtures real-062-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = 
   "is_canary": false,
   "message": "Segmentation fault at address 0x7FFF0E00E015",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.10",
 }
 `;
@@ -5369,8 +5480,7 @@ exports[`parse fixtures real-063-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = 
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "48c5aa9",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2051,
     1052695,
@@ -5378,8 +5488,6 @@ exports[`parse fixtures real-063-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = 
   "is_canary": false,
   "message": "Segmentation fault at address 0x7FFDD5FB8B25",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.10",
 }
 `;
@@ -5471,8 +5579,7 @@ exports[`parse fixtures real-064-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = 
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "1423d3c",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2099203,
     1052695,
@@ -5480,8 +5587,6 @@ exports[`parse fixtures real-064-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = 
   "is_canary": false,
   "message": "Segmentation fault at address 0x7FFC1C7B06A5",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.10",
 }
 `;
@@ -5573,8 +5678,7 @@ exports[`parse fixtures real-065-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = 
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "1423d3c",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2099203,
     1052695,
@@ -5582,8 +5686,6 @@ exports[`parse fixtures real-065-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = 
   "is_canary": false,
   "message": "Segmentation fault at address 0x7FFCEDDCF925",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.10",
 }
 `;
@@ -5675,8 +5777,7 @@ exports[`parse fixtures real-066-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = 
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "1423d3c",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2051,
     1052695,
@@ -5684,8 +5785,6 @@ exports[`parse fixtures real-066-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = 
   "is_canary": false,
   "message": "Segmentation fault at address 0x7FFEEE9310D5",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.10",
 }
 `;
@@ -5777,8 +5876,7 @@ exports[`parse fixtures real-067-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = 
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "1423d3c",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2051,
     1052695,
@@ -5786,8 +5884,6 @@ exports[`parse fixtures real-067-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = 
   "is_canary": false,
   "message": "Segmentation fault at address 0x7FFBBD78E7D5",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.10",
 }
 `;
@@ -5875,8 +5971,7 @@ exports[`parse fixtures real-068-windows-x86_64-1.3.11-panic-lg-foreign 1`] = `
   "arch": "x86_64",
   "command": "I",
   "commitish": "af24e28",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     0,
     134217824,
@@ -5884,8 +5979,6 @@ exports[`parse fixtures real-068-windows-x86_64-1.3.11-panic-lg-foreign 1`] = `
   "is_canary": false,
   "message": "panic: Internal assertion failure at install\\bin.zig:733:83",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -5925,8 +6018,7 @@ exports[`parse fixtures real-069-windows-x86_64_baseline-1.3.11-panic-sm-foreign
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "759ce80",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2097155,
     1052679,
@@ -5934,8 +6026,6 @@ exports[`parse fixtures real-069-windows-x86_64_baseline-1.3.11-panic-sm-foreign
   "is_canary": false,
   "message": "panic: invalid enum value",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -6003,8 +6093,7 @@ exports[`parse fixtures real-070-windows-x86_64-1.3.11-segv-md-foreign 1`] = `
   "arch": "x86_64",
   "command": "n",
   "commitish": "af24e28",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2161,
     1179655,
@@ -6012,8 +6101,6 @@ exports[`parse fixtures real-070-windows-x86_64-1.3.11-segv-md-foreign 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x0000022D",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -6101,8 +6188,7 @@ exports[`parse fixtures real-071-windows-x86_64_baseline-1.3.10-ill-lg-foreign 1
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "89a8aa9",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2051,
     1052695,
@@ -6110,8 +6196,6 @@ exports[`parse fixtures real-071-windows-x86_64_baseline-1.3.10-ill-lg-foreign 1
   "is_canary": false,
   "message": "Illegal instruction at address 0x7FF7519EE900",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.10",
 }
 `;
@@ -6203,8 +6287,7 @@ exports[`parse fixtures real-072-windows-x86_64_baseline-1.3.11-ill-lg-unk 1`] =
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "01210fb",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2099203,
     1052703,
@@ -6212,8 +6295,6 @@ exports[`parse fixtures real-072-windows-x86_64_baseline-1.3.11-ill-lg-unk 1`] =
   "is_canary": false,
   "message": "Illegal instruction at address 0x7FF777AE056B",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -6269,8 +6350,7 @@ exports[`parse fixtures real-073-windows-x86_64_baseline-1.3.10-panic-md-foreign
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "1979c94",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2099203,
     1052703,
@@ -6278,8 +6358,6 @@ exports[`parse fixtures real-073-windows-x86_64_baseline-1.3.10-panic-md-foreign
   "is_canary": true,
   "message": "panic: switch on corrupt value",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.10",
 }
 `;
@@ -6371,8 +6449,7 @@ exports[`parse fixtures real-074-windows-x86_64_baseline-1.3.11-segv-lg-foreign 
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "a2743b6",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2097155,
     1052695,
@@ -6380,8 +6457,6 @@ exports[`parse fixtures real-074-windows-x86_64_baseline-1.3.11-segv-lg-foreign 
   "is_canary": false,
   "message": "Segmentation fault at address 0x44924010000",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -6445,8 +6520,7 @@ exports[`parse fixtures real-075-windows-x86_64_baseline-1.3.11-oom-md-foreign 1
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "a2743b6",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     1052695,
@@ -6454,8 +6528,6 @@ exports[`parse fixtures real-075-windows-x86_64_baseline-1.3.11-oom-md-foreign 1
   "is_canary": false,
   "message": "Bun ran out of memory",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -6487,8 +6559,7 @@ exports[`parse fixtures real-076-windows-x86_64-1.3.10-panic-sm-foreign 1`] = `
   "arch": "x86_64",
   "command": "a",
   "commitish": "30e609e",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     32,
     1048640,
@@ -6496,8 +6567,6 @@ exports[`parse fixtures real-076-windows-x86_64-1.3.10-panic-sm-foreign 1`] = `
   "is_canary": false,
   "message": "panic: attempt to use null value",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.10",
 }
 `;
@@ -6593,8 +6662,7 @@ exports[`parse fixtures real-077-windows-x86_64_baseline-1.3.10-segv-lg-unk-fore
   "arch": "x86_64_baseline",
   "command": "a",
   "commitish": "30e609e",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3347,
     -1609560041,
@@ -6602,8 +6670,6 @@ exports[`parse fixtures real-077-windows-x86_64_baseline-1.3.10-segv-lg-unk-fore
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000000",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.10",
 }
 `;
@@ -6655,8 +6721,7 @@ exports[`parse fixtures real-078-windows-x86_64_baseline-1.3.11-so-md-foreign 1`
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "548644a",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2,
     1048576,
@@ -6664,8 +6729,6 @@ exports[`parse fixtures real-078-windows-x86_64_baseline-1.3.11-so-md-foreign 1`
   "is_canary": false,
   "message": "Stack overflow",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -6725,8 +6788,7 @@ exports[`parse fixtures real-079-windows-x86_64_baseline-1.3.11-segv-md-unk-fore
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "dea015e",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2097155,
     1052679,
@@ -6734,8 +6796,6 @@ exports[`parse fixtures real-079-windows-x86_64_baseline-1.3.11-segv-md-unk-fore
   "is_canary": false,
   "message": "Segmentation fault at address 0x0000003C",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.11",
 }
 `;
@@ -6783,8 +6843,7 @@ exports[`parse fixtures real-080-windows-x86_64_baseline-1.3.10-segv-md-unk 1`] 
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "d885ce7",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2099203,
     1052695,
@@ -6792,8 +6851,6 @@ exports[`parse fixtures real-080-windows-x86_64_baseline-1.3.10-segv-md-unk 1`] 
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000018",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.10",
 }
 `;
@@ -6861,8 +6918,7 @@ exports[`parse fixtures real-081-windows-aarch64-1.3.10-panic-md-foreign 1`] = `
   "arch": "aarch64",
   "command": "_",
   "commitish": "1423d3c",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2051,
     1052687,
@@ -6870,8 +6926,6 @@ exports[`parse fixtures real-081-windows-aarch64-1.3.10-panic-md-foreign 1`] = `
   "is_canary": false,
   "message": "panic: incorrect alignment",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.10",
 }
 `;
@@ -6963,8 +7017,7 @@ exports[`parse fixtures real-082-windows-x86_64-1.3.9-segv-lg-unk 1`] = `
   "arch": "x86_64",
   "command": "a",
   "commitish": "cf6cdbb",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3331,
     -2146430953,
@@ -6972,8 +7025,6 @@ exports[`parse fixtures real-082-windows-x86_64-1.3.9-segv-lg-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x43C881E0100",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.9",
 }
 `;
@@ -7041,8 +7092,7 @@ exports[`parse fixtures real-083-windows-x86_64_baseline-1.3.10-segv-md-foreign 
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "1423d3c",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2099203,
     1052695,
@@ -7050,8 +7100,6 @@ exports[`parse fixtures real-083-windows-x86_64_baseline-1.3.10-segv-md-foreign 
   "is_canary": false,
   "message": "Segmentation fault at address 0xFFFFFFFFFFFFFFFF",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.10",
 }
 `;
@@ -7091,8 +7139,7 @@ exports[`parse fixtures real-084-windows-x86_64_baseline-1.3.9-panic-sm-unk 1`] 
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "d5628db",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2,
     1048578,
@@ -7100,8 +7147,6 @@ exports[`parse fixtures real-084-windows-x86_64_baseline-1.3.9-panic-sm-unk 1`] 
   "is_canary": true,
   "message": "panic: Internal assertion failure",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.9",
 }
 `;
@@ -7193,8 +7238,7 @@ exports[`parse fixtures real-085-windows-x86_64_baseline-1.3.9-ill-lg 1`] = `
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "cf6cdbb",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     538054671,
@@ -7202,8 +7246,6 @@ exports[`parse fixtures real-085-windows-x86_64_baseline-1.3.9-ill-lg 1`] = `
   "is_canary": false,
   "message": "Illegal instruction at address 0x7FF6E3FDFF8A",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.9",
 }
 `;
@@ -7283,8 +7325,7 @@ exports[`parse fixtures real-086-windows-x86_64-1.3.8-panic-lg-unk 1`] = `
   "arch": "x86_64",
   "command": "n",
   "commitish": "b64edcb",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     112,
     1048903,
@@ -7292,8 +7333,6 @@ exports[`parse fixtures real-086-windows-x86_64-1.3.8-panic-lg-unk 1`] = `
   "is_canary": false,
   "message": "panic: invalid enum value",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.8",
 }
 `;
@@ -7304,8 +7343,7 @@ exports[`parse fixtures real-087-windows-x86_64-1.3.9-segv-xs 1`] = `
   "arch": "x86_64",
   "command": "a",
   "commitish": "35f8154",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3427,
     -2146430697,
@@ -7313,8 +7351,6 @@ exports[`parse fixtures real-087-windows-x86_64-1.3.9-segv-xs 1`] = `
   "is_canary": true,
   "message": "Segmentation fault at address 0x00000000",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.9",
 }
 `;
@@ -7374,8 +7410,7 @@ exports[`parse fixtures real-088-windows-x86_64-1.3.7-panic-md-unk 1`] = `
   "arch": "x86_64",
   "command": "r",
   "commitish": "ba42621",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     112,
     1048641,
@@ -7383,8 +7418,6 @@ exports[`parse fixtures real-088-windows-x86_64-1.3.7-panic-md-unk 1`] = `
   "is_canary": false,
   "message": "panic: start index 2 is larger than end index 1",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.7",
 }
 `;
@@ -7404,8 +7437,7 @@ exports[`parse fixtures real-089-windows-x86_64_baseline-1.3.6-ill-xs 1`] = `
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "d530ed9",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     1611665415,
@@ -7413,8 +7445,6 @@ exports[`parse fixtures real-089-windows-x86_64_baseline-1.3.6-ill-xs 1`] = `
   "is_canary": false,
   "message": "Illegal instruction at address 0x7FF7F28A80FC",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.6",
 }
 `;
@@ -7450,8 +7480,7 @@ exports[`parse fixtures real-090-windows-x86_64-1.3.6-segv-sm-unk 1`] = `
   "arch": "x86_64",
   "command": "n",
   "commitish": "d530ed9",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     112,
     1048837,
@@ -7459,8 +7488,6 @@ exports[`parse fixtures real-090-windows-x86_64-1.3.6-segv-sm-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0xFFFFFFFFFFFFFFFF",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.6",
 }
 `;
@@ -7524,8 +7551,7 @@ exports[`parse fixtures real-091-windows-x86_64-1.3.5-segv-md-unk 1`] = `
   "arch": "x86_64",
   "command": "r",
   "commitish": "1e86ceb",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     352,
     1049088,
@@ -7533,8 +7559,6 @@ exports[`parse fixtures real-091-windows-x86_64-1.3.5-segv-md-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000008",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.5",
 }
 `;
@@ -7545,8 +7569,7 @@ exports[`parse fixtures real-092-windows-x86_64_baseline-1.3.5-segv-xs 1`] = `
   "arch": "x86_64_baseline",
   "command": "a",
   "commitish": "1e86ceb",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3443,
     -2146299625,
@@ -7554,8 +7577,6 @@ exports[`parse fixtures real-092-windows-x86_64_baseline-1.3.5-segv-xs 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000000",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.5",
 }
 `;
@@ -7647,8 +7668,7 @@ exports[`parse fixtures real-093-windows-x86_64_baseline-1.3.5-segv-lg-unk 1`] =
   "arch": "x86_64_baseline",
   "command": "a",
   "commitish": "1e86ceb",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     275,
     -2146299881,
@@ -7656,8 +7676,6 @@ exports[`parse fixtures real-093-windows-x86_64_baseline-1.3.5-segv-lg-unk 1`] =
   "is_canary": false,
   "message": "Segmentation fault at address 0x499AA1E0100",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.5",
 }
 `;
@@ -7741,8 +7759,7 @@ exports[`parse fixtures real-094-windows-x86_64-1.3.5-segv-lg-foreign 1`] = `
   "arch": "x86_64",
   "command": "a",
   "commitish": "1e86ceb",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     2080,
     1179664,
@@ -7750,8 +7767,6 @@ exports[`parse fixtures real-094-windows-x86_64-1.3.5-segv-lg-foreign 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x29F14210080",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.5",
 }
 `;
@@ -7783,8 +7798,7 @@ exports[`parse fixtures real-095-windows-x86_64_baseline-1.3.3-segv-sm-unk 1`] =
   "arch": "x86_64_baseline",
   "command": "a",
   "commitish": "274e01c",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     385,
     -1073082345,
@@ -7792,8 +7806,6 @@ exports[`parse fixtures real-095-windows-x86_64_baseline-1.3.3-segv-sm-unk 1`] =
   "is_canary": false,
   "message": "Segmentation fault at address 0x00000130",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.3",
 }
 `;
@@ -7869,8 +7881,7 @@ exports[`parse fixtures real-096-windows-x86_64-1.3.3-panic-md-foreign 1`] = `
   "arch": "x86_64",
   "command": "_",
   "commitish": "274e01c",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     49,
     -2146823929,
@@ -7878,8 +7889,6 @@ exports[`parse fixtures real-096-windows-x86_64-1.3.3-panic-md-foreign 1`] = `
   "is_canary": false,
   "message": "panic: index out of bounds: index 438088856, len 1676",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.3",
 }
 `;
@@ -7951,8 +7960,7 @@ exports[`parse fixtures real-097-windows-x86_64_baseline-1.3.2-ill-md-foreign 1`
   "arch": "x86_64_baseline",
   "command": "_",
   "commitish": "b131639",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     0,
     402653184,
@@ -7960,8 +7968,6 @@ exports[`parse fixtures real-097-windows-x86_64_baseline-1.3.2-ill-md-foreign 1`
   "is_canary": false,
   "message": "Illegal instruction at address 0x7FF791BB79A6",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.2",
 }
 `;
@@ -7997,8 +8003,7 @@ exports[`parse fixtures real-098-windows-x86_64-1.3.3-panic-sm-unk 1`] = `
   "arch": "x86_64",
   "command": "a",
   "commitish": "e0aae8a",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     1096,
     329729,
@@ -8006,8 +8011,6 @@ exports[`parse fixtures real-098-windows-x86_64-1.3.3-panic-sm-unk 1`] = `
   "is_canary": true,
   "message": "panic: integer does not fit in destination type",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.3",
 }
 `;
@@ -8051,8 +8054,7 @@ exports[`parse fixtures real-099-windows-x86_64-1.3.0-segv-sm-unk-foreign 1`] = 
   "arch": "x86_64",
   "command": "a",
   "commitish": "b0a6fec",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     512,
     262144,
@@ -8060,8 +8062,6 @@ exports[`parse fixtures real-099-windows-x86_64-1.3.0-segv-sm-unk-foreign 1`] = 
   "is_canary": false,
   "message": "Segmentation fault at address 0xFFFFFFFFFFFFFFFF",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.0",
 }
 `;
@@ -8077,8 +8077,7 @@ exports[`parse fixtures real-100-windows-x86_64-1.3.1-segv-xs-unk 1`] = `
   "arch": "x86_64",
   "command": "n",
   "commitish": "89fa0f3",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     524,
     1074069511,
@@ -8086,8 +8085,6 @@ exports[`parse fixtures real-100-windows-x86_64-1.3.1-segv-xs-unk 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x0000001A",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.1",
 }
 `;
@@ -8111,8 +8108,7 @@ exports[`parse fixtures v1-linux-aarch64-segfault 1`] = `
   "arch": "aarch64",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     7,
@@ -8120,8 +8116,6 @@ exports[`parse fixtures v1-linux-aarch64-segfault 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x6EADBEEF",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8145,8 +8139,7 @@ exports[`parse fixtures v1-linux-x86_64-foreign-object 1`] = `
   "arch": "x86_64",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     0,
     0,
@@ -8154,8 +8147,6 @@ exports[`parse fixtures v1-linux-x86_64-foreign-object 1`] = `
   "is_canary": false,
   "message": "Stack overflow",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8179,8 +8170,7 @@ exports[`parse fixtures v1-linux-x86_64-segfault 1`] = `
   "arch": "x86_64",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     7,
@@ -8188,8 +8178,6 @@ exports[`parse fixtures v1-linux-x86_64-segfault 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x6EADBEEF",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8225,8 +8213,7 @@ exports[`parse fixtures v1-linux-x86_64-with-js-and-unknown-frames 1`] = `
   "arch": "x86_64",
   "command": "t",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     0,
     0,
@@ -8234,8 +8221,6 @@ exports[`parse fixtures v1-linux-x86_64-with-js-and-unknown-frames 1`] = `
   "is_canary": false,
   "message": "panic: reached unreachable code",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8259,8 +8244,7 @@ exports[`parse fixtures v1-linux-x86_64_baseline-segfault 1`] = `
   "arch": "x86_64_baseline",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     7,
@@ -8268,8 +8252,6 @@ exports[`parse fixtures v1-linux-x86_64_baseline-segfault 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x6EADBEEF",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8289,8 +8271,7 @@ exports[`parse fixtures v1-macos-aarch64-oom 1`] = `
   "arch": "aarch64",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     0,
     0,
@@ -8298,8 +8279,6 @@ exports[`parse fixtures v1-macos-aarch64-oom 1`] = `
   "is_canary": false,
   "message": "Bun ran out of memory",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8315,8 +8294,7 @@ exports[`parse fixtures v1-macos-aarch64-panic-compressed 1`] = `
   "arch": "aarch64",
   "command": "i",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     0,
     0,
@@ -8324,8 +8302,6 @@ exports[`parse fixtures v1-macos-aarch64-panic-compressed 1`] = `
   "is_canary": false,
   "message": "panic: Integer overflow in allocator",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8349,8 +8325,7 @@ exports[`parse fixtures v1-macos-aarch64-segfault 1`] = `
   "arch": "aarch64",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     7,
@@ -8358,8 +8333,6 @@ exports[`parse fixtures v1-macos-aarch64-segfault 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x6EADBEEF",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8375,8 +8348,7 @@ exports[`parse fixtures v1-macos-aarch64-with-url-prefix 1`] = `
   "arch": "aarch64",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     0,
     0,
@@ -8384,8 +8356,6 @@ exports[`parse fixtures v1-macos-aarch64-with-url-prefix 1`] = `
   "is_canary": false,
   "message": "panic: reached unreachable code",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8409,8 +8379,7 @@ exports[`parse fixtures v1-macos-x86_64-segfault 1`] = `
   "arch": "x86_64",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     7,
@@ -8418,8 +8387,6 @@ exports[`parse fixtures v1-macos-x86_64-segfault 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x6EADBEEF",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8443,8 +8410,7 @@ exports[`parse fixtures v1-macos-x86_64_baseline-segfault 1`] = `
   "arch": "x86_64_baseline",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     7,
@@ -8452,8 +8418,6 @@ exports[`parse fixtures v1-macos-x86_64_baseline-segfault 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x6EADBEEF",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8477,8 +8441,7 @@ exports[`parse fixtures v1-windows-aarch64-segfault 1`] = `
   "arch": "aarch64",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     7,
@@ -8486,8 +8449,6 @@ exports[`parse fixtures v1-windows-aarch64-segfault 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x6EADBEEF",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8511,8 +8472,7 @@ exports[`parse fixtures v1-windows-x86_64-segfault 1`] = `
   "arch": "x86_64",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     7,
@@ -8520,8 +8480,6 @@ exports[`parse fixtures v1-windows-x86_64-segfault 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x6EADBEEF",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8545,8 +8503,7 @@ exports[`parse fixtures v1-windows-x86_64_baseline-segfault 1`] = `
   "arch": "x86_64_baseline",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     7,
@@ -8554,8 +8511,6 @@ exports[`parse fixtures v1-windows-x86_64_baseline-segfault 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0x6EADBEEF",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8579,8 +8534,7 @@ exports[`parse fixtures v2-linux-aarch64-segfault 1`] = `
   "arch": "aarch64",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     7,
@@ -8588,8 +8542,6 @@ exports[`parse fixtures v2-linux-aarch64-segfault 1`] = `
   "is_canary": true,
   "message": "Segmentation fault at address 0x6EADBEEF",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8613,8 +8565,7 @@ exports[`parse fixtures v2-linux-x86_64-segfault 1`] = `
   "arch": "x86_64",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     7,
@@ -8622,8 +8573,6 @@ exports[`parse fixtures v2-linux-x86_64-segfault 1`] = `
   "is_canary": true,
   "message": "Segmentation fault at address 0x6EADBEEF",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8647,8 +8596,7 @@ exports[`parse fixtures v2-linux-x86_64_baseline-segfault 1`] = `
   "arch": "x86_64_baseline",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     7,
@@ -8656,8 +8604,6 @@ exports[`parse fixtures v2-linux-x86_64_baseline-segfault 1`] = `
   "is_canary": true,
   "message": "Segmentation fault at address 0x6EADBEEF",
   "os": "linux",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8681,8 +8627,7 @@ exports[`parse fixtures v2-macos-aarch64-segfault 1`] = `
   "arch": "aarch64",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     7,
@@ -8690,8 +8635,6 @@ exports[`parse fixtures v2-macos-aarch64-segfault 1`] = `
   "is_canary": true,
   "message": "Segmentation fault at address 0x6EADBEEF",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8715,8 +8658,7 @@ exports[`parse fixtures v2-macos-x86_64-segfault 1`] = `
   "arch": "x86_64",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     7,
@@ -8724,8 +8666,6 @@ exports[`parse fixtures v2-macos-x86_64-segfault 1`] = `
   "is_canary": true,
   "message": "Segmentation fault at address 0x6EADBEEF",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8749,8 +8689,7 @@ exports[`parse fixtures v2-macos-x86_64_baseline-segfault 1`] = `
   "arch": "x86_64_baseline",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     7,
@@ -8758,8 +8697,6 @@ exports[`parse fixtures v2-macos-x86_64_baseline-segfault 1`] = `
   "is_canary": true,
   "message": "Segmentation fault at address 0x6EADBEEF",
   "os": "macos",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8783,8 +8720,7 @@ exports[`parse fixtures v2-windows-aarch64-segfault 1`] = `
   "arch": "aarch64",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     7,
@@ -8792,8 +8728,6 @@ exports[`parse fixtures v2-windows-aarch64-segfault 1`] = `
   "is_canary": true,
   "message": "Segmentation fault at address 0x6EADBEEF",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8809,8 +8743,7 @@ exports[`parse fixtures v2-windows-x86_64-error-reason 1`] = `
   "arch": "x86_64",
   "command": "b",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     0,
     0,
@@ -8818,8 +8751,6 @@ exports[`parse fixtures v2-windows-x86_64-error-reason 1`] = `
   "is_canary": true,
   "message": "error: ENOENT: no such file or directory",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8843,8 +8774,7 @@ exports[`parse fixtures v2-windows-x86_64-segfault 1`] = `
   "arch": "x86_64",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     7,
@@ -8852,8 +8782,6 @@ exports[`parse fixtures v2-windows-x86_64-segfault 1`] = `
   "is_canary": true,
   "message": "Segmentation fault at address 0x6EADBEEF",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8877,8 +8805,7 @@ exports[`parse fixtures v2-windows-x86_64_baseline-segfault 1`] = `
   "arch": "x86_64_baseline",
   "command": "r",
   "commitish": "abc1234",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     3,
     7,
@@ -8886,8 +8813,6 @@ exports[`parse fixtures v2-windows-x86_64_baseline-segfault 1`] = `
   "is_canary": true,
   "message": "Segmentation fault at address 0x6EADBEEF",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.1.30",
 }
 `;
@@ -8919,8 +8844,7 @@ exports[`parse fixtures windows-segfault-neg1 1`] = `
   "arch": "x86_64",
   "command": "a",
   "commitish": "1b55f1d",
-  "cpu_flags": undefined,
-  "env_flags": undefined,
+  "fault_registers": undefined,
   "features": [
     96,
     1048711,
@@ -8928,8 +8852,6 @@ exports[`parse fixtures windows-segfault-neg1 1`] = `
   "is_canary": false,
   "message": "Segmentation fault at address 0xFFFFFFFFFFFFFFFF",
   "os": "windows",
-  "os_version": undefined,
-  "total_ram_mb": undefined,
   "version": "1.3.13",
 }
 `;

@@ -31,12 +31,17 @@ const platform_char: Record<`${Platform}-${Arch}`, string> = {
 export type ReasonSpec =
   | { kind: "panic"; message: string }
   | { kind: "unreachable" }
-  | { kind: "segfault"; addr_hi: number; addr_lo: number }
+  | { kind: "segfault"; addr_hi: number; addr_lo: number; regs?: bigint[] }
   | { kind: "stack_overflow" }
   | { kind: "error"; message: string }
   | { kind: "oom" };
 
-function encodeReason(r: ReasonSpec): string {
+/** writeU64AsTwoVLQs: encode a u64 as hi-u32 then lo-u32, each as a signed-i32 VLQ. */
+function encodeU64(v: bigint): string {
+  return encodeVlq(Number(BigInt.asIntN(32, v >> 32n))) + encodeVlq(Number(BigInt.asIntN(32, v & 0xffffffffn)));
+}
+
+function encodeReason(r: ReasonSpec, has_regs: boolean): string {
   switch (r.kind) {
     case "panic": {
       const compressed = deflateSync(Buffer.from(r.message));
@@ -44,8 +49,15 @@ function encodeReason(r: ReasonSpec): string {
     }
     case "unreachable":
       return "1";
-    case "segfault":
-      return "2" + encodeVlq(r.addr_hi) + encodeVlq(r.addr_lo);
+    case "segfault": {
+      let s = "2" + encodeVlq(r.addr_hi) + encodeVlq(r.addr_lo);
+      if (has_regs) {
+        // VLQ count `n`, then `n` u64s (gp..., pc) each as two VLQs.
+        s += encodeVlq(r.regs?.length ?? 0);
+        for (const reg of r.regs ?? []) s += encodeU64(reg);
+      }
+      return s;
+    }
     case "stack_overflow":
       return "7";
     case "error":
@@ -60,7 +72,7 @@ export interface BuildTraceOpts {
   os: Platform;
   arch: Arch;
   command: string;
-  trace_version: "1" | "2";
+  trace_version: "1" | "2" | "3" | "4";
   commitish: string;
   features?: [number, number];
   addresses: ParsedAddress[];
@@ -92,6 +104,6 @@ export function buildTraceString(opts: BuildTraceOpts): string {
     }
   }
   s += encodeVlq(0);
-  s += encodeReason(opts.reason);
+  s += encodeReason(opts.reason, opts.trace_version === "3" || opts.trace_version === "4");
   return s;
 }

@@ -1,0 +1,4 @@
+{
+  "description": "v4-linux-x86_64-segfault: real trace from a debug build with FaultRegisters (17 = 16 GP + pc)",
+  "input": "1.3.14/la44ad9e2bgGgkggCysg22Jsh1jiL+sxPw7u+rK_yh9wiL438niL0k0mvMy70mvM080+3Mog2+3Ms2i16Eiyr96Eq4o96Eu0m05E8ipm/Mgivl/Mwzm/+Mwlx9+Mo225kNA2AjxgpqhBiBAjxgpqhBAA+9/Bhgggq7D4//Bhs0/t2D4//Bxsz/t2DAA4//Bhg0/t2D4//Bhj0/t2DAoIYPAAAskB+9/Bg3jkh6D+9/Bgug1g6DhggIAhggIEA0sg22J"
+}

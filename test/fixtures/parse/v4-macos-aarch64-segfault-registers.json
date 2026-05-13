@@ -1,0 +1,4 @@
+{
+  "description": "v4-macos-aarch64-segfault: real trace from a debug build with FaultRegisters (33 = 32 GP + pc)",
+  "input": "1.3.14/Ma44ad9e2bgGgkggCmhilqD_2/hlqDml0tnF_uk4k7H2ls66Hm0z13Gmnu2H+wr9H+mp9Hm07qjH2r7kjH+xr3nH+5q3nH+vs7qHm3wkkB+kxkkB2500iEulwqiEA2AjxgpqhBiCCg054ltDAACgp64ltDOg0hgnVAsKCwj64ltDDjg8/ngChgIgg8///BAjxgpqhBAjxgpqhBAjxgpqhBAAuggggDgg8kkVAAOw4ggjVACAkMOwigxpVAAOgggxpVOg4gs7UOg4gs7UAAAACwm94ltDOgvggnVOggg73UhggIAhggIECgv54ltDC4/hpgGCgs54ltDCohipgG"
+}
