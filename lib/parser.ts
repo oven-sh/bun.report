@@ -22,13 +22,15 @@ const platform_map: { [key: string]: [Platform, Arch] } = {
   L: ["linux", "aarch64"],
 };
 
-const reasons: { [key: string]: (input: string) => string | Promise<string> } = {
+type ReasonResult = string | { message: string; fault_registers?: FaultRegisters; consumed: number };
+
+const reasons: { [key: string]: (input: string, has_regs: boolean) => ReasonResult | Promise<ReasonResult> } = {
   "0": parsePanicMessage,
   "1": () => "panic: reached unreachable code",
-  "2": addr => `Segmentation fault at ${parseVlqAddr(addr)}`,
-  "3": addr => `Illegal instruction at ${parseVlqAddr(addr)}`,
-  "4": addr => `Bus error at ${parseVlqAddr(addr)}`,
-  "5": addr => `Floating point exception at ${parseVlqAddr(addr)}`,
+  "2": (s, r) => parseFaultReason("Segmentation fault", s, r),
+  "3": (s, r) => parseFaultReason("Illegal instruction", s, r),
+  "4": (s, r) => parseFaultReason("Bus error", s, r),
+  "5": (s, r) => parseFaultReason("Floating point exception", s, r),
   "6": () => `Unaligned memory access`,
   "7": () => `Stack overflow`,
   "8": rest => "error: " + rest,
@@ -57,14 +59,24 @@ export interface Parse {
   is_canary?: boolean;
   /** lazily computed by parseCacheKey */
   cache_key?: string;
-  /** v3+: OS version as major.minor.patch (kernel on Linux, product on macOS, build on Windows) */
-  os_version?: [number, number, number];
-  /** v3+: env flags — bit0=wsl, bit1=musl, bit2=emulated_x64 (Rosetta/Prism), bit3=canary */
-  env_flags?: number;
-  /** v3+: CPU feature flags (CPUFeatures.Flags bitcast) */
-  cpu_flags?: number;
-  /** v3+: total RAM in MB */
-  total_ram_mb?: number;
+  /**
+   * v3+, fault reasons (segfault/SIGILL/SIGBUS/SIGFPE) only: GP register
+   * snapshot at the moment of the fault. Register names follow `gp_names`
+   * in bun's `crash_handler.zig` (x64: rax..r15; arm64: x0..x28,fp,lr,sp).
+   */
+  fault_registers?: FaultRegisters;
+}
+
+export interface FaultRegisters {
+  /** Program counter / instruction pointer at the fault. */
+  pc: bigint;
+  /** General-purpose registers, indexed parallel to `names`. */
+  gp: bigint[];
+  /**
+   * Register names matching `gp` indices. Derived from arch and gp.length —
+   * 16 ⇒ x64, 32 ⇒ arm64. Empty on unrecognised counts (forward compat).
+   */
+  names: readonly string[];
 }
 
 export interface ResolvedCommit {
@@ -140,16 +152,19 @@ export async function parse(str: string): Promise<Parse | null> {
     const trace_version = str[first_slash + 3];
 
     let is_canary = false;
-    let has_v3_meta = false;
+    let has_v3 = false;
     if (trace_version === "1") {
       // '1' - original. uses 7 char hash with VLQ encoded stack-frames
     } else if (trace_version === "2") {
       // '2' - same as '1' but this build is known to be a canary build
       is_canary = true;
     } else if (trace_version === "3") {
-      // '3' - adds os_version, env_flags, cpu_flags, ram after the sha.
-      //       canary bit moves into env_flags.
-      has_v3_meta = true;
+      // '3' - after the sha: one TraceFlags VLQ (bit0=canary, rest reserved),
+      //       then the v1 body. For fault reasons (segfault/SIGILL/SIGBUS/
+      //       SIGFPE) a register block follows the fault address: one VLQ
+      //       count `n`, then `n` u64 values each as two VLQs, in
+      //       `FaultRegisters.gp_names` order followed by pc.
+      has_v3 = true;
     } else {
       DEBUG && debug("invalid version '%s'", trace_version);
       return null;
@@ -163,27 +178,14 @@ export async function parse(str: string): Promise<Parse | null> {
 
     let c, object, address, inc;
 
-    let os_version: [number, number, number] | undefined;
-    let env_flags: number | undefined;
-    let cpu_flags: number | undefined;
-    let total_ram_mb: number | undefined;
-
-    if (has_v3_meta) {
-      const vals: number[] = [];
-      for (let n = 0; n < 6; n++) {
-        const [v, adv] = decodePart(str.slice(i));
-        if (v == null) {
-          DEBUG && debug("invalid v3 meta at vlq %d", n);
-          return null;
-        }
-        vals.push(v);
-        i += adv;
+    if (has_v3) {
+      const [flags, adv] = decodePart(str.slice(i));
+      if (flags == null) {
+        DEBUG && debug("invalid v3 trace flags %o", str.slice(i));
+        return null;
       }
-      os_version = [vals[0], vals[1], vals[2]];
-      env_flags = vals[3];
-      cpu_flags = vals[4];
-      total_ram_mb = vals[5];
-      is_canary = !!(env_flags & 0b1000);
+      i += adv;
+      is_canary = !!(flags & 0b1);
     }
 
     [c, inc] = decodePart(str.slice(i));
@@ -254,11 +256,13 @@ export async function parse(str: string): Promise<Parse | null> {
       DEBUG && debug("invalid reason %o", str.slice(i));
       return null;
     }
-    const message = await reason(str.slice(i + 1));
-    if (!message) {
+    const result = await reason(str.slice(i + 1), has_v3);
+    if (!result) {
       DEBUG && debug("invalid message %o", str.slice(i));
       return null;
     }
+    const { message, fault_registers } =
+      typeof result === "string" ? { message: result, fault_registers: undefined } : result;
     return {
       version,
       os,
@@ -269,10 +273,7 @@ export async function parse(str: string): Promise<Parse | null> {
       command,
       features: features_data,
       is_canary,
-      os_version,
-      env_flags,
-      cpu_flags,
-      total_ram_mb,
+      fault_registers,
     };
   } catch (e) {
     DEBUG && debug(e);
@@ -320,12 +321,57 @@ function parsePanicMessage(message_compressed: string): Promise<string> | string
   }
 }
 
-function parseVlqAddr(unparsed_addr: string): string {
-  let [first, i] = decodePart(unparsed_addr) as [any, number];
-  let [second] = decodePart(unparsed_addr.slice(i));
-  if (first == null || second == null) return "unknown address";
-  first = first ? correctIntToUint32(first).toString(16) : "";
-  return "address 0x" + (first + correctIntToUint32(second).toString(16).padStart(8, "0")).toUpperCase();
+// Must mirror `FaultRegisters.gp_names` in bun's src/crash_handler/crash_handler.zig.
+// prettier-ignore
+const gp_names_x64 = [
+  "rax", "rbx", "rcx", "rdx", "rdi", "rsi", "rbp", "rsp",
+  "r8",  "r9",  "r10", "r11", "r12", "r13", "r14", "r15",
+] as const;
+// prettier-ignore
+const gp_names_arm64 = [
+  "x0",  "x1",  "x2",  "x3",  "x4",  "x5",  "x6",  "x7",
+  "x8",  "x9",  "x10", "x11", "x12", "x13", "x14", "x15",
+  "x16", "x17", "x18", "x19", "x20", "x21", "x22", "x23",
+  "x24", "x25", "x26", "x27", "x28", "fp",  "lr",  "sp",
+] as const;
+
+/**
+ * Parse a fault-type reason body: a u64 fault address, optionally followed
+ * (v3+) by a VLQ count `n` and `n` u64 registers (each two VLQs, hi then lo)
+ * in `gp_names` order with pc last.
+ */
+function parseFaultReason(label: string, body: string, has_regs: boolean): ReasonResult {
+  const [addr, i0] = decodeU64(body, 0);
+  if (addr == null) return `${label} at unknown address`;
+  const message = `${label} at address 0x${addr.toString(16).toUpperCase().padStart(8, "0")}`;
+  if (!has_regs) return { message, consumed: i0 };
+
+  let i = i0;
+  const [n, adv] = decodePart(body.slice(i));
+  if (n == null || n < 0) return { message, consumed: i };
+  i += adv;
+  if (n === 0) return { message, consumed: i };
+
+  const regs: bigint[] = [];
+  for (let k = 0; k < n; k++) {
+    const [v, ri] = decodeU64(body, i);
+    if (v == null) return { message, consumed: i0 };
+    regs.push(v);
+    i = ri;
+  }
+  const pc = regs.pop()!;
+  const names =
+    regs.length === gp_names_x64.length ? gp_names_x64 : regs.length === gp_names_arm64.length ? gp_names_arm64 : [];
+  return { message, fault_registers: { pc, gp: regs, names }, consumed: i };
+}
+
+/** Decode a u64 encoded as two i32 VLQs (hi, lo) by `writeU64AsTwoVLQs`. */
+function decodeU64(s: string, i: number): [bigint | null, number] {
+  const [hi, a] = decodePart(s.slice(i));
+  if (hi == null) return [null, i];
+  const [lo, b] = decodePart(s.slice(i + a));
+  if (lo == null) return [null, i];
+  return [(BigInt(correctIntToUint32(hi)) << 32n) | BigInt(correctIntToUint32(lo)), i + a + b];
 }
 
 function correctIntToUint32(int: number): number {

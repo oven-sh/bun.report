@@ -1,0 +1,4 @@
+{
+  "description": "v3-macos-aarch64-segfault: real trace from a debug build (TraceFlags + 33 registers)",
+  "input": "1.3.14/Ma34ad9e2bCgGgkggCmj8kqD_2h8kqD259xnF_uk4k7H2ls66Hm1z13Gmnu2H+wr9H+mp9Hm17qjH2s7kjH+yr3nH+6q3nH+ws7qHm3wkkB+kxkkBmz78hE+mq5hEA2AjxgpqhBiCCg55n5tDAACgu6n5tDYg0hgndAsKCwo6n5tDDjg8/ngChgIgg8///BAjxgpqhBAjxgpqhBAjxgpqhBAA4ggggDgg8+/cAAYw4gn9cACAkMYwigxxcAAYgggxxcYg4gy7cYg4gy7cAAAACwr9n5tDYgvggndYgggjgchggIAhggIECg05n5tDC4h85sFCgx5n5tDCoj85sF"
+}

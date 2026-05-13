@@ -5,7 +5,9 @@ import type * as Sentry from "./sentry-types";
 import { getCodeView } from "./code-view";
 
 const BUN_REPORT_VERSION =
-  spawnSync(["git", "-C", import.meta.dir, "rev-parse", "--short=9", "HEAD"]).stdout.toString().trim() || "unknown";
+  spawnSync(["git", "-C", import.meta.dir, "rev-parse", "--short=9", "HEAD"])
+    .stdout.toString()
+    .trim() || "unknown";
 
 async function remapToPayload(parse: Parse, remap: Remap, trace_str: string): Promise<Sentry.Payload> {
   const event_id = MD5.hash(parse.cache_key!, "hex");
@@ -81,71 +83,20 @@ function getTags(parse: Parse, remap: Remap): any {
 
   if (parse.is_canary) tags.canary = true;
 
-  if (parse.env_flags != null) {
-    if (parse.env_flags & 0b0001) tags.wsl = true;
-    if (parse.env_flags & 0b0010) tags.musl = true;
-    if (parse.env_flags & 0b0100) tags.emulated_x64 = true;
-  }
-
-  if (parse.os_version?.[0]) tags.os_version = formatOSVersion(parse.os_version);
-  if (parse.total_ram_mb) tags.ram_mb = parse.total_ram_mb;
-
-  if (parse.cpu_flags != null) {
-    for (const name of decodeCPUFlags(parse.cpu_flags, parse.arch)) {
-      tags[`cpu_${name}`] = true;
-    }
-  }
-
   return tags;
-}
-
-// Bit layout must match bun's src/bun.js/bindings/CPUFeatures.{cpp,zig}.
-// bit 0 is `none`, top bits are padding — both skipped. Append only.
-const cpu_flag_names = {
-  x86_64: [, "sse42", "popcnt", "avx", "avx2", "avx512"],
-  aarch64: [, "neon", "fp", "aes", "crc32", "atomics", "sve"],
-} as const;
-
-function decodeCPUFlags(flags: number, arch: string): string[] {
-  const names = cpu_flag_names[arch.replace(/_baseline$/, "") as keyof typeof cpu_flag_names];
-  if (!names) return [];
-  const out: string[] = [];
-  for (let bit = 0; bit < names.length; bit++) {
-    const name = names[bit];
-    if (name && flags & (1 << bit)) out.push(name);
-  }
-  return out;
 }
 
 /**
  * `dist` marks build variants of the same release — same version, same commit,
- * different compile flags. For bun that's baseline (older-CPU target) and musl
- * (Alpine/musl libc). undefined means the standard build for this os/arch.
+ * different compile flags. For bun that's currently just `baseline`
+ * (older-CPU target). undefined means the standard build for this os/arch.
  */
 function buildDist(parse: Parse): string | undefined {
-  const parts: string[] = [];
-  if (parse.arch.endsWith("_baseline")) parts.push("baseline");
-  if (parse.env_flags != null && parse.env_flags & 0b0010) parts.push("musl");
-  return parts.length ? parts.join("-") : undefined;
-}
-
-function formatOSVersion(v: readonly [number, number, number]): string {
-  // Drop trailing zeros so "26.4.0" shows as "26.4".
-  const parts = v[2] !== 0 ? v : v[1] !== 0 ? v.slice(0, 2) : v.slice(0, 1);
-  return parts.join(".");
+  return parse.arch.endsWith("_baseline") ? "baseline" : undefined;
 }
 
 function getOSContext(parse: Parse): Sentry.OS {
-  const name = ({ windows: "Windows", macos: "macOS", linux: "Linux" } as const)[parse.os];
-  if (!parse.os_version?.[0]) return { name };
-
-  // Windows encodes as major.minor.build (e.g. 10.0.22631). Build number is
-  // what actually distinguishes 23H2 from 24H2 — put it in its own field.
-  if (parse.os === "windows") {
-    const [maj, min, build] = parse.os_version;
-    return { name, version: `${maj}.${min}`, build: build ? String(build) : undefined };
-  }
-  return { name, version: formatOSVersion(parse.os_version) };
+  return { name: ({ windows: "Windows", macos: "macOS", linux: "Linux" } as const)[parse.os] };
 }
 
 /**
@@ -167,10 +118,11 @@ function buildExtra(remap: Remap, view_url: string): Record<string, unknown> {
 }
 
 function getOSDeviceContext(parse: Parse): Sentry.PayloadEventContexts["device"] {
-  return {
-    arch: parse.arch,
-    ...(parse.total_ram_mb ? { memory_size: parse.total_ram_mb * 1024 * 1024 } : {}),
-  };
+  // Sentry's frame-register sorter (getRegisterMap) keys on
+  // startsWith('arm64'); we use 'aarch64' everywhere else. Normalize so
+  // arm64 registers display in x0..x28,fp,lr,sp,pc order instead of
+  // alphabetically. _baseline suffix, if any, is preserved.
+  return { arch: parse.arch.replace(/^aarch64/, "arm64") };
 }
 
 function remapToExceptionType(message: string) {
@@ -330,9 +282,26 @@ async function remapToException(parse: Parse, remap: Remap): Promise<Sentry.Payl
     value,
     stacktrace: {
       frames: await Promise.all(remap.addresses.map(x => toStackFrame(x, remap.commit.oid)).reverse()),
+      ...(parse.fault_registers ? { registers: formatRegisters(parse.fault_registers) } : {}),
     },
     mechanism: buildMechanism(type, parse.os),
   };
+}
+
+/**
+ * Convert FaultRegisters to Sentry's `stacktrace.registers` map. Sentry
+ * displays these alongside the topmost frame. Values are 0x-prefixed hex
+ * strings (Sentry's native crash payloads use the same convention).
+ *
+ * Names match Sentry's REGISTERS_X86_64 / REGISTERS_ARM64 sort tables —
+ * notably the instruction pointer is `rip` on x64 but `pc` on arm64.
+ */
+function formatRegisters(fr: NonNullable<Parse["fault_registers"]>): Record<string, string> {
+  const out: Record<string, string> = {};
+  const hex = (v: bigint) => "0x" + v.toString(16).padStart(16, "0");
+  fr.gp.forEach((v, i) => (out[fr.names[i] ?? `r${i}`] = hex(v)));
+  out[fr.names.includes("rax") ? "rip" : "pc"] = hex(fr.pc);
+  return out;
 }
 
 function repoRelativePath(filename: string): string | null {

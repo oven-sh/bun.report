@@ -113,6 +113,12 @@ export interface PayloadException {
 
 export interface StackTrace {
   frames: StackTraceFrame[];
+  /**
+   * Register values at the moment of the crash, applying to the *last* frame.
+   * Values are formatted hex strings ("0x..."). Sentry renders these in the
+   * stack-trace panel.
+   */
+  registers?: Record<string, string>;
 }
 
 export interface StackTraceFrame {
