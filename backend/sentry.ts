@@ -118,7 +118,11 @@ function buildExtra(remap: Remap, view_url: string): Record<string, unknown> {
 }
 
 function getOSDeviceContext(parse: Parse): Sentry.PayloadEventContexts["device"] {
-  return { arch: parse.arch };
+  // Sentry's frame-register sorter (getRegisterMap) keys on
+  // startsWith('arm64'); we use 'aarch64' everywhere else. Normalize so
+  // arm64 registers display in x0..x28,fp,lr,sp,pc order instead of
+  // alphabetically. _baseline suffix, if any, is preserved.
+  return { arch: parse.arch.replace(/^aarch64/, "arm64") };
 }
 
 function remapToExceptionType(message: string) {
@@ -288,12 +292,15 @@ async function remapToException(parse: Parse, remap: Remap): Promise<Sentry.Payl
  * Convert FaultRegisters to Sentry's `stacktrace.registers` map. Sentry
  * displays these alongside the topmost frame. Values are 0x-prefixed hex
  * strings (Sentry's native crash payloads use the same convention).
+ *
+ * Names match Sentry's REGISTERS_X86_64 / REGISTERS_ARM64 sort tables —
+ * notably the instruction pointer is `rip` on x64 but `pc` on arm64.
  */
 function formatRegisters(fr: NonNullable<Parse["fault_registers"]>): Record<string, string> {
   const out: Record<string, string> = {};
   const hex = (v: bigint) => "0x" + v.toString(16).padStart(16, "0");
-  out.pc = hex(fr.pc);
   fr.gp.forEach((v, i) => (out[fr.names[i] ?? `r${i}`] = hex(v)));
+  out[fr.names.includes("rax") ? "rip" : "pc"] = hex(fr.pc);
   return out;
 }
 
