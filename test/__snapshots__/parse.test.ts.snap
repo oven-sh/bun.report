@@ -33,6 +33,7 @@ exports[`parse fixtures linux-http-thread-segfault 1`] = `
   "commitish": "e38b41d",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000010",
   "features": [
     2097155,
     1052695,
@@ -67,6 +68,7 @@ exports[`parse fixtures macos-prev-regression 1`] = `
   "commitish": "1b55f1d",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "FFFFFFFFFFFFFFFF",
   "features": [
     96,
     1048711,
@@ -169,6 +171,7 @@ exports[`parse fixtures macos-remap-stack-frames 1`] = `
   "commitish": "af24e28",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000000",
   "features": [
     3331,
     1052695,
@@ -271,6 +274,7 @@ exports[`parse fixtures real-001-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "commitish": "af24e28",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000000",
   "features": [
     2048,
     1048576,
@@ -411,6 +415,7 @@ exports[`parse fixtures real-003-macos-aarch64-1.3.11-segv-sm-unk 1`] = `
   "commitish": "a2743b6",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "1B2DF662B0634B46",
   "features": [
     2099203,
     1183767,
@@ -477,6 +482,7 @@ exports[`parse fixtures real-004-macos-aarch64-1.3.11-segv-md-unk 1`] = `
   "commitish": "a2743b6",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000040",
   "features": [
     2099203,
     1576991,
@@ -645,6 +651,7 @@ exports[`parse fixtures real-006-macos-aarch64-1.3.2-ill-lg-unk 1`] = `
   "commitish": "b131639",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "18FC6CC94",
   "features": [
     512,
     -1073477625,
@@ -747,6 +754,7 @@ exports[`parse fixtures real-007-macos-x86_64-1.3.2-segv-lg-unk 1`] = `
   "commitish": "b131639",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000000",
   "features": [
     0,
     1074003968,
@@ -825,6 +833,7 @@ exports[`parse fixtures real-008-macos-x86_64-1.3.0-segv-md-unk 1`] = `
   "commitish": "b0a6fec",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "0001F139",
   "features": [
     732,
     1074006023,
@@ -927,6 +936,7 @@ exports[`parse fixtures real-009-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "commitish": "af24e28",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "16A93BFF0",
   "features": [
     2097,
     1052679,
@@ -1029,6 +1039,7 @@ exports[`parse fixtures real-010-macos-aarch64-1.3.2-segv-lg-unk 1`] = `
   "commitish": "b131639",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000008",
   "features": [
     0,
     -1073477609,
@@ -1131,6 +1142,7 @@ exports[`parse fixtures real-011-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "commitish": "a2743b6",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "73746E657665227B",
   "features": [
     2099203,
     1576991,
@@ -1233,6 +1245,7 @@ exports[`parse fixtures real-012-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "commitish": "a2743b6",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "632E627568746967",
   "features": [
     2099203,
     1576991,
@@ -1335,6 +1348,7 @@ exports[`parse fixtures real-013-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "commitish": "01210fb",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "68746E612E697061",
   "features": [
     2099203,
     1576991,
@@ -1429,6 +1443,7 @@ exports[`parse fixtures real-014-macos-aarch64-1.3.10-segv-lg-unk 1`] = `
   "commitish": "30e609e",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "000000CC",
   "features": [
     2096,
     1048583,
@@ -1531,6 +1546,7 @@ exports[`parse fixtures real-015-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "commitish": "548644a",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000028",
   "features": [
     2099203,
     1576991,
@@ -1633,6 +1649,7 @@ exports[`parse fixtures real-016-macos-aarch64-1.3.11-segv-lg-unk 1`] = `
   "commitish": "548644a",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "756F736464227B5B",
   "features": [
     2099203,
     1576991,
@@ -1735,6 +1752,7 @@ exports[`parse fixtures real-017-macos-aarch64-1.3.10-segv-lg-unk 1`] = `
   "commitish": "89a8aa9",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000008",
   "features": [
     2099203,
     1183775,
@@ -1837,6 +1855,7 @@ exports[`parse fixtures real-018-macos-aarch64-1.3.10-segv-lg-unk 1`] = `
   "commitish": "89a8aa9",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "95E29095E29095E2",
   "features": [
     2051,
     1052695,
@@ -1939,6 +1958,7 @@ exports[`parse fixtures real-019-macos-aarch64-1.3.9-segv-lg-unk 1`] = `
   "commitish": "cf6cdbb",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "0003E940",
   "features": [
     2097,
     1183775,
@@ -2041,6 +2061,7 @@ exports[`parse fixtures real-020-macos-aarch64-1.3.9-segv-lg-unk 1`] = `
   "commitish": "d5628db",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000204",
   "features": [
     2051,
     1052695,
@@ -2143,6 +2164,7 @@ exports[`parse fixtures real-021-macos-aarch64-1.3.9-segv-lg-unk 1`] = `
   "commitish": "d5628db",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000030",
   "features": [
     2099203,
     1052695,
@@ -2245,6 +2267,7 @@ exports[`parse fixtures real-022-macos-aarch64-1.3.9-segv-lg-unk 1`] = `
   "commitish": "d5628db",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000010",
   "features": [
     2099203,
     1052703,
@@ -2347,6 +2370,7 @@ exports[`parse fixtures real-023-macos-aarch64-1.3.6-segv-lg-unk 1`] = `
   "commitish": "d530ed9",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000008",
   "features": [
     3953,
     1184071,
@@ -2449,6 +2473,7 @@ exports[`parse fixtures real-024-macos-aarch64-1.3.6-segv-lg-unk 1`] = `
   "commitish": "d530ed9",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "20200A3B5D5B204D",
   "features": [
     3953,
     1184071,
@@ -2539,6 +2564,7 @@ exports[`parse fixtures real-025-macos-aarch64-1.3.7-segv-lg-unk 1`] = `
   "commitish": "ba42621",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000005",
   "features": [
     8392752,
     1184000,
@@ -2641,6 +2667,7 @@ exports[`parse fixtures real-026-macos-aarch64-1.3.5-segv-lg-unk 1`] = `
   "commitish": "1e86ceb",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "000001F4",
   "features": [
     2051,
     1183775,
@@ -2743,6 +2770,7 @@ exports[`parse fixtures real-027-macos-aarch64-1.3.5-segv-lg-unk 1`] = `
   "commitish": "1e86ceb",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000010",
   "features": [
     2400,
     1048577,
@@ -2845,6 +2873,7 @@ exports[`parse fixtures real-028-macos-aarch64-1.3.3-segv-lg-unk 1`] = `
   "commitish": "274e01c",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "000001F4",
   "features": [
     49,
     -2146954985,
@@ -2899,6 +2928,7 @@ exports[`parse fixtures real-029-macos-aarch64-1.3.2-segv-sm-unk 1`] = `
   "commitish": "b131639",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "5067E6D15F8",
   "features": [
     0,
     8388928,
@@ -3103,6 +3133,7 @@ exports[`parse fixtures real-031-macos-aarch64-1.3.3-segv-lg-unk 1`] = `
   "commitish": "274e01c",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "8985C15A14",
   "features": [
     0,
     526336,
@@ -3205,6 +3236,7 @@ exports[`parse fixtures real-032-macos-aarch64-1.3.1-segv-lg-unk 1`] = `
   "commitish": "89fa0f3",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "000001F4",
   "features": [
     512,
     -1073477609,
@@ -3307,6 +3339,7 @@ exports[`parse fixtures real-033-macos-aarch64-1.3.1-segv-lg-unk 1`] = `
   "commitish": "89fa0f3",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "16BD7BFE0",
   "features": [
     524,
     262151,
@@ -3471,6 +3504,7 @@ exports[`parse fixtures real-035-linux-x86_64_baseline-1.3.11-segv-md 1`] = `
   "commitish": "0d72d5a",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "7B6EE74B0020",
   "features": [
     2097155,
     1052695,
@@ -3565,6 +3599,7 @@ exports[`parse fixtures real-036-linux-x86_64_baseline-1.3.11-ill-lg 1`] = `
   "commitish": "759ce80",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "0666103F",
   "features": [
     0,
     1048576,
@@ -3729,6 +3764,7 @@ exports[`parse fixtures real-038-linux-x86_64-1.3.11-segv-lg-unk 1`] = `
   "commitish": "af24e28",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000200",
   "features": [
     96,
     1048640,
@@ -3767,6 +3803,7 @@ exports[`parse fixtures real-039-linux-x86_64_baseline-1.3.11-segv-sm 1`] = `
   "commitish": "af24e28",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00015350",
   "features": [
     3937,
     1052677,
@@ -3797,6 +3834,7 @@ exports[`parse fixtures real-040-linux-x86_64_baseline-1.3.10-segv-xs 1`] = `
   "commitish": "30e609e",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00013CD0",
   "features": [
     2913,
     1052997,
@@ -3851,6 +3889,7 @@ exports[`parse fixtures real-041-linux-x86_64_baseline-1.3.10-fpe-sm 1`] = `
   "commitish": "30e609e",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "042DDD76",
   "features": [
     12290,
     1183767,
@@ -3953,6 +3992,7 @@ exports[`parse fixtures real-042-linux-x86_64_baseline-1.3.9-segv-lg-unk 1`] = `
   "commitish": "cf6cdbb",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000000",
   "features": [
     18784,
     1183829,
@@ -3991,6 +4031,7 @@ exports[`parse fixtures real-043-linux-x86_64-1.3.8-segv-sm 1`] = `
   "commitish": "b64edcb",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "79524367ADD0",
   "features": [
     2097,
     1048583,
@@ -4049,6 +4090,7 @@ exports[`parse fixtures real-044-linux-x86_64-1.3.7-fpe-md 1`] = `
   "commitish": "ba42621",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "0423B58E",
   "features": [
     49,
     1048583,
@@ -4177,6 +4219,7 @@ exports[`parse fixtures real-046-linux-x86_64-1.3.6-segv-xs 1`] = `
   "commitish": "d530ed9",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000000",
   "features": [
     3,
     1184015,
@@ -4235,6 +4278,7 @@ exports[`parse fixtures real-047-linux-x86_64_baseline-1.3.8-segv-md-unk 1`] = `
   "commitish": "b64edcb",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "1BEFFFFDEA05990",
   "features": [
     0,
     0,
@@ -4337,6 +4381,7 @@ exports[`parse fixtures real-048-linux-aarch64-1.3.7-segv-lg-unk 1`] = `
   "commitish": "ba42621",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "FFFF27888000",
   "features": [
     113,
     1179655,
@@ -4481,6 +4526,7 @@ exports[`parse fixtures real-050-linux-x86_64_baseline-1.3.6-ill-lg-unk 1`] = `
   "commitish": "d530ed9",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "04001FB4",
   "features": [
     3169,
     1611661319,
@@ -4547,6 +4593,7 @@ exports[`parse fixtures real-051-linux-x86_64-1.3.2-segv-md 1`] = `
   "commitish": "b131639",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000050",
   "features": [
     732,
     262149,
@@ -4597,6 +4644,7 @@ exports[`parse fixtures real-052-linux-x86_64-1.3.2-segv-sm-unk 1`] = `
   "commitish": "b131639",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "2A318922648",
   "features": [
     0,
     8388608,
@@ -4623,6 +4671,7 @@ exports[`parse fixtures real-053-linux-x86_64_baseline-1.3.1-ill-xs 1`] = `
   "commitish": "89fa0f3",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "0606F8BF",
   "features": [
     0,
     402915328,
@@ -4713,6 +4762,7 @@ exports[`parse fixtures real-056-linux-aarch64-1.3.1-segv-xs 1`] = `
   "commitish": "89fa0f3",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000008",
   "features": [
     24,
     262401,
@@ -4815,6 +4865,7 @@ exports[`parse fixtures real-057-linux-aarch64-1.3.0-ill-lg-unk 1`] = `
   "commitish": "b0a6fec",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "FFFF61CC5E9C",
   "features": [
     520,
     1074003975,
@@ -4909,6 +4960,7 @@ exports[`parse fixtures real-058-linux-x86_64_baseline-1.3.0-segv-lg 1`] = `
   "commitish": "b0a6fec",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000038",
   "features": [
     28,
     262215,
@@ -4991,6 +5043,7 @@ exports[`parse fixtures real-059-linux-x86_64_baseline-1.3.11-segv-md 1`] = `
   "commitish": "6f0a17c",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "7FFFFFFFA9",
   "features": [
     2097155,
     1052695,
@@ -5065,6 +5118,7 @@ exports[`parse fixtures real-060-linux-x86_64_baseline-1.3.10-segv-md 1`] = `
   "commitish": "30e609e",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "E00000048",
   "features": [
     12290,
     1183767,
@@ -5167,6 +5221,7 @@ exports[`parse fixtures real-061-linux-x86_64-1.3.10-segv-lg-unk 1`] = `
   "commitish": "30e609e",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000005",
   "features": [
     2416,
     1053007,
@@ -5269,6 +5324,7 @@ exports[`parse fixtures real-062-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = 
   "commitish": "48c5aa9",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "7FFF0E00E015",
   "features": [
     2099203,
     1052695,
@@ -5371,6 +5427,7 @@ exports[`parse fixtures real-063-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = 
   "commitish": "48c5aa9",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "7FFDD5FB8B25",
   "features": [
     2051,
     1052695,
@@ -5473,6 +5530,7 @@ exports[`parse fixtures real-064-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = 
   "commitish": "1423d3c",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "7FFC1C7B06A5",
   "features": [
     2099203,
     1052695,
@@ -5575,6 +5633,7 @@ exports[`parse fixtures real-065-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = 
   "commitish": "1423d3c",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "7FFCEDDCF925",
   "features": [
     2099203,
     1052695,
@@ -5677,6 +5736,7 @@ exports[`parse fixtures real-066-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = 
   "commitish": "1423d3c",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "7FFEEE9310D5",
   "features": [
     2051,
     1052695,
@@ -5779,6 +5839,7 @@ exports[`parse fixtures real-067-linux-x86_64_baseline-1.3.10-segv-lg-unk 1`] = 
   "commitish": "1423d3c",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "7FFBBD78E7D5",
   "features": [
     2051,
     1052695,
@@ -6005,6 +6066,7 @@ exports[`parse fixtures real-070-windows-x86_64-1.3.11-segv-md-foreign 1`] = `
   "commitish": "af24e28",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "0000022D",
   "features": [
     2161,
     1179655,
@@ -6103,6 +6165,7 @@ exports[`parse fixtures real-071-windows-x86_64_baseline-1.3.10-ill-lg-foreign 1
   "commitish": "89a8aa9",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "7FF7519EE900",
   "features": [
     2051,
     1052695,
@@ -6205,6 +6268,7 @@ exports[`parse fixtures real-072-windows-x86_64_baseline-1.3.11-ill-lg-unk 1`] =
   "commitish": "01210fb",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "7FF777AE056B",
   "features": [
     2099203,
     1052703,
@@ -6373,6 +6437,7 @@ exports[`parse fixtures real-074-windows-x86_64_baseline-1.3.11-segv-lg-foreign 
   "commitish": "a2743b6",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "44924010000",
   "features": [
     2097155,
     1052695,
@@ -6595,6 +6660,7 @@ exports[`parse fixtures real-077-windows-x86_64_baseline-1.3.10-segv-lg-unk-fore
   "commitish": "30e609e",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000000",
   "features": [
     3347,
     -1609560041,
@@ -6727,6 +6793,7 @@ exports[`parse fixtures real-079-windows-x86_64_baseline-1.3.11-segv-md-unk-fore
   "commitish": "dea015e",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "0000003C",
   "features": [
     2097155,
     1052679,
@@ -6785,6 +6852,7 @@ exports[`parse fixtures real-080-windows-x86_64_baseline-1.3.10-segv-md-unk 1`] 
   "commitish": "d885ce7",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000018",
   "features": [
     2099203,
     1052695,
@@ -6965,6 +7033,7 @@ exports[`parse fixtures real-082-windows-x86_64-1.3.9-segv-lg-unk 1`] = `
   "commitish": "cf6cdbb",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "43C881E0100",
   "features": [
     3331,
     -2146430953,
@@ -7043,6 +7112,7 @@ exports[`parse fixtures real-083-windows-x86_64_baseline-1.3.10-segv-md-foreign 
   "commitish": "1423d3c",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "FFFFFFFFFFFFFFFF",
   "features": [
     2099203,
     1052695,
@@ -7195,6 +7265,7 @@ exports[`parse fixtures real-085-windows-x86_64_baseline-1.3.9-ill-lg 1`] = `
   "commitish": "cf6cdbb",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "7FF6E3FDFF8A",
   "features": [
     3,
     538054671,
@@ -7306,6 +7377,7 @@ exports[`parse fixtures real-087-windows-x86_64-1.3.9-segv-xs 1`] = `
   "commitish": "35f8154",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000000",
   "features": [
     3427,
     -2146430697,
@@ -7406,6 +7478,7 @@ exports[`parse fixtures real-089-windows-x86_64_baseline-1.3.6-ill-xs 1`] = `
   "commitish": "d530ed9",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "7FF7F28A80FC",
   "features": [
     3,
     1611665415,
@@ -7452,6 +7525,7 @@ exports[`parse fixtures real-090-windows-x86_64-1.3.6-segv-sm-unk 1`] = `
   "commitish": "d530ed9",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "FFFFFFFFFFFFFFFF",
   "features": [
     112,
     1048837,
@@ -7526,6 +7600,7 @@ exports[`parse fixtures real-091-windows-x86_64-1.3.5-segv-md-unk 1`] = `
   "commitish": "1e86ceb",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000008",
   "features": [
     352,
     1049088,
@@ -7547,6 +7622,7 @@ exports[`parse fixtures real-092-windows-x86_64_baseline-1.3.5-segv-xs 1`] = `
   "commitish": "1e86ceb",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000000",
   "features": [
     3443,
     -2146299625,
@@ -7649,6 +7725,7 @@ exports[`parse fixtures real-093-windows-x86_64_baseline-1.3.5-segv-lg-unk 1`] =
   "commitish": "1e86ceb",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "499AA1E0100",
   "features": [
     275,
     -2146299881,
@@ -7743,6 +7820,7 @@ exports[`parse fixtures real-094-windows-x86_64-1.3.5-segv-lg-foreign 1`] = `
   "commitish": "1e86ceb",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "29F14210080",
   "features": [
     2080,
     1179664,
@@ -7785,6 +7863,7 @@ exports[`parse fixtures real-095-windows-x86_64_baseline-1.3.3-segv-sm-unk 1`] =
   "commitish": "274e01c",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "00000130",
   "features": [
     385,
     -1073082345,
@@ -7953,6 +8032,7 @@ exports[`parse fixtures real-097-windows-x86_64_baseline-1.3.2-ill-md-foreign 1`
   "commitish": "b131639",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "7FF791BB79A6",
   "features": [
     0,
     402653184,
@@ -8053,6 +8133,7 @@ exports[`parse fixtures real-099-windows-x86_64-1.3.0-segv-sm-unk-foreign 1`] = 
   "commitish": "b0a6fec",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "FFFFFFFFFFFFFFFF",
   "features": [
     512,
     262144,
@@ -8079,6 +8160,7 @@ exports[`parse fixtures real-100-windows-x86_64-1.3.1-segv-xs-unk 1`] = `
   "commitish": "89fa0f3",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "0000001A",
   "features": [
     524,
     1074069511,
@@ -8113,6 +8195,7 @@ exports[`parse fixtures v1-linux-aarch64-segfault 1`] = `
   "commitish": "abc1234",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "6EADBEEF",
   "features": [
     3,
     7,
@@ -8181,6 +8264,7 @@ exports[`parse fixtures v1-linux-x86_64-segfault 1`] = `
   "commitish": "abc1234",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "6EADBEEF",
   "features": [
     3,
     7,
@@ -8261,6 +8345,7 @@ exports[`parse fixtures v1-linux-x86_64_baseline-segfault 1`] = `
   "commitish": "abc1234",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "6EADBEEF",
   "features": [
     3,
     7,
@@ -8351,6 +8436,7 @@ exports[`parse fixtures v1-macos-aarch64-segfault 1`] = `
   "commitish": "abc1234",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "6EADBEEF",
   "features": [
     3,
     7,
@@ -8411,6 +8497,7 @@ exports[`parse fixtures v1-macos-x86_64-segfault 1`] = `
   "commitish": "abc1234",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "6EADBEEF",
   "features": [
     3,
     7,
@@ -8445,6 +8532,7 @@ exports[`parse fixtures v1-macos-x86_64_baseline-segfault 1`] = `
   "commitish": "abc1234",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "6EADBEEF",
   "features": [
     3,
     7,
@@ -8479,6 +8567,7 @@ exports[`parse fixtures v1-windows-aarch64-segfault 1`] = `
   "commitish": "abc1234",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "6EADBEEF",
   "features": [
     3,
     7,
@@ -8513,6 +8602,7 @@ exports[`parse fixtures v1-windows-x86_64-segfault 1`] = `
   "commitish": "abc1234",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "6EADBEEF",
   "features": [
     3,
     7,
@@ -8547,6 +8637,7 @@ exports[`parse fixtures v1-windows-x86_64_baseline-segfault 1`] = `
   "commitish": "abc1234",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "6EADBEEF",
   "features": [
     3,
     7,
@@ -8581,6 +8672,7 @@ exports[`parse fixtures v2-linux-aarch64-segfault 1`] = `
   "commitish": "abc1234",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "6EADBEEF",
   "features": [
     3,
     7,
@@ -8615,6 +8707,7 @@ exports[`parse fixtures v2-linux-x86_64-segfault 1`] = `
   "commitish": "abc1234",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "6EADBEEF",
   "features": [
     3,
     7,
@@ -8649,6 +8742,7 @@ exports[`parse fixtures v2-linux-x86_64_baseline-segfault 1`] = `
   "commitish": "abc1234",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "6EADBEEF",
   "features": [
     3,
     7,
@@ -8683,6 +8777,7 @@ exports[`parse fixtures v2-macos-aarch64-segfault 1`] = `
   "commitish": "abc1234",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "6EADBEEF",
   "features": [
     3,
     7,
@@ -8717,6 +8812,7 @@ exports[`parse fixtures v2-macos-x86_64-segfault 1`] = `
   "commitish": "abc1234",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "6EADBEEF",
   "features": [
     3,
     7,
@@ -8751,6 +8847,7 @@ exports[`parse fixtures v2-macos-x86_64_baseline-segfault 1`] = `
   "commitish": "abc1234",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "6EADBEEF",
   "features": [
     3,
     7,
@@ -8785,6 +8882,7 @@ exports[`parse fixtures v2-windows-aarch64-segfault 1`] = `
   "commitish": "abc1234",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "6EADBEEF",
   "features": [
     3,
     7,
@@ -8845,6 +8943,7 @@ exports[`parse fixtures v2-windows-x86_64-segfault 1`] = `
   "commitish": "abc1234",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "6EADBEEF",
   "features": [
     3,
     7,
@@ -8879,6 +8978,7 @@ exports[`parse fixtures v2-windows-x86_64_baseline-segfault 1`] = `
   "commitish": "abc1234",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "6EADBEEF",
   "features": [
     3,
     7,
@@ -8921,6 +9021,7 @@ exports[`parse fixtures windows-segfault-neg1 1`] = `
   "commitish": "1b55f1d",
   "cpu_flags": undefined,
   "env_flags": undefined,
+  "fault_address": "FFFFFFFFFFFFFFFF",
   "features": [
     96,
     1048711,
