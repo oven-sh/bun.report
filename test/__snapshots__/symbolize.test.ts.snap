@@ -4,12 +4,14 @@ exports[`symbolize fixtures filterAddresses reverts to original when all frames 
 {
   "addresses": [
     {
+      "address": 1000,
       "function": "??",
       "object": "bun",
       "remapped": true,
       "src": null,
     },
     {
+      "address": 2000,
       "function": "??",
       "object": "bun",
       "remapped": true,
@@ -27,6 +29,7 @@ exports[`symbolize fixtures linux-http-thread-segfault 1`] = `
 {
   "addresses": [
     {
+      "address": 60096454,
       "function": "http.HTTPThread.drainQueuedShutdowns",
       "object": "bun",
       "remapped": true,
@@ -36,6 +39,7 @@ exports[`symbolize fixtures linux-http-thread-segfault 1`] = `
       },
     },
     {
+      "address": 60096454,
       "function": "http.HTTPThread.drainEvents",
       "object": "bun",
       "remapped": true,
@@ -45,6 +49,7 @@ exports[`symbolize fixtures linux-http-thread-segfault 1`] = `
       },
     },
     {
+      "address": 60096454,
       "function": "http.HTTPThread.processEvents",
       "object": "bun",
       "remapped": true,
@@ -54,6 +59,7 @@ exports[`symbolize fixtures linux-http-thread-segfault 1`] = `
       },
     },
     {
+      "address": 56911368,
       "function": "http.HTTPThread.onStart",
       "object": "bun",
       "remapped": true,
@@ -63,6 +69,7 @@ exports[`symbolize fixtures linux-http-thread-segfault 1`] = `
       },
     },
     {
+      "address": 56911368,
       "function": "Thread.callFn",
       "object": "bun",
       "remapped": true,
@@ -72,6 +79,7 @@ exports[`symbolize fixtures linux-http-thread-segfault 1`] = `
       },
     },
     {
+      "address": 56911368,
       "function": "Thread.PosixThreadImpl.spawn.Instance.entryFn",
       "object": "bun",
       "remapped": true,
@@ -96,6 +104,7 @@ exports[`symbolize fixtures linux: stack starts with WTF::jscSignalHandler then 
 {
   "addresses": [
     {
+      "address": 70291584,
       "function": "JSC::JSValue::get(...) const",
       "object": "bun",
       "remapped": true,
@@ -105,6 +114,7 @@ exports[`symbolize fixtures linux: stack starts with WTF::jscSignalHandler then 
       },
     },
     {
+      "address": 70291584,
       "function": "Bun::ReadableStream::pipeTo",
       "object": "bun",
       "remapped": true,
@@ -126,6 +136,7 @@ exports[`symbolize fixtures macos-prev-regression 1`] = `
 {
   "addresses": [
     {
+      "address": 13083216,
       "function": "threading.unbounded_queue.UnboundedQueue(...).pushBatch",
       "object": "bun",
       "remapped": true,
@@ -135,6 +146,7 @@ exports[`symbolize fixtures macos-prev-regression 1`] = `
       },
     },
     {
+      "address": 13083216,
       "function": "threading.unbounded_queue.UnboundedQueue(...).push",
       "object": "bun",
       "remapped": true,
@@ -144,6 +156,7 @@ exports[`symbolize fixtures macos-prev-regression 1`] = `
       },
     },
     {
+      "address": 13083216,
       "function": "bun.js.RuntimeTranspilerStore.RuntimeTranspilerStore.TranspilerJob.dispatchToMainThread",
       "object": "bun",
       "remapped": true,
@@ -153,6 +166,7 @@ exports[`symbolize fixtures macos-prev-regression 1`] = `
       },
     },
     {
+      "address": 13083248,
       "function": "allocators.basic.MimallocAllocator.alignedAlloc",
       "object": "bun",
       "remapped": true,
@@ -162,6 +176,7 @@ exports[`symbolize fixtures macos-prev-regression 1`] = `
       },
     },
     {
+      "address": 13083248,
       "function": "allocators.basic.MimallocAllocator.alloc_with_default_allocator",
       "object": "bun",
       "remapped": true,
@@ -171,6 +186,7 @@ exports[`symbolize fixtures macos-prev-regression 1`] = `
       },
     },
     {
+      "address": 13083248,
       "function": "mem.Allocator.rawAlloc",
       "object": "bun",
       "remapped": true,
@@ -180,6 +196,7 @@ exports[`symbolize fixtures macos-prev-regression 1`] = `
       },
     },
     {
+      "address": 13083248,
       "function": "mem.Allocator.allocBytesWithAlignment",
       "object": "bun",
       "remapped": true,
@@ -189,6 +206,7 @@ exports[`symbolize fixtures macos-prev-regression 1`] = `
       },
     },
     {
+      "address": 13083248,
       "function": "mem.Allocator.create",
       "object": "bun",
       "remapped": true,
@@ -198,6 +216,7 @@ exports[`symbolize fixtures macos-prev-regression 1`] = `
       },
     },
     {
+      "address": 13083248,
       "function": "bun.tryNew",
       "object": "bun",
       "remapped": true,
@@ -207,6 +226,7 @@ exports[`symbolize fixtures macos-prev-regression 1`] = `
       },
     },
     {
+      "address": 13083248,
       "function": "bun.new",
       "object": "bun",
       "remapped": true,
@@ -216,6 +236,7 @@ exports[`symbolize fixtures macos-prev-regression 1`] = `
       },
     },
     {
+      "address": 13083248,
       "function": "bun.TrivialNew.new",
       "object": "bun",
       "remapped": true,
@@ -225,6 +246,7 @@ exports[`symbolize fixtures macos-prev-regression 1`] = `
       },
     },
     {
+      "address": 13083248,
       "function": "bun.js.event_loop.ConcurrentTask.create",
       "object": "bun",
       "remapped": true,
@@ -234,6 +256,7 @@ exports[`symbolize fixtures macos-prev-regression 1`] = `
       },
     },
     {
+      "address": 13083248,
       "function": "bun.js.event_loop.ConcurrentTask.createFrom",
       "object": "bun",
       "remapped": true,
@@ -243,6 +266,7 @@ exports[`symbolize fixtures macos-prev-regression 1`] = `
       },
     },
     {
+      "address": 13083248,
       "function": "bun.js.RuntimeTranspilerStore.RuntimeTranspilerStore.TranspilerJob.dispatchToMainThread",
       "object": "bun",
       "remapped": true,
@@ -252,6 +276,7 @@ exports[`symbolize fixtures macos-prev-regression 1`] = `
       },
     },
     {
+      "address": 11617296,
       "function": "heap.arena_allocator.ArenaAllocator.State.promote",
       "object": "bun",
       "remapped": true,
@@ -261,6 +286,7 @@ exports[`symbolize fixtures macos-prev-regression 1`] = `
       },
     },
     {
+      "address": 11617296,
       "function": "heap.arena_allocator.ArenaAllocator.init",
       "object": "bun",
       "remapped": true,
@@ -270,6 +296,7 @@ exports[`symbolize fixtures macos-prev-regression 1`] = `
       },
     },
     {
+      "address": 11617296,
       "function": "bun.js.RuntimeTranspilerStore.RuntimeTranspilerStore.TranspilerJob.run",
       "object": "bun",
       "remapped": true,
@@ -279,6 +306,7 @@ exports[`symbolize fixtures macos-prev-regression 1`] = `
       },
     },
     {
+      "address": 11617296,
       "function": "bun.js.RuntimeTranspilerStore.RuntimeTranspilerStore.TranspilerJob.runFromWorkerThread",
       "object": "bun",
       "remapped": true,
@@ -305,6 +333,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       "remapped": false,
     },
     {
+      "address": 28143423,
       "function": "WTF::threadSpecificGet",
       "object": "bun",
       "remapped": true,
@@ -314,6 +343,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 28143423,
       "function": "WTF::Thread::currentMayBeNull",
       "object": "bun",
       "remapped": true,
@@ -323,6 +353,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 28143423,
       "function": "WTF::Thread::currentSingleton",
       "object": "bun",
       "remapped": true,
@@ -332,6 +363,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 28143423,
       "function": "WTF::stringTable",
       "object": "bun",
       "remapped": true,
@@ -341,6 +373,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 28143423,
       "function": "WTF::AtomStringImpl::remove",
       "object": "bun",
       "remapped": true,
@@ -350,6 +383,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 28166551,
       "function": "WTF::StringImpl::~StringImpl",
       "object": "bun",
       "remapped": true,
@@ -359,6 +393,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 28166735,
       "function": "WTF::StringImpl::~StringImpl",
       "object": "bun",
       "remapped": true,
@@ -368,6 +403,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 28166735,
       "function": "WTF::StringImpl::destroy",
       "object": "bun",
       "remapped": true,
@@ -377,6 +413,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 20078891,
       "function": "string.wtf.WTFStringImplStruct.deref",
       "object": "bun",
       "remapped": true,
@@ -386,6 +423,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 20078891,
       "function": "string.wtf.StringImplAllocator.free",
       "object": "bun",
       "remapped": true,
@@ -395,6 +433,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 20078891,
       "function": "mem.Allocator.rawFree",
       "object": "bun",
       "remapped": true,
@@ -404,6 +443,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 20078891,
       "function": "allocators.NullableAllocator.free",
       "object": "bun",
       "remapped": true,
@@ -413,6 +453,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 20078891,
       "function": "bun.js.bindings.ZigString.ZigString.Slice.deinit",
       "object": "bun",
       "remapped": true,
@@ -422,6 +463,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 20078891,
       "function": "bun.js.VirtualMachine.remapStackFramePositions",
       "object": "bun",
       "remapped": true,
@@ -431,6 +473,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 20078891,
       "function": "Bun__remapStackFramePositions",
       "object": "bun",
       "remapped": true,
@@ -440,6 +483,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 1242859,
       "function": "Bun::formatStackTrace",
       "object": "bun",
       "remapped": true,
@@ -449,6 +493,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 1253419,
       "function": "Bun::computeErrorInfoWithoutPrepareStackTrace",
       "object": "bun",
       "remapped": true,
@@ -458,6 +503,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 1245707,
       "function": "Bun::computeErrorInfoToString",
       "object": "bun",
       "remapped": true,
@@ -467,6 +513,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 1245707,
       "function": "Bun::computeErrorInfoWrapperToString",
       "object": "bun",
       "remapped": true,
@@ -476,6 +523,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 41056387,
       "function": "WTF::Function<WTF::String (...)>::operator()(...) const",
       "object": "bun",
       "remapped": true,
@@ -485,6 +533,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 41056387,
       "function": "JSC::ErrorInstance::computeErrorInfo",
       "object": "bun",
       "remapped": true,
@@ -494,6 +543,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 41056235,
       "function": "JSC::ErrorInstance::finalizeUnconditionally",
       "object": "bun",
       "remapped": true,
@@ -503,6 +553,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37586551,
       "function": "void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)::operator()(...) const",
       "object": "bun",
       "remapped": true,
@@ -512,6 +563,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37586551,
       "function": "void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)::operator(...) const::'lambda'(...)::operator()(...) const",
       "object": "bun",
       "remapped": true,
@@ -521,6 +573,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37586551,
       "function": "WTF::IterationStatus JSC::MarkedBlock::Handle::forEachMarkedCell<void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)::operator(...) const::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)::operator()(...) const",
       "object": "bun",
       "remapped": true,
@@ -530,6 +583,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37586551,
       "function": "void WTF::forEachSetBit<unsigned long long, 16ul, WTF::IterationStatus JSC::MarkedBlock::Handle::forEachMarkedCell<void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)::operator(...) const::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)>",
       "object": "bun",
       "remapped": true,
@@ -539,6 +593,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37586551,
       "function": "void WTF::BitSet<1024ul, unsigned long long>::forEachSetBit<WTF::IterationStatus JSC::MarkedBlock::Handle::forEachMarkedCell<void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)::operator(...) const::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)>(...) const",
       "object": "bun",
       "remapped": true,
@@ -548,6 +603,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37586551,
       "function": "WTF::IterationStatus JSC::MarkedBlock::Handle::forEachMarkedCell<void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)::operator(...) const::'lambda'(...)>",
       "object": "bun",
       "remapped": true,
@@ -557,6 +613,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37586551,
       "function": "void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)::operator()(...) const",
       "object": "bun",
       "remapped": true,
@@ -566,6 +623,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37586551,
       "function": "void JSC::BlockDirectory::forEachNotEmptyBlock<void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)::operator()(...) const",
       "object": "bun",
       "remapped": true,
@@ -575,6 +633,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37586551,
       "function": "void WTF::FastBitVectorImpl<JSC::BlockDirectoryBits::BlockDirectoryBitVectorWordView<(...)8>>::forEachSetBit<void JSC::BlockDirectory::forEachNotEmptyBlock<void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)>(...) const",
       "object": "bun",
       "remapped": true,
@@ -584,6 +643,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37586551,
       "function": "void JSC::BlockDirectory::forEachNotEmptyBlock<void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)>",
       "object": "bun",
       "remapped": true,
@@ -593,6 +653,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37586551,
       "function": "void JSC::Subspace::forEachNotEmptyMarkedBlock<void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)::operator()(...) const",
       "object": "bun",
       "remapped": true,
@@ -602,6 +663,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37586551,
       "function": "void JSC::Subspace::forEachDirectory<void JSC::Subspace::forEachNotEmptyMarkedBlock<void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)>",
       "object": "bun",
       "remapped": true,
@@ -611,6 +673,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37422795,
       "function": "void JSC::Subspace::forEachNotEmptyMarkedBlock<void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>(...)::'lambda'(...) const&)::'lambda'(...)>",
       "object": "bun",
       "remapped": true,
@@ -620,6 +683,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37422795,
       "function": "void JSC::Subspace::forEachMarkedCell<void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>(...)::'lambda'(...)>",
       "object": "bun",
       "remapped": true,
@@ -629,6 +693,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37422795,
       "function": "void JSC::Heap::finalizeMarkedUnconditionalFinalizers<JSC::ErrorInstance, JSC::IsoSubspace>",
       "object": "bun",
       "remapped": true,
@@ -638,6 +703,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37422795,
       "function": "JSC::Heap::finalizeUnconditionalFinalizers",
       "object": "bun",
       "remapped": true,
@@ -647,6 +713,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37440403,
       "function": "JSC::Heap::runEndPhase",
       "object": "bun",
       "remapped": true,
@@ -656,6 +723,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37434931,
       "function": "JSC::Heap::runCurrentPhase",
       "object": "bun",
       "remapped": true,
@@ -665,6 +733,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37596979,
       "function": "JSC::Heap::collectInMutatorThread(...)(...) const",
       "object": "bun",
       "remapped": true,
@@ -674,6 +743,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37596979,
       "function": "WTF::ScopedLambdaFunctor<void (...), JSC::Heap::collectInMutatorThread()::$_0>::implFunction",
       "object": "bun",
       "remapped": true,
@@ -683,6 +753,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37650091,
       "function": "void WTF::ScopedLambda<void (...)>::operator()<JSC::CurrentThreadState&>(...) const",
       "object": "bun",
       "remapped": true,
@@ -692,6 +763,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37650091,
       "function": "JSC::callWithCurrentThreadState",
       "object": "bun",
       "remapped": true,
@@ -701,6 +773,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37450383,
       "function": "JSC::Heap::collectInMutatorThread",
       "object": "bun",
       "remapped": true,
@@ -710,6 +783,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37420003,
       "function": "JSC::Heap::stopIfNecessarySlow",
       "object": "bun",
       "remapped": true,
@@ -719,6 +793,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37420003,
       "function": "JSC::Heap::stopIfNecessarySlow",
       "object": "bun",
       "remapped": true,
@@ -728,6 +803,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37420003,
       "function": "JSC::Heap::stopIfNecessary",
       "object": "bun",
       "remapped": true,
@@ -737,6 +813,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37420003,
       "function": "JSC::Heap::collectIfNecessaryOrDefer",
       "object": "bun",
       "remapped": true,
@@ -746,6 +823,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 37421819,
       "function": "JSC::Heap::addReference",
       "object": "bun",
       "remapped": true,
@@ -755,6 +833,7 @@ exports[`symbolize fixtures macos-remap-stack-frames 1`] = `
       },
     },
     {
+      "address": 34221763,
       "function": "JSC::JSGenericTypedArrayView<JSC::Uint8Adaptor>::create",
       "object": "bun",
       "remapped": true,
@@ -792,6 +871,7 @@ exports[`symbolize fixtures macos: typical llvm-symbolizer output, 3 bun frames 
 {
   "addresses": [
     {
+      "address": 36223112,
       "function": "Bun::jsFunctionResolveSync",
       "object": "bun",
       "remapped": true,
@@ -801,6 +881,7 @@ exports[`symbolize fixtures macos: typical llvm-symbolizer output, 3 bun frames 
       },
     },
     {
+      "address": 36223112,
       "function": "JSC::callJSFunction",
       "object": "bun",
       "remapped": true,
@@ -810,6 +891,7 @@ exports[`symbolize fixtures macos: typical llvm-symbolizer output, 3 bun frames 
       },
     },
     {
+      "address": 36223112,
       "function": "src.bun.js.event_loop.EventLoop.tick",
       "object": "bun",
       "remapped": true,
@@ -831,6 +913,7 @@ exports[`symbolize fixtures linux: bun frames interleaved with js and foreign-ob
 {
   "addresses": [
     {
+      "address": 8192000,
       "function": "src.js.node.fs.NodeFS.readFile",
       "object": "bun",
       "remapped": true,
@@ -850,6 +933,7 @@ exports[`symbolize fixtures linux: bun frames interleaved with js and foreign-ob
       "remapped": false,
     },
     {
+      "address": 8390000,
       "function": "src.bun.js.module_loader.ModuleLoader.transpileSourceCode",
       "object": "bun",
       "remapped": true,
@@ -864,6 +948,7 @@ exports[`symbolize fixtures linux: bun frames interleaved with js and foreign-ob
       "remapped": false,
     },
     {
+      "address": 8590000,
       "function": "main",
       "object": "bun",
       "remapped": true,
@@ -885,6 +970,7 @@ exports[`symbolize fixtures leading panic/assert frames are stripped, trailing ?
 {
   "addresses": [
     {
+      "address": 3333,
       "function": "src.string_immutable.eqlLong",
       "object": "bun",
       "remapped": true,
@@ -894,6 +980,7 @@ exports[`symbolize fixtures leading panic/assert frames are stripped, trailing ?
       },
     },
     {
+      "address": 4444,
       "function": "src.resolver.resolver.Resolver.resolve",
       "object": "bun",
       "remapped": true,
@@ -917,6 +1004,7 @@ exports[`symbolize fixtures windows: pdb-addr2line backslash paths and ??:0 for 
 {
   "addresses": [
     {
+      "address": 14803521,
       "function": "uv__process_reap",
       "object": "bun",
       "remapped": true,
@@ -926,6 +1014,7 @@ exports[`symbolize fixtures windows: pdb-addr2line backslash paths and ??:0 for 
       },
     },
     {
+      "address": 14803521,
       "function": "src.install.install.PackageManager.installPackages",
       "object": "bun",
       "remapped": true,
@@ -947,6 +1036,7 @@ exports[`symbolize fixtures windows-segfault-neg1 1`] = `
 {
   "addresses": [
     {
+      "address": 8930599,
       "function": "eventLoop",
       "object": "bun",
       "remapped": true,
@@ -956,6 +1046,7 @@ exports[`symbolize fixtures windows-segfault-neg1 1`] = `
       },
     },
     {
+      "address": 8930599,
       "function": "dispatchToMainThread",
       "object": "bun",
       "remapped": true,
@@ -965,6 +1056,7 @@ exports[`symbolize fixtures windows-segfault-neg1 1`] = `
       },
     },
     {
+      "address": 6990411,
       "function": "run",
       "object": "bun",
       "remapped": true,
@@ -974,6 +1066,7 @@ exports[`symbolize fixtures windows-segfault-neg1 1`] = `
       },
     },
     {
+      "address": 6990411,
       "function": "runFromWorkerThread",
       "object": "bun",
       "remapped": true,
@@ -983,6 +1076,7 @@ exports[`symbolize fixtures windows-segfault-neg1 1`] = `
       },
     },
     {
+      "address": 10540979,
       "function": "run",
       "object": "bun",
       "remapped": true,
@@ -992,6 +1086,7 @@ exports[`symbolize fixtures windows-segfault-neg1 1`] = `
       },
     },
     {
+      "address": 10540979,
       "function": "callFn",
       "object": "bun",
       "remapped": true,
@@ -1001,6 +1096,7 @@ exports[`symbolize fixtures windows-segfault-neg1 1`] = `
       },
     },
     {
+      "address": 10540979,
       "function": "entryFn",
       "object": "bun",
       "remapped": true,

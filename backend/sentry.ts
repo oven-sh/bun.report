@@ -5,7 +5,9 @@ import type * as Sentry from "./sentry-types";
 import { getCodeView } from "./code-view";
 
 const BUN_REPORT_VERSION =
-  spawnSync(["git", "-C", import.meta.dir, "rev-parse", "--short=9", "HEAD"]).stdout.toString().trim() || "unknown";
+  spawnSync(["git", "-C", import.meta.dir, "rev-parse", "--short=9", "HEAD"])
+    .stdout.toString()
+    .trim() || "unknown";
 
 async function remapToPayload(parse: Parse, remap: Remap, trace_str: string): Promise<Sentry.Payload> {
   const event_id = MD5.hash(parse.cache_key!, "hex");
@@ -80,6 +82,8 @@ function getTags(parse: Parse, remap: Remap): any {
   }
 
   if (parse.is_canary) tags.canary = true;
+
+  if (parse.fault_address) tags.fault_address = "0x" + parse.fault_address;
 
   if (parse.env_flags != null) {
     if (parse.env_flags & 0b0001) tags.wsl = true;
@@ -350,6 +354,8 @@ function repoRelativePath(filename: string): string | null {
 
 async function toStackFrame(address: Address, commit: string): Promise<Sentry.StackTraceFrame> {
   const { object, function: fn, remapped } = address;
+  const instruction_addr =
+    "address" in address && address.address != null ? "0x" + address.address.toString(16) : undefined;
   if (remapped) {
     const { src } = address;
     if (src) {
@@ -374,12 +380,14 @@ async function toStackFrame(address: Address, commit: string): Promise<Sentry.St
               post_context: code_view.below,
             }
           : {}),
+        ...(instruction_addr ? { instruction_addr } : {}),
       };
     }
     return {
       function: fn,
       in_app: object === "bun",
       package: object,
+      ...(instruction_addr ? { instruction_addr } : {}),
     };
   }
 
@@ -387,7 +395,7 @@ async function toStackFrame(address: Address, commit: string): Promise<Sentry.St
     package: object,
     function: fn ?? "<anonymous>",
     in_app: object === "bun",
-    ...("address" in address ? { instruction_addr: "0x" + address.address.toString(16) } : {}),
+    ...(instruction_addr ? { instruction_addr } : {}),
   };
 }
 

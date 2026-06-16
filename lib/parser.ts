@@ -55,6 +55,11 @@ export interface Parse {
    * not enough.
    */
   is_canary?: boolean;
+  /**
+   * Hex string of the faulting address for Segfault/IllegalInstruction/BusError/FPE
+   * (reasons "2"–"5"). Absent for panics, OOM, etc. No "0x" prefix.
+   */
+  fault_address?: string;
   /** lazily computed by parseCacheKey */
   cache_key?: string;
   /** v3+: OS version as major.minor.patch (kernel on Linux, product on macOS, build on Windows) */
@@ -100,6 +105,12 @@ export interface RemappedAddress {
   src: { file: string; line: number } | null;
   function: string;
   object: string;
+  /**
+   * Raw image-relative address this frame was symbolicated from. Multiple
+   * inline-expanded frames share the same value. Forwarded to Sentry as
+   * `instruction_addr` so the original address survives symbolication.
+   */
+  address?: number;
 }
 
 export interface UnknownAddress {
@@ -249,16 +260,22 @@ export async function parse(str: string): Promise<Parse | null> {
       addresses.push({ address, object });
     }
 
-    const reason = reasons[str[i]];
+    const reason_char = str[i];
+    const reason = reasons[reason_char];
     if (!reason) {
       DEBUG && debug("invalid reason %o", str.slice(i));
       return null;
     }
-    const message = await reason(str.slice(i + 1));
+    const reason_tail = str.slice(i + 1);
+    const message = await reason(reason_tail);
     if (!message) {
       DEBUG && debug("invalid message %o", str.slice(i));
       return null;
     }
+    // Reasons "2"–"5" encode a fault address. Capture it as a standalone hex
+    // string (separate from the human-readable message) so downstream consumers
+    // can tag/filter on it without parsing the message.
+    const fault_address = reason_char >= "2" && reason_char <= "5" ? parseVlqAddrHex(reason_tail) : undefined;
     return {
       version,
       os,
@@ -269,6 +286,7 @@ export async function parse(str: string): Promise<Parse | null> {
       command,
       features: features_data,
       is_canary,
+      ...(fault_address ? { fault_address } : {}),
       os_version,
       env_flags,
       cpu_flags,
@@ -320,12 +338,17 @@ function parsePanicMessage(message_compressed: string): Promise<string> | string
   }
 }
 
-function parseVlqAddr(unparsed_addr: string): string {
+function parseVlqAddrHex(unparsed_addr: string): string | undefined {
   let [first, i] = decodePart(unparsed_addr) as [any, number];
   let [second] = decodePart(unparsed_addr.slice(i));
-  if (first == null || second == null) return "unknown address";
+  if (first == null || second == null) return undefined;
   first = first ? correctIntToUint32(first).toString(16) : "";
-  return "address 0x" + (first + correctIntToUint32(second).toString(16).padStart(8, "0")).toUpperCase();
+  return (first + correctIntToUint32(second).toString(16).padStart(8, "0")).toUpperCase();
+}
+
+function parseVlqAddr(unparsed_addr: string): string {
+  const hex = parseVlqAddrHex(unparsed_addr);
+  return hex == null ? "unknown address" : "address 0x" + hex;
 }
 
 function correctIntToUint32(int: number): number {

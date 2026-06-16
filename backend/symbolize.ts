@@ -59,6 +59,7 @@ export function processSymbolizerOutput(addresses: ParsedAddress[], stdout: stri
         src: src ? { file: src.file, line: src.line } : null,
         function: cleanFunctionName(block[i]),
         object: "bun",
+        address: addr.address,
       });
       pushed++;
     }
