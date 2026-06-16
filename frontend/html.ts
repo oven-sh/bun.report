@@ -9,9 +9,27 @@ export function addrsToHTML(commit: string, addrs: (Address | ParsedAddress)[]):
   let unknown_in_a_row = 0;
   let pushUnknown = () => {
     if (unknown_in_a_row > 0) {
-      lines.push(`<td><span class='js'>${unknown_in_a_row} unknown/js code</span></td>`);
+      lines.push(`<td></td><td><span class='js'>${unknown_in_a_row} unknown/js code</span></td>`);
       unknown_in_a_row = 0;
+      prev_ia = undefined;
     }
+  };
+
+  // Dimmed leading column with the raw image-relative address. Consecutive
+  // rows sharing the same value are inline expansions of one input address;
+  // render those as a ditto so the distinct inputs stand out.
+  let prev_ia: number | undefined;
+  const ia = (a: number | undefined) => {
+    if (a == null) {
+      prev_ia = undefined;
+      return "<td></td>";
+    }
+    const cell =
+      a === prev_ia
+        ? `<td><code class='ia ia-same'>〃</code></td>`
+        : `<td><code class='ia'>0x${a.toString(16)}</code></td>`;
+    prev_ia = a;
+    return cell;
   };
 
   const lines: string[] = [];
@@ -29,10 +47,10 @@ export function addrsToHTML(commit: string, addrs: (Address | ParsedAddress)[]):
       "remapped" in addr
         ? addr.remapped
           ? addr.src
-            ? `<td><a href="https://github.com/oven-sh/bun/blob/${commit}/${addr.src.file}#L${addr.src.line}" rel="noopener noreferrer" target="_blank"><code>${escapeHTML(basename(addr.src.file))}<span class='loc'>:${addr.src.line}</span></code></a></td><td><code class='fn'>${htmlFunctionName(addr.function, addr.src.file)}</code></td>`
-            : `<td></td><td><code class='fn'>${htmlFunctionName(addr.function)}</code>${addr.object !== "bun" ? ` in ${addr.object}` : ""}</td>`
-          : `<td></td><td><code>0x${addr.address.toString(16)}</code>${addr.object !== "bun" ? ` in ${addr.object}` : ""}</td>`
-        : `${skeleton(150, 120, i)}>I</span></td>${skeleton(50, 100, i)}>I</span></td>`,
+            ? `${ia(addr.address)}<td><a href="https://github.com/oven-sh/bun/blob/${commit}/${addr.src.file}#L${addr.src.line}" rel="noopener noreferrer" target="_blank"><code>${escapeHTML(basename(addr.src.file))}<span class='loc'>:${addr.src.line}</span></code></a></td><td><code class='fn'>${htmlFunctionName(addr.function, addr.src.file)}</code></td>`
+            : `${ia(addr.address)}<td></td><td><code class='fn'>${htmlFunctionName(addr.function)}</code>${addr.object !== "bun" ? ` in ${addr.object}` : ""}</td>`
+          : `${ia(addr.address)}<td></td><td>${addr.object !== "bun" ? `in ${addr.object}` : ""}</td>`
+        : `${ia(addr.address)}${skeleton(150, 120, i)}>I</span></td>${skeleton(50, 100, i)}>I</span></td>`,
     );
 
     i++;

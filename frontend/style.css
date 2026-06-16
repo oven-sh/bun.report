@@ -48,8 +48,7 @@ p {
 }
 
 code {
-  font-family: "Fira Code", "Hack", "Source Code Pro", "SF Mono", "Inconsolata",
-    monospace;
+  font-family: "Fira Code", "Hack", "Source Code Pro", "SF Mono", "Inconsolata", monospace;
 }
 
 .logo {
@@ -88,8 +87,7 @@ svg {
   border-radius: 100px;
   background-color: var(--bg);
   color: var(--fg);
-  font-family: "Fira Code", "Hack", "Source Code Pro", "SF Mono", "Inconsolata",
-    monospace;
+  font-family: "Fira Code", "Hack", "Source Code Pro", "SF Mono", "Inconsolata", monospace;
   display: block;
   font-size: 1rem;
   font-weight: 500;
@@ -181,6 +179,14 @@ a:active {
 
 .loc {
   opacity: 0.7;
+}
+
+.ia {
+  opacity: 0.5;
+  font-size: 80%;
+}
+.ia-same {
+  opacity: 0.25;
 }
 
 .fn {
