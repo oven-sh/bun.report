@@ -230,6 +230,27 @@ summary:hover {
     font-size: 0.9375rem;
   }
 }
+.copy-trace-btn {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  background: #262626;
+  border: 1px solid #383838;
+  border-radius: 4px;
+  color: #a3a3a3;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+.copy-trace-btn:hover {
+  background: #333;
+  color: #f472b6;
+}
+.copy-trace-btn svg {
+  flex-shrink: 0;
+}
 .hidden {
   display: none;
 }
