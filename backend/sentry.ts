@@ -339,6 +339,18 @@ async function remapToException(parse: Parse, remap: Remap): Promise<Sentry.Payl
   };
 }
 
+// Standard-library source paths as they appear in debug info. Frames from
+// these are still shown but marked `in_app: false` so Sentry collapses them
+// in the UI and picks the first real bun frame as the issue title.
+const STDLIB_PATH_MARKERS = [
+  "src/deps/zig", // Zig stdlib (bun 1.3.x and earlier)
+  "src/rust/library/", // Rust std/core/alloc (bun 1.4.x and later)
+];
+
+export function isStdlibPath(filename: string): boolean {
+  return STDLIB_PATH_MARKERS.some(m => filename.includes(m));
+}
+
 function repoRelativePath(filename: string): string | null {
   // Debug symbols encode absolute build paths; strip known prefixes so source_link
   // points at a real file in the repo. Return null when the file lives outside the
@@ -365,7 +377,7 @@ async function toStackFrame(address: Address, commit: string): Promise<Sentry.St
       return {
         filename,
         lineno: src.line,
-        in_app: object === "bun" && !filename.includes("src/deps/zig"),
+        in_app: object === "bun" && !isStdlibPath(filename),
         function: fn,
         package: object,
         ...(repoPath
