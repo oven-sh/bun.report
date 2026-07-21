@@ -22,17 +22,34 @@ const platform_map: { [key: string]: [Platform, Arch] } = {
   L: ["linux", "aarch64"],
 };
 
-const reasons: { [key: string]: (input: string) => string | Promise<string> } = {
-  "0": parsePanicMessage,
+const reasons: {
+  [key: string]: (fault_address: string | undefined, rest: string) => string | Promise<string>;
+} = {
+  "0": (_, rest) => parsePanicMessage(rest),
   "1": () => "panic: reached unreachable code",
-  "2": addr => `Segmentation fault at ${parseVlqAddr(addr)}`,
-  "3": addr => `Illegal instruction at ${parseVlqAddr(addr)}`,
-  "4": addr => `Bus error at ${parseVlqAddr(addr)}`,
-  "5": addr => `Floating point exception at ${parseVlqAddr(addr)}`,
+  "2": addr => `Segmentation fault at address 0x${addr}`,
+  "3": addr => `Illegal instruction at address 0x${addr}`,
+  "4": addr => `Bus error at address 0x${addr}`,
+  "5": addr => `Floating point exception at address 0x${addr}`,
   "6": () => `Unaligned memory access`,
   "7": () => `Stack overflow`,
-  "8": rest => "error: " + rest,
+  "8": (_, rest) => "error: " + rest,
   "9": () => `Bun ran out of memory`,
+};
+
+// Must mirror `FaultRegisters::NAMES` in bun's src/crash_handler/lib.rs.
+// prettier-ignore
+const fault_register_names: { [count: number]: readonly string[] } = {
+  17: [
+    "rax", "rbx", "rcx", "rdx", "rdi", "rsi", "rbp", "rsp",
+    "r8",  "r9",  "r10", "r11", "r12", "r13", "r14", "r15", "rip",
+  ],
+  33: [
+    "x0",  "x1",  "x2",  "x3",  "x4",  "x5",  "x6",  "x7",
+    "x8",  "x9",  "x10", "x11", "x12", "x13", "x14", "x15",
+    "x16", "x17", "x18", "x19", "x20", "x21", "x22", "x23",
+    "x24", "x25", "x26", "x27", "x28", "fp",  "lr",  "sp", "pc",
+  ],
 };
 
 export interface Parse {
@@ -62,14 +79,28 @@ export interface Parse {
   fault_address?: string;
   /** lazily computed by parseCacheKey */
   cache_key?: string;
-  /** v3+: OS version as major.minor.patch (kernel on Linux, product on macOS, build on Windows) */
-  os_version?: [number, number, number];
-  /** v3+: env flags — bit0=wsl, bit1=musl, bit2=emulated_x64 (Rosetta/Prism), bit3=canary */
-  env_flags?: number;
-  /** v3+: CPU feature flags (CPUFeatures.Flags bitcast) */
-  cpu_flags?: number;
-  /** v3+: total RAM in MB */
-  total_ram_mb?: number;
+  /**
+   * v3+, hardware-fault reasons ("2"–"7") only: GP register snapshot lifted
+   * from ucontext_t/CONTEXT at the fault. Present with `values: []` when the
+   * encoder had no arch layout (FreeBSD/unknown).
+   */
+  fault_registers?: FaultRegisters;
+}
+
+export interface FaultRegisters {
+  /**
+   * Image-relative fault pc as a ParsedAddress (ASLR removed, directly
+   * remappable). null when the encoder couldn't resolve its own module.
+   */
+  pc: ParsedAddress | null;
+  /** Raw 64-bit register values, indexed parallel to `names`. */
+  values: bigint[];
+  /**
+   * Register names matching `values` indices (from bun's
+   * `FaultRegisters::NAMES`). x86_64 ⇒ 17, aarch64 ⇒ 33; empty for other
+   * counts (forward compat).
+   */
+  names: readonly string[];
 }
 
 export interface ResolvedCommit {
@@ -151,16 +182,19 @@ export async function parse(str: string): Promise<Parse | null> {
     const trace_version = str[first_slash + 3];
 
     let is_canary = false;
-    let has_v3_meta = false;
+    let has_build_flags = false;
+    let has_regs = false;
     if (trace_version === "1") {
       // '1' - original. uses 7 char hash with VLQ encoded stack-frames
     } else if (trace_version === "2") {
       // '2' - same as '1' but this build is known to be a canary build
       is_canary = true;
     } else if (trace_version === "3") {
-      // '3' - adds os_version, env_flags, cpu_flags, ram after the sha.
-      //       canary bit moves into env_flags.
-      has_v3_meta = true;
+      // '3' - '1' plus a build-flags VLQ after the sha (bit0 = canary) and a
+      //       trailing register block (StackLine pc, VLQ count, count * 2-VLQ
+      //       regs) for fault reasons '2'..'7' only.
+      has_build_flags = true;
+      has_regs = true;
     } else {
       DEBUG && debug("invalid version '%s'", trace_version);
       return null;
@@ -172,110 +206,99 @@ export async function parse(str: string): Promise<Parse | null> {
 
     const commitish = str.slice(first_slash + 4, i);
 
-    let c, object, address, inc;
-
-    let os_version: [number, number, number] | undefined;
-    let env_flags: number | undefined;
-    let cpu_flags: number | undefined;
-    let total_ram_mb: number | undefined;
-
-    if (has_v3_meta) {
-      const vals: number[] = [];
-      for (let n = 0; n < 6; n++) {
-        const [v, adv] = decodePart(str.slice(i));
-        if (v == null) {
-          DEBUG && debug("invalid v3 meta at vlq %d", n);
-          return null;
-        }
-        vals.push(v);
-        i += adv;
+    if (has_build_flags) {
+      const [flags, adv] = decodePart(str.slice(i));
+      if (flags == null) {
+        DEBUG && debug("invalid build_flags %o", str.slice(i));
+        return null;
       }
-      os_version = [vals[0], vals[1], vals[2]];
-      env_flags = vals[3];
-      cpu_flags = vals[4];
-      total_ram_mb = vals[5];
-      is_canary = !!(env_flags & 0b1000);
+      i += adv;
+      is_canary = !!(flags & (1 << 0));
     }
 
-    [c, inc] = decodePart(str.slice(i));
-    i += inc;
-    [object, inc] = decodePart(str.slice(i));
-    i += inc;
-    if (object == null || c == null) {
+    const [f0, a0] = decodePart(str.slice(i));
+    i += a0;
+    const [f1, a1] = decodePart(str.slice(i));
+    i += a1;
+    if (f0 == null || f1 == null) {
       DEBUG && debug("invalid features part %o", str.slice(i));
       return null;
     }
-    const features_data = [c, object] as [number, number];
+    const features_data = [f0, f1] as [number, number];
 
     while (true) {
-      c = str[i];
-      object = "bun";
-      if (c === undefined) {
+      if (str[i] === undefined) {
         DEBUG && debug("invalid end of string at %o", i);
         return null;
       }
-
-      if (c === "=") {
-        addresses.push({ address: 0, object: "js" });
-        i += 1;
-        continue;
-      }
-
-      if (c === "_") {
-        addresses.push({ address: 0, object: "?" });
-        i += 1;
-        continue;
-      }
-
-      [address, inc] = decodePart(str.slice(i));
-      if (address == null) {
-        DEBUG && debug("invalid first part %o", str.slice(i));
+      const [line, j] = decodeStackLine(str, i);
+      i = j;
+      if (line === null) {
+        DEBUG && debug("invalid stack line %o", str.slice(j));
         return null;
       }
-      i += inc;
-
-      if (address === 0) {
-        break;
-      }
-
-      if (address === 1) {
-        [c, inc] = decodePart(str.slice(i));
-        if (c == null) {
-          DEBUG && debug("invalid object len %o", str.slice(i));
-          return null;
-        }
-        i += inc;
-
-        object = str.slice(i, i + c).replace(/^\//, "");
-        i += c;
-
-        [address, inc] = decodePart(str.slice(i));
-        if (address == null) {
-          DEBUG && debug("invalid second part %s %o", object, i, str.slice(i));
-          return null;
-        }
-        i += inc;
-      }
-
-      addresses.push({ address, object });
+      if (line === "end") break;
+      addresses.push(line);
     }
 
-    const reason_char = str[i];
+    const reason_char = str[i++];
     const reason = reasons[reason_char];
     if (!reason) {
-      DEBUG && debug("invalid reason %o", str.slice(i));
+      DEBUG && debug("invalid reason %o", str.slice(i - 1));
       return null;
     }
-    const reason_tail = str.slice(i + 1);
-    const message = await reason(reason_tail);
+
+    // Reasons "2"–"5" encode a fault address. Capture it as a standalone hex
+    // string (separate from the human-readable message) so downstream consumers
+    // can tag/filter on it without parsing the message.
+    let fault_address: string | undefined;
+    if (reason_char >= "2" && reason_char <= "5") {
+      const [addr, j] = decodeU64(str, i);
+      if (addr == null) {
+        DEBUG && debug("invalid fault addr %o", str.slice(i));
+        return null;
+      }
+      fault_address = addr.toString(16).toUpperCase().padStart(8, "0");
+      i = j;
+    }
+
+    // v3/v4: hardware-fault reasons ('2'..'7') carry a trailing register block.
+    let fault_registers: FaultRegisters | undefined;
+    if (has_regs && reason_char >= "2" && reason_char <= "7") {
+      const [pc_line, j0] = decodeStackLine(str, i);
+      if (pc_line === null) {
+        DEBUG && debug("invalid reg-block pc %o", str.slice(i));
+        return null;
+      }
+      i = j0;
+      const [n, n_inc] = decodePart(str.slice(i));
+      if (n == null || n < 0) {
+        DEBUG && debug("invalid reg-block count %o", str.slice(i));
+        return null;
+      }
+      i += n_inc;
+      const values: bigint[] = [];
+      for (let k = 0; k < n; k++) {
+        const [v, jv] = decodeU64(str, i);
+        if (v == null) {
+          DEBUG && debug("invalid reg-block value %d %o", k, str.slice(i));
+          return null;
+        }
+        values.push(v);
+        i = jv;
+      }
+      fault_registers = {
+        pc: pc_line === "end" || pc_line.object === "?" ? null : pc_line,
+        values,
+        names: fault_register_names[values.length] ?? [],
+      };
+    }
+
+    const message = await reason(fault_address, str.slice(i));
     if (!message) {
       DEBUG && debug("invalid message %o", str.slice(i));
       return null;
     }
-    // Reasons "2"–"5" encode a fault address. Capture it as a standalone hex
-    // string (separate from the human-readable message) so downstream consumers
-    // can tag/filter on it without parsing the message.
-    const fault_address = reason_char >= "2" && reason_char <= "5" ? parseVlqAddrHex(reason_tail) : undefined;
     return {
       version,
       os,
@@ -287,10 +310,7 @@ export async function parse(str: string): Promise<Parse | null> {
       features: features_data,
       is_canary,
       ...(fault_address ? { fault_address } : {}),
-      os_version,
-      env_flags,
-      cpu_flags,
-      total_ram_mb,
+      ...(fault_registers ? { fault_registers } : {}),
     };
   } catch (e) {
     DEBUG && debug(e);
@@ -338,17 +358,42 @@ function parsePanicMessage(message_compressed: string): Promise<string> | string
   }
 }
 
-function parseVlqAddrHex(unparsed_addr: string): string | undefined {
-  let [first, i] = decodePart(unparsed_addr) as [any, number];
-  let [second] = decodePart(unparsed_addr.slice(i));
-  if (first == null || second == null) return undefined;
-  first = first ? correctIntToUint32(first).toString(16) : "";
-  return (first + correctIntToUint32(second).toString(16).padStart(8, "0")).toUpperCase();
+/**
+ * Decode one `StackLine` at `i`. Returns the parsed address, or `"end"` for the
+ * bare VLQ(0) frame terminator / `_` unknown sentinel (the encoder writes `_`
+ * for an unknown register-block pc; `"A"` only occurs in the frame list), or
+ * `null` on malformed input. See `StackLine::write_encoded` in bun's
+ * src/crash_handler/lib.rs.
+ */
+function decodeStackLine(s: string, i: number): [ParsedAddress | "end" | null, number] {
+  const c = s[i];
+  if (c === "=") return [{ address: 0, object: "js" }, i + 1];
+  if (c === "_") return [{ address: 0, object: "?" }, i + 1];
+  let [addr, inc] = decodePart(s.slice(i));
+  if (addr == null) return [null, i];
+  i += inc;
+  if (addr === 0) return ["end", i];
+  let object = "bun";
+  if (addr === 1) {
+    const [len, linc] = decodePart(s.slice(i));
+    if (len == null) return [null, i];
+    i += linc;
+    object = s.slice(i, i + len).replace(/^\//, "");
+    i += len;
+    [addr, inc] = decodePart(s.slice(i));
+    if (addr == null) return [null, i];
+    i += inc;
+  }
+  return [{ address: addr, object }, i];
 }
 
-function parseVlqAddr(unparsed_addr: string): string {
-  const hex = parseVlqAddrHex(unparsed_addr);
-  return hex == null ? "unknown address" : "address 0x" + hex;
+/** Decode a u64 encoded as two i32 VLQs (hi, lo) by `write_u64_as_two_vlqs`. */
+function decodeU64(s: string, i: number): [bigint | null, number] {
+  const [hi, a] = decodePart(s.slice(i));
+  if (hi == null) return [null, i];
+  const [lo, b] = decodePart(s.slice(i + a));
+  if (lo == null) return [null, i];
+  return [(BigInt(correctIntToUint32(hi)) << 32n) | BigInt(correctIntToUint32(lo)), i + a + b];
 }
 
 function correctIntToUint32(int: number): number {

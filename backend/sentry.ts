@@ -85,40 +85,7 @@ function getTags(parse: Parse, remap: Remap): any {
 
   if (parse.fault_address) tags.fault_address = "0x" + parse.fault_address;
 
-  if (parse.env_flags != null) {
-    if (parse.env_flags & 0b0001) tags.wsl = true;
-    if (parse.env_flags & 0b0010) tags.musl = true;
-    if (parse.env_flags & 0b0100) tags.emulated_x64 = true;
-  }
-
-  if (parse.os_version?.[0]) tags.os_version = formatOSVersion(parse.os_version);
-  if (parse.total_ram_mb) tags.ram_mb = parse.total_ram_mb;
-
-  if (parse.cpu_flags != null) {
-    for (const name of decodeCPUFlags(parse.cpu_flags, parse.arch)) {
-      tags[`cpu_${name}`] = true;
-    }
-  }
-
   return tags;
-}
-
-// Bit layout must match bun's src/bun.js/bindings/CPUFeatures.{cpp,zig}.
-// bit 0 is `none`, top bits are padding — both skipped. Append only.
-const cpu_flag_names = {
-  x86_64: [, "sse42", "popcnt", "avx", "avx2", "avx512"],
-  aarch64: [, "neon", "fp", "aes", "crc32", "atomics", "sve"],
-} as const;
-
-function decodeCPUFlags(flags: number, arch: string): string[] {
-  const names = cpu_flag_names[arch.replace(/_baseline$/, "") as keyof typeof cpu_flag_names];
-  if (!names) return [];
-  const out: string[] = [];
-  for (let bit = 0; bit < names.length; bit++) {
-    const name = names[bit];
-    if (name && flags & (1 << bit)) out.push(name);
-  }
-  return out;
 }
 
 /**
@@ -127,29 +94,11 @@ function decodeCPUFlags(flags: number, arch: string): string[] {
  * (Alpine/musl libc). undefined means the standard build for this os/arch.
  */
 function buildDist(parse: Parse): string | undefined {
-  const parts: string[] = [];
-  if (parse.arch.endsWith("_baseline")) parts.push("baseline");
-  if (parse.env_flags != null && parse.env_flags & 0b0010) parts.push("musl");
-  return parts.length ? parts.join("-") : undefined;
-}
-
-function formatOSVersion(v: readonly [number, number, number]): string {
-  // Drop trailing zeros so "26.4.0" shows as "26.4".
-  const parts = v[2] !== 0 ? v : v[1] !== 0 ? v.slice(0, 2) : v.slice(0, 1);
-  return parts.join(".");
+  return parse.arch.endsWith("_baseline") ? "baseline" : undefined;
 }
 
 function getOSContext(parse: Parse): Sentry.OS {
-  const name = ({ windows: "Windows", macos: "macOS", linux: "Linux" } as const)[parse.os];
-  if (!parse.os_version?.[0]) return { name };
-
-  // Windows encodes as major.minor.build (e.g. 10.0.22631). Build number is
-  // what actually distinguishes 23H2 from 24H2 — put it in its own field.
-  if (parse.os === "windows") {
-    const [maj, min, build] = parse.os_version;
-    return { name, version: `${maj}.${min}`, build: build ? String(build) : undefined };
-  }
-  return { name, version: formatOSVersion(parse.os_version) };
+  return { name: ({ windows: "Windows", macos: "macOS", linux: "Linux" } as const)[parse.os] };
 }
 
 /**
@@ -171,10 +120,24 @@ function buildExtra(remap: Remap, view_url: string): Record<string, unknown> {
 }
 
 function getOSDeviceContext(parse: Parse): Sentry.PayloadEventContexts["device"] {
-  return {
-    arch: parse.arch,
-    ...(parse.total_ram_mb ? { memory_size: parse.total_ram_mb * 1024 * 1024 } : {}),
-  };
+  return { arch: parse.arch };
+}
+
+/**
+ * Sentry's native `stacktrace.registers` is a `{name: "0x…"}` map. The
+ * remappable pc is rendered as a `pc@<object>` pseudo-register so it shows
+ * alongside the raw values.
+ */
+function toSentryRegisters(regs: import("../lib/parser").FaultRegisters): Record<string, string> {
+  const out: Record<string, string> = {};
+  const names = regs.names;
+  for (let i = 0; i < regs.values.length; i++) {
+    out[names[i] ?? `r${i}`] = "0x" + regs.values[i].toString(16).padStart(16, "0");
+  }
+  if (regs.pc) {
+    out[`pc@${regs.pc.object}`] = "0x" + regs.pc.address.toString(16);
+  }
+  return out;
 }
 
 function remapToExceptionType(message: string) {
@@ -334,6 +297,7 @@ async function remapToException(parse: Parse, remap: Remap): Promise<Sentry.Payl
     value,
     stacktrace: {
       frames: await Promise.all(remap.addresses.map(x => toStackFrame(x, remap.commit.oid)).reverse()),
+      ...(parse.fault_registers ? { registers: toSentryRegisters(parse.fault_registers) } : {}),
     },
     mechanism: buildMechanism(type, parse.os),
   };

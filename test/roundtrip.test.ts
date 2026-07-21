@@ -57,10 +57,82 @@ describe("parse(buildTraceString(x)) recovers x", () => {
       addresses: [{ address: 0x42, object: "bun" }],
       reason: { kind: "panic", message: "Integer overflow in allocator" },
     },
+    {
+      version: "1.4.0",
+      os: "linux",
+      arch: "x86_64",
+      command: "r",
+      trace_version: "3",
+      build_flags: 0,
+      commitish: "33c2410",
+      addresses: [{ address: 0x2f864f4, object: "bun" }],
+      reason: { kind: "segfault", addr_hi: 0, addr_lo: 0xdeadbeef | 0 },
+      registers: {
+        pc: { address: 0x2f864f4, object: "bun" },
+        values: [0xdeadbeefn, 0x5eb3e780000n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0xfffe000000000000n, 0xfffe000000000002n, 0x2f864f5n],
+      },
+    },
+    {
+      version: "1.4.0",
+      os: "macos",
+      arch: "aarch64",
+      command: "_",
+      trace_version: "3",
+      build_flags: 1,
+      commitish: "33c2410",
+      addresses: [{ address: 0x1063487, object: "bun" }],
+      reason: { kind: "segfault", addr_hi: 0, addr_lo: 0xdeadbeef | 0 },
+      registers: {
+        pc: { address: 0x1063487, object: "bun" },
+        values: Array.from({ length: 33 }, (_, i) => (i === 8 ? 0xdeadbeefn : BigInt(i))),
+      },
+    },
+    // v3 segfault with no fault context (e.g. unknown arch): `_A` block.
+    {
+      version: "1.4.0",
+      os: "linux",
+      arch: "aarch64",
+      command: "r",
+      trace_version: "3",
+      build_flags: 0,
+      commitish: "33c2410",
+      addresses: [{ address: 0x1234, object: "bun" }],
+      reason: { kind: "segfault", addr_hi: 0, addr_lo: 0xdeadbeef | 0 },
+      registers: { pc: null, values: [] },
+    },
+    // v3 non-fault reason: no register block.
+    {
+      version: "1.4.0",
+      os: "linux",
+      arch: "x86_64",
+      command: "r",
+      trace_version: "3",
+      build_flags: 1,
+      commitish: "33c2410",
+      addresses: [{ address: 0x42, object: "bun" }],
+      reason: { kind: "oom" },
+    },
+    // v3 stack-overflow (reason '7', no fault address): register block follows
+    // immediately after the reason byte.
+    {
+      version: "1.4.0",
+      os: "windows",
+      arch: "aarch64",
+      command: "r",
+      trace_version: "3",
+      build_flags: 1,
+      commitish: "33c2410",
+      addresses: [{ address: 0x1234, object: "bun" }],
+      reason: { kind: "stack_overflow" },
+      registers: {
+        pc: { address: 0x444e6e8, object: "bun" },
+        values: Array.from({ length: 33 }, (_, i) => BigInt(i)),
+      },
+    },
   ];
 
   for (const c of cases) {
-    test(`${c.os}-${c.arch} v${c.trace_version}`, async () => {
+    test(`${c.os}-${c.arch} v${c.trace_version} ${c.reason.kind}`, async () => {
       const result = await parse(buildTraceString(c));
       expect(result).not.toBeNull();
       const p = result!;
@@ -71,7 +143,7 @@ describe("parse(buildTraceString(x)) recovers x", () => {
       expect(p.command).toBe(c.command);
       expect(p.commitish).toBe(c.commitish);
       expect(p.features).toEqual(c.features ?? [0, 0]);
-      expect(p.is_canary).toBe(c.trace_version === "2");
+      expect(p.is_canary).toBe(c.trace_version === "2" || !!((c.build_flags ?? 0) & 1));
 
       expect(p.addresses).toHaveLength(c.addresses.length);
       for (let i = 0; i < c.addresses.length; i++) {
@@ -82,7 +154,17 @@ describe("parse(buildTraceString(x)) recovers x", () => {
 
       if (c.reason.kind === "panic") expect(p.message).toBe(`panic: ${c.reason.message}`);
       if (c.reason.kind === "unreachable") expect(p.message).toContain("unreachable");
-      if (c.reason.kind === "segfault") expect(p.message).toContain(c.reason.addr_lo.toString(16).toUpperCase());
+      if (c.reason.kind === "segfault") expect(p.message).toContain((c.reason.addr_lo >>> 0).toString(16).toUpperCase());
+
+      if (c.registers) {
+        expect(p.fault_registers).toBeDefined();
+        expect(p.fault_registers!.pc).toEqual(c.registers.pc);
+        expect(p.fault_registers!.values).toEqual(c.registers.values);
+        const expected_names = c.registers.values.length === 17 ? "rax" : c.registers.values.length === 33 ? "x0" : undefined;
+        if (expected_names) expect(p.fault_registers!.names[0]).toBe(expected_names);
+      } else if (c.trace_version === "3") {
+        expect(p.fault_registers).toBeUndefined();
+      }
     });
   }
 });

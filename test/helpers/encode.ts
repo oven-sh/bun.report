@@ -28,6 +28,19 @@ const platform_char: Record<`${Platform}-${Arch}`, string> = {
   "linux-aarch64": "L",
 };
 
+export function encodeU64(v: bigint): string {
+  const hi = Number((v >> 32n) & 0xffff_ffffn) | 0;
+  const lo = Number(v & 0xffff_ffffn) | 0;
+  return encodeVlq(hi) + encodeVlq(lo);
+}
+
+export function encodeStackLine(a: ParsedAddress | null): string {
+  if (a == null || a.object === "?") return "_";
+  if (a.object === "js") return "=";
+  if (a.object === "bun") return encodeVlq(a.address);
+  return encodeVlq(1) + encodeVlq(a.object.length) + a.object + encodeVlq(a.address);
+}
+
 export type ReasonSpec =
   | { kind: "panic"; message: string }
   | { kind: "unreachable" }
@@ -55,16 +68,26 @@ function encodeReason(r: ReasonSpec): string {
   }
 }
 
+const FAULT_REASONS = new Set(["segfault", "stack_overflow"]);
+
+function encodeRegisterBlock(r: { pc: ParsedAddress | null; values: bigint[] }): string {
+  return encodeStackLine(r.pc) + encodeVlq(r.values.length) + r.values.map(encodeU64).join("");
+}
+
 export interface BuildTraceOpts {
   version: string;
   os: Platform;
   arch: Arch;
   command: string;
-  trace_version: "1" | "2";
+  trace_version: "1" | "2" | "3";
   commitish: string;
+  /** v3+ build-flags VLQ (bit0 = canary). */
+  build_flags?: number;
   features?: [number, number];
   addresses: ParsedAddress[];
   reason: ReasonSpec;
+  /** v3+, fault reasons only. */
+  registers?: { pc: ParsedAddress | null; values: bigint[] };
 }
 
 export function buildTraceString(opts: BuildTraceOpts): string {
@@ -76,22 +99,13 @@ export function buildTraceString(opts: BuildTraceOpts): string {
   s += opts.command;
   s += opts.trace_version;
   s += opts.commitish;
+  if (opts.trace_version === "3") s += encodeVlq(opts.build_flags ?? 0);
   s += encodeVlq(f0) + encodeVlq(f1);
-  for (const a of opts.addresses) {
-    if (a.object === "js") {
-      s += "=";
-    } else if (a.object === "?") {
-      s += "_";
-    } else if (a.object === "bun") {
-      s += encodeVlq(a.address);
-    } else {
-      s += encodeVlq(1);
-      s += encodeVlq(a.object.length);
-      s += a.object;
-      s += encodeVlq(a.address);
-    }
-  }
+  for (const a of opts.addresses) s += encodeStackLine(a);
   s += encodeVlq(0);
   s += encodeReason(opts.reason);
+  if (opts.trace_version === "3" && FAULT_REASONS.has(opts.reason.kind)) {
+    s += encodeRegisterBlock(opts.registers ?? { pc: null, values: [] });
+  }
   return s;
 }
