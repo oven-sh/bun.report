@@ -87,6 +87,23 @@ describe("parse(buildTraceString(x)) recovers x", () => {
         values: Array.from({ length: 33 }, (_, i) => (i === 8 ? 0xdeadbeefn : BigInt(i))),
       },
     },
+    // u64 halves of exactly 0x80000000 encode as VLQ(i32::MIN) = 'B', which
+    // bun.report's decoder maps back to -0x80000000 → u32 0x80000000.
+    {
+      version: "1.4.0",
+      os: "linux",
+      arch: "x86_64",
+      command: "r",
+      trace_version: "3",
+      build_flags: 0,
+      commitish: "33c2410",
+      addresses: [{ address: 0x42, object: "bun" }],
+      reason: { kind: "segfault", addr_hi: 0, addr_lo: 0x80000000 | 0 },
+      registers: {
+        pc: { address: 0x42, object: "bun" },
+        values: [0x80000000n, 0xffffffff_80000000n, 0x80000000_00000000n, 0x80000000_80000000n],
+      },
+    },
     // v3 segfault with no fault context (e.g. unknown arch): `_A` block.
     {
       version: "1.4.0",
