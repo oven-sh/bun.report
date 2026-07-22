@@ -113,6 +113,8 @@ export interface PayloadException {
 
 export interface StackTrace {
   frames: StackTraceFrame[];
+  /** GP register snapshot at the fault; Sentry renders these on the stack trace. */
+  registers?: Record<string, string>;
 }
 
 export interface StackTraceFrame {
