@@ -124,18 +124,15 @@ function getOSDeviceContext(parse: Parse): Sentry.PayloadEventContexts["device"]
 }
 
 /**
- * Sentry's native `stacktrace.registers` is a `{name: "0x…"}` map. The
- * remappable pc is rendered as a `pc@<object>` pseudo-register so it shows
- * alongside the raw values.
+ * Sentry's native `stacktrace.registers` is a `{name: "0x…"}` map. The pc is
+ * already present twice elsewhere (symbolicated as frame 0, and raw as
+ * `rip`/`pc` in `values`), so only the named GP values go here.
  */
 function toSentryRegisters(regs: import("../lib/parser").FaultRegisters): Record<string, string> {
   const out: Record<string, string> = {};
   const names = regs.names;
   for (let i = 0; i < regs.values.length; i++) {
     out[names[i] ?? `r${i}`] = "0x" + regs.values[i].toString(16).padStart(16, "0");
-  }
-  if (regs.pc) {
-    out[`pc@${regs.pc.object}`] = "0x" + regs.pc.address.toString(16);
   }
   return out;
 }
