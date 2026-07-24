@@ -168,6 +168,12 @@ function remapToExceptionType(message: string) {
       value: "Unaligned memory access",
     };
   }
+  if (message == "abort() called") {
+    return {
+      type: "Abort",
+      value: "abort() called",
+    };
+  }
 
   let type = message.split(" at ")[0];
   if (type.toLowerCase() === "segmentation fault") {
@@ -253,6 +259,8 @@ function buildMechanism(type: string, os: Platform): Sentry.Mechanism {
     IllegalInstruction: { number: 4, name: "SIGILL" },
     BusError: { number: os === "macos" ? 10 : 7, name: "SIGBUS" },
     FloatingPointException: { number: 8, name: "SIGFPE" },
+    Abort: { number: 6, name: "SIGABRT" },
+    TrapInstruction: { number: 5, name: "SIGTRAP" },
   };
 
   // crash_handler.zig:927 maps ExceptionCode → reason; this inverts it.
