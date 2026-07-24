@@ -129,6 +129,42 @@ describe("parse(buildTraceString(x)) recovers x", () => {
       addresses: [{ address: 0x42, object: "bun" }],
       reason: { kind: "oom" },
     },
+    // reason 'a' (SIGABRT): no address, no register block.
+    {
+      version: "1.4.0",
+      os: "linux",
+      arch: "aarch64",
+      command: "r",
+      trace_version: "1",
+      commitish: "3a3f5d1",
+      addresses: [
+        { address: 0x12ab34, object: "bun" },
+        { address: 0x56cd78, object: "bun" },
+      ],
+      reason: { kind: "abort" },
+    },
+    // reason 'b' (SIGTRAP): fault address encoded like reasons "2"–"5".
+    {
+      version: "1.4.0",
+      os: "macos",
+      arch: "aarch64",
+      command: "r",
+      trace_version: "2",
+      commitish: "3a3f5d1",
+      addresses: [{ address: 0x2f864f4, object: "bun" }],
+      reason: { kind: "trap", addr_hi: 1, addr_lo: 0x02f864f4 },
+    },
+    // FreeBSD platform chars 'f'/'F'.
+    {
+      version: "1.4.0",
+      os: "freebsd",
+      arch: "aarch64",
+      command: "a",
+      trace_version: "1",
+      commitish: "abc1234",
+      addresses: [{ address: 0x4242, object: "bun" }],
+      reason: { kind: "segfault", addr_hi: 0, addr_lo: 0xdeadbeef | 0 },
+    },
     // v3 stack-overflow (reason '7', no fault address): register block follows
     // immediately after the reason byte.
     {
@@ -172,6 +208,14 @@ describe("parse(buildTraceString(x)) recovers x", () => {
       if (c.reason.kind === "panic") expect(p.message).toBe(`panic: ${c.reason.message}`);
       if (c.reason.kind === "unreachable") expect(p.message).toContain("unreachable");
       if (c.reason.kind === "segfault") expect(p.message).toContain((c.reason.addr_lo >>> 0).toString(16).toUpperCase());
+      if (c.reason.kind === "abort") {
+        expect(p.message).toBe("abort() called");
+        expect(p.fault_address).toBeUndefined();
+      }
+      if (c.reason.kind === "trap") {
+        expect(p.message).toContain("Trap instruction at address 0x");
+        expect(p.fault_address).toBe("102F864F4");
+      }
 
       if (c.registers) {
         expect(p.fault_registers).toBeDefined();

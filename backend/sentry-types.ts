@@ -83,7 +83,7 @@ export interface PayloadEventContexts {
 
 export interface OS {
   kernel_version?: string;
-  name: "macOS" | "Linux" | "Windows";
+  name: "macOS" | "Linux" | "Windows" | "FreeBSD";
   version?: string;
   build?: string;
 }

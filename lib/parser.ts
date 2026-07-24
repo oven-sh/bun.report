@@ -20,6 +20,9 @@ const platform_map: { [key: string]: [Platform, Arch] } = {
   l: ["linux", "x86_64"],
   B: ["linux", "x86_64_baseline"],
   L: ["linux", "aarch64"],
+
+  f: ["freebsd", "x86_64"],
+  F: ["freebsd", "aarch64"],
 };
 
 const reasons: {
@@ -35,6 +38,8 @@ const reasons: {
   "7": () => `Stack overflow`,
   "8": (_, rest) => "error: " + rest,
   "9": () => `Bun ran out of memory`,
+  a: () => `abort() called`,
+  b: addr => `Trap instruction at address 0x${addr}`,
 };
 
 // Must mirror `FaultRegisters::NAMES` in bun's src/crash_handler/lib.rs.
@@ -248,11 +253,11 @@ export async function parse(str: string): Promise<Parse | null> {
       return null;
     }
 
-    // Reasons "2"–"5" encode a fault address. Capture it as a standalone hex
-    // string (separate from the human-readable message) so downstream consumers
-    // can tag/filter on it without parsing the message.
+    // Reasons "2"–"5" and "b" (trap) encode a fault address. Capture it as a
+    // standalone hex string (separate from the human-readable message) so
+    // downstream consumers can tag/filter on it without parsing the message.
     let fault_address: string | undefined;
-    if (reason_char >= "2" && reason_char <= "5") {
+    if ((reason_char >= "2" && reason_char <= "5") || reason_char === "b") {
       const [addr, j] = decodeU64(str, i);
       if (addr == null) {
         DEBUG && debug("invalid fault addr %o", str.slice(i));

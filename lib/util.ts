@@ -45,7 +45,7 @@ export const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 export const basename = (path: string) => path.split("/").pop()!;
 
-export type Platform = "windows" | "linux" | "macos";
+export type Platform = "windows" | "linux" | "macos" | "freebsd";
 export type Arch = "x86_64" | "aarch64" | "x86_64_baseline";
 
 /**

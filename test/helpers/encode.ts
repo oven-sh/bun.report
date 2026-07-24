@@ -16,7 +16,7 @@ export function encodeVlq(value: number): string {
   return out;
 }
 
-const platform_char: Record<`${Platform}-${Arch}`, string> = {
+const platform_char: Record<string, string> = {
   "windows-x86_64": "w",
   "windows-x86_64_baseline": "e",
   "windows-aarch64": "W",
@@ -26,7 +26,9 @@ const platform_char: Record<`${Platform}-${Arch}`, string> = {
   "linux-x86_64": "l",
   "linux-x86_64_baseline": "B",
   "linux-aarch64": "L",
-};
+  "freebsd-x86_64": "f",
+  "freebsd-aarch64": "F",
+} satisfies Partial<Record<`${Platform}-${Arch}`, string>>;
 
 export function encodeU64(v: bigint): string {
   const hi = Number((v >> 32n) & 0xffff_ffffn) | 0;
@@ -47,7 +49,9 @@ export type ReasonSpec =
   | { kind: "segfault"; addr_hi: number; addr_lo: number }
   | { kind: "stack_overflow" }
   | { kind: "error"; message: string }
-  | { kind: "oom" };
+  | { kind: "oom" }
+  | { kind: "abort" }
+  | { kind: "trap"; addr_hi: number; addr_lo: number };
 
 function encodeReason(r: ReasonSpec): string {
   switch (r.kind) {
@@ -65,6 +69,10 @@ function encodeReason(r: ReasonSpec): string {
       return "8" + r.message;
     case "oom":
       return "9";
+    case "abort":
+      return "a";
+    case "trap":
+      return "b" + encodeVlq(r.addr_hi) + encodeVlq(r.addr_lo);
   }
 }
 
