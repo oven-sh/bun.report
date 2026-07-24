@@ -16,7 +16,7 @@ export function encodeVlq(value: number): string {
   return out;
 }
 
-const platform_char: Record<`${Platform}-${Arch}`, string> = {
+const platform_char: Record<string, string> = {
   "windows-x86_64": "w",
   "windows-x86_64_baseline": "e",
   "windows-aarch64": "W",
@@ -26,7 +26,9 @@ const platform_char: Record<`${Platform}-${Arch}`, string> = {
   "linux-x86_64": "l",
   "linux-x86_64_baseline": "B",
   "linux-aarch64": "L",
-};
+  "freebsd-x86_64": "f",
+  "freebsd-aarch64": "F",
+} satisfies Partial<Record<`${Platform}-${Arch}`, string>>;
 
 export function encodeU64(v: bigint): string {
   const hi = Number((v >> 32n) & 0xffff_ffffn) | 0;

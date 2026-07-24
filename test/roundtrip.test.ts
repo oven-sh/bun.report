@@ -154,6 +154,17 @@ describe("parse(buildTraceString(x)) recovers x", () => {
       addresses: [{ address: 0x2f864f4, object: "bun" }],
       reason: { kind: "trap", addr_hi: 1, addr_lo: 0x02f864f4 },
     },
+    // FreeBSD platform chars 'f'/'F'.
+    {
+      version: "1.4.0",
+      os: "freebsd",
+      arch: "aarch64",
+      command: "a",
+      trace_version: "1",
+      commitish: "abc1234",
+      addresses: [{ address: 0x4242, object: "bun" }],
+      reason: { kind: "segfault", addr_hi: 0, addr_lo: 0xdeadbeef | 0 },
+    },
     // v3 stack-overflow (reason '7', no fault address): register block follows
     // immediately after the reason byte.
     {

@@ -46,6 +46,7 @@ const map_download_os = {
   windows: "windows",
   macos: "darwin",
   linux: "linux",
+  freebsd: "freebsd",
 } as const;
 
 export async function fetchDebugFile(

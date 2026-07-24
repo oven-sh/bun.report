@@ -98,7 +98,7 @@ function buildDist(parse: Parse): string | undefined {
 }
 
 function getOSContext(parse: Parse): Sentry.OS {
-  return { name: ({ windows: "Windows", macos: "macOS", linux: "Linux" } as const)[parse.os] };
+  return { name: ({ windows: "Windows", macos: "macOS", linux: "Linux", freebsd: "FreeBSD" } as const)[parse.os] };
 }
 
 /**
@@ -257,7 +257,7 @@ function buildMechanism(type: string, os: Platform): Sentry.Mechanism {
   const posix: Record<string, { number: number; name: string }> = {
     Segfault: { number: 11, name: "SIGSEGV" },
     IllegalInstruction: { number: 4, name: "SIGILL" },
-    BusError: { number: os === "macos" ? 10 : 7, name: "SIGBUS" },
+    BusError: { number: os === "macos" || os === "freebsd" ? 10 : 7, name: "SIGBUS" },
     FloatingPointException: { number: 8, name: "SIGFPE" },
     Abort: { number: 6, name: "SIGABRT" },
     TrapInstruction: { number: 5, name: "SIGTRAP" },

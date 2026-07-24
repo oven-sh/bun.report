@@ -20,6 +20,9 @@ const platform_map: { [key: string]: [Platform, Arch] } = {
   l: ["linux", "x86_64"],
   B: ["linux", "x86_64_baseline"],
   L: ["linux", "aarch64"],
+
+  f: ["freebsd", "x86_64"],
+  F: ["freebsd", "aarch64"],
 };
 
 const reasons: {

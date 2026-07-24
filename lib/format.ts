@@ -5,6 +5,7 @@ export const os_names: { [key: string]: string } = {
   w: "Windows",
   m: "macOS",
   l: "Linux",
+  f: "FreeBSD",
 };
 
 export function addrsToPlainText(commit: string, addrs: Address[]): string[] {
