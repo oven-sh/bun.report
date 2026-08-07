@@ -63,6 +63,15 @@ function getTags(parse: Parse, remap: Remap): any {
   tags.version = remap.version;
   tags.commit = remap.commit.oid.slice(0, 9);
   tags.arch = parse.arch.replace(/_baseline$/, "");
+
+  // Crashes entirely inside foreign code (AV/EDR hook DLLs, injected
+  // modules, native addons) can never symbolicate against bun's debug info.
+  // Tag the faulting module so they're searchable and the daily report can
+  // label them.
+  const foreign = foreignCrashInfo(remap.addresses);
+  if (foreign) {
+    tags.foreign_module = foreign.culprit;
+  }
   // cache_key is SHA256(commitish_arch_os_canary_addresses). Before the
   // randomUUID switch, MD5(cache_key) was the event_id — so Sentry deduped
   // identical (stack, build) tuples to one event. Sending it as a tag lets
@@ -204,7 +213,7 @@ function remapToExceptionType(message: string) {
  * Falls back to Sentry's default when we can't find any remapped in-app
  * frames (e.g. a crash entirely inside an external DLL we can't symbolicate).
  */
-function buildFingerprint(parse: Parse, remap: Remap): string[] {
+export function buildFingerprint(parse: Parse, remap: Remap): string[] {
   const { type } = remapToExceptionType(parse.message);
 
   // Walk from the top of the stack (crash site outward). A frame is usable
@@ -220,8 +229,25 @@ function buildFingerprint(parse: Parse, remap: Remap): string[] {
   }
 
   if (usable.length === 0) {
-    // No symbolicated frames — punt to Sentry's default so we don't collapse
-    // every unsymbolicated crash into one mega-group.
+    // No symbolicated frames. Two distinct situations:
+    //
+    // 1. The whole stack lives in foreign modules (AV/EDR hooks like
+    //    tmmon64.dll, injected DLLs, native addons). We will never have
+    //    symbols for those, but the module identity IS the crash's
+    //    identity: group by crash type + culprit + fault-site module so
+    //    "Trend Micro crashed us" is one issue per crash shape instead of
+    //    an <anonymous> group per address pattern.
+    //
+    // 2. At least one frame is in bun's own image but didn't symbolicate
+    //    (missing debug info for that build). Keep Sentry's default
+    //    grouping — collapsing by module would merge unrelated bun crashes
+    //    into one mega-group and hide the symbolication failure.
+    const foreign = foreignCrashInfo(remap.addresses);
+    if (foreign) {
+      // Lowercase: the same DLL reports as KERNEL32.DLL or kernel32.dll
+      // depending on Windows version, and grouping must not care.
+      return [type, "foreign-module", foreign.culprit.toLowerCase(), foreign.innermost.toLowerCase()];
+    }
     return ["{{ default }}"];
   }
 
@@ -297,15 +323,99 @@ function buildMechanism(type: string, os: Platform): Sentry.Mechanism {
 
 async function remapToException(parse: Parse, remap: Remap): Promise<Sentry.PayloadException> {
   const { type, value } = remapToExceptionType(parse.message);
+  // Name the module to blame right in the message for foreign-only crashes,
+  // so the issue list reads "Segmentation fault at 0x30 (in TmUmEvt64.dll)"
+  // instead of an address with no context.
+  const foreign = foreignCrashInfo(remap.addresses);
   return {
     type,
-    value,
+    value: foreign ? `${value} (in ${foreign.culprit})` : value,
     stacktrace: {
       frames: await Promise.all(remap.addresses.map(x => toStackFrame(x, remap.commit.oid)).reverse()),
       ...(parse.fault_registers ? { registers: toSentryRegisters(parse.fault_registers) } : {}),
     },
     mechanism: buildMechanism(type, parse.os),
   };
+}
+
+// Bun extracts embedded native libraries (`bun build --compile`) to temp
+// files before dlopen/LoadLibrary. The names carry per-run randomness:
+//   .{hex}-{N}.node            older builds (hash only)
+//   .{name}.{hex}-{N}.node     newer builds (original basename kept)
+// Collapse the random part so one addon is one identity instead of a new
+// module name per process.
+const EMBEDDED_TMP_RE = /^\.(?:(.+)\.)?[0-9a-f]{4,16}-[0-9A-F]{1,8}\.(node|so|dylib|dll)$/;
+
+export function normalizeModuleName(object: string): string {
+  const m = object.match(EMBEDDED_TMP_RE);
+  if (!m) return object;
+  if (!m[1]) return `embedded .${m[2]}`;
+  // The stem usually ends with the bundler's `[name]-[hash]` asset suffix —
+  // exactly 8 chars of its base32 alphabet (bun_core::fmt::truncated_hash32).
+  // Strip it so one addon is one identity across app rebuilds.
+  const stem = m[1].replace(/-[0-9abcdefghjkmnpqrstvwxyz]{8}$/, "");
+  return `${stem}.${m[2]}`;
+}
+
+// Objects that aren't real foreign modules: bun's own image, JS frames, and
+// addresses outside any loaded module (JIT pools, corrupted PCs).
+function isForeignModule(object: string | undefined | null): object is string {
+  return !!object && object !== "bun" && object !== "js" && object !== "?";
+}
+
+// OS-supplied modules. A foreign crash's *interesting* module is the injected
+// one (AV/EDR hook, addon), not the system DLL it happened to call into —
+// Trend Micro's TmUmEvt64.dll faulting inside ntdll should be labeled
+// TmUmEvt64, not ntdll. Unknown system DLLs just fall through and get named
+// directly, which is still readable.
+const SYSTEM_MODULES = new Set([
+  "ntdll.dll", "kernel32.dll", "kernelbase.dll", "user32.dll", "win32u.dll",
+  "gdi32.dll", "gdi32full.dll", "ucrtbase.dll", "msvcrt.dll", "msvcp_win.dll",
+  "advapi32.dll", "sechost.dll", "rpcrt4.dll", "combase.dll", "ole32.dll",
+  "oleaut32.dll", "shell32.dll", "shlwapi.dll", "shcore.dll", "ws2_32.dll",
+  "mswsock.dll", "crypt32.dll", "cryptsp.dll", "cryptbase.dll", "bcrypt.dll",
+  "bcryptprimitives.dll", "ncrypt.dll", "secur32.dll", "sspicli.dll",
+  "imm32.dll", "psapi.dll", "userenv.dll", "wintrust.dll", "dnsapi.dll",
+  "iphlpapi.dll", "winhttp.dll", "wininet.dll", "dbghelp.dll",
+  "powrprof.dll", "windows.storage.dll", "ntmarta.dll", "msctf.dll",
+]);
+
+function isSystemModule(name: string): boolean {
+  const lower = name.toLowerCase();
+  return (
+    SYSTEM_MODULES.has(lower) ||
+    /^libsystem_|^libc\.|^libc-|^libdyld|^dyld$|^ld-linux|^libpthread|^libm\.|^libgcc|^libstdc\+\+/.test(lower)
+  );
+}
+
+export interface ForeignCrash {
+  /** Module to blame: first non-system foreign module from the crash site
+   * outward, falling back to the innermost foreign module. Original case. */
+  culprit: string;
+  /** Foreign module containing (or nearest to) the faulting pc. */
+  innermost: string;
+}
+
+/**
+ * Non-null only when the stack contains no bun frames at all — a crash
+ * entirely inside foreign code. An unsymbolicated *bun* frame means missing
+ * debug info, not a foreign crash, so those return null.
+ */
+export function foreignCrashInfo(addresses: Address[]): ForeignCrash | null {
+  if (addresses.some(a => a.object === "bun")) return null;
+  let innermost: string | null = null;
+  let culprit: string | null = null;
+  for (const a of addresses) {
+    if (!isForeignModule(a.object)) continue;
+    const name = normalizeModuleName(a.object);
+    innermost ??= name;
+    if (!isSystemModule(name)) {
+      culprit = name;
+      break;
+    }
+  }
+  if (innermost === null) return null;
+  return { culprit: culprit ?? innermost, innermost };
 }
 
 // Standard-library source paths as they appear in debug info. Frames from
@@ -333,7 +443,7 @@ function repoRelativePath(filename: string): string | null {
   return null;
 }
 
-async function toStackFrame(address: Address, commit: string): Promise<Sentry.StackTraceFrame> {
+export async function toStackFrame(address: Address, commit: string): Promise<Sentry.StackTraceFrame> {
   const { object, function: fn, remapped } = address;
   const instruction_addr =
     "address" in address && address.address != null ? "0x" + address.address.toString(16) : undefined;
@@ -372,9 +482,18 @@ async function toStackFrame(address: Address, commit: string): Promise<Sentry.St
     };
   }
 
+  // Unsymbolicated frame in a foreign module: we have no symbols, but
+  // "module+offset" beats "<anonymous>" — it names the AV hook / addon that
+  // crashed, and it's what Sentry titles the issue with when nothing in the
+  // stack is in_app.
+  const synthetic =
+    isForeignModule(object) && "address" in address && address.address != null
+      ? `${normalizeModuleName(object)}+0x${address.address.toString(16)}`
+      : "<anonymous>";
+
   return {
     package: object,
-    function: fn ?? "<anonymous>",
+    function: fn ?? synthetic,
     in_app: object === "bun",
     ...(instruction_addr ? { instruction_addr } : {}),
   };
