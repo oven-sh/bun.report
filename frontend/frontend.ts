@@ -236,6 +236,14 @@ function cardFooter() {
     : parsed.commitish;
 
   const arch = parsed.arch.split("_baseline");
+  const variant = fetched?.variant ? `(${fetched.variant})` : arch.length > 1 ? "(baseline)" : "";
+
+  const debug_file =
+    fetched?.debug_file === "mismatch"
+      ? /* html */ `
+        <p class='error'>No published build of this commit has this binary's debug id (<code>${parsed.debug_id}</code>), so the addresses above are not symbolicated.</p>
+      `
+      : "";
 
   const features = fetched?.features
     ? /* html */ `
@@ -246,9 +254,10 @@ function cardFooter() {
   return /* html */ `
     <p>
       Bun v${addCanarySuffix(fetched ? fetched.version : parsed.version, parsed.is_canary)} <small>(<code>${commit}</code>)</small>
-      on ${os_names[parsed.os[0]]} ${arch[0]} ${arch.length > 1 ? "(baseline)" : ""}
+      on ${os_names[parsed.os[0]]} ${arch[0]} ${variant}
     </p>
     ${features}
+    ${debug_file}
   `;
 }
 

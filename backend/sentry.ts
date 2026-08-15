@@ -31,7 +31,7 @@ async function remapToPayload(parse: Parse, remap: Remap, trace_str: string): Pr
       event_id,
       platform: "other",
       release: `bun@${remap.version}+${remap.commit.oid.slice(0, 9)}`,
-      dist: buildDist(parse),
+      dist: buildDist(remap),
       level: "fatal",
       transaction: remap.command,
       tags: getTags(parse, remap),
@@ -43,7 +43,7 @@ async function remapToPayload(parse: Parse, remap: Remap, trace_str: string): Pr
           version: remap.version + "+" + remap.commit.oid.slice(0, 9),
         },
         os: getOSContext(parse),
-        device: getOSDeviceContext(parse),
+        device: getOSDeviceContext(remap),
       },
       timestamp: new Date().getTime() / 1000,
       environment: parse.is_canary ? "canary" : "production",
@@ -62,7 +62,7 @@ function getTags(parse: Parse, remap: Remap): any {
 
   tags.version = remap.version;
   tags.commit = remap.commit.oid.slice(0, 9);
-  tags.arch = parse.arch.replace(/_baseline$/, "");
+  tags.arch = remap.arch.replace(/_baseline$/, "");
   // cache_key is SHA256(commitish_arch_os_canary_addresses). Before the
   // randomUUID switch, MD5(cache_key) was the event_id — so Sentry deduped
   // identical (stack, build) tuples to one event. Sending it as a tag lets
@@ -77,24 +77,34 @@ function getTags(parse: Parse, remap: Remap): any {
     tags[feature] = true;
   }
 
-  if (parse.arch.endsWith("_baseline")) {
-    tags.baseline = true;
-  }
+  // Which of the commit's builds the frames were remapped with (musl,
+  // android, baseline); see Remap.variant.
+  const variant = buildDist(remap);
+  if (variant) tags.variant = variant;
+  if (variant === "baseline") tags.baseline = true;
 
   if (parse.is_canary) tags.canary = true;
 
   if (parse.fault_address) tags.fault_address = "0x" + parse.fault_address;
+
+  // Which exact link crashed, and whether the frames above were symbolicated
+  // against it. `debug_file:mismatch` events have raw frames on purpose.
+  if (remap.debug_id) tags.debug_id = remap.debug_id;
+  if (remap.debug_file) tags.debug_file = remap.debug_file;
 
   return tags;
 }
 
 /**
  * `dist` marks build variants of the same release — same version, same commit,
- * different compile flags. For bun that's baseline (older-CPU target) and musl
- * (Alpine/musl libc). undefined means the standard build for this os/arch.
+ * different compile flags. For bun that's musl (Alpine), android, and baseline
+ * (older-CPU target). undefined means the standard build for this os/arch.
+ * Until traces carried a debug id only baseline was knowable (it had its own
+ * platform chars); musl and android come from which build the id matched.
  */
-function buildDist(parse: Parse): string | undefined {
-  return parse.arch.endsWith("_baseline") ? "baseline" : undefined;
+function buildDist(remap: Remap): string | undefined {
+  // Remaps cached before `variant` existed only know about baseline, via the arch.
+  return remap.variant ?? (remap.arch.endsWith("_baseline") ? "baseline" : undefined);
 }
 
 function getOSContext(parse: Parse): Sentry.OS {
@@ -119,8 +129,8 @@ function buildExtra(remap: Remap, view_url: string): Record<string, unknown> {
   return extra;
 }
 
-function getOSDeviceContext(parse: Parse): Sentry.PayloadEventContexts["device"] {
-  return { arch: parse.arch };
+function getOSDeviceContext(remap: Remap): Sentry.PayloadEventContexts["device"] {
+  return { arch: remap.arch };
 }
 
 /**

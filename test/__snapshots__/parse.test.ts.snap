@@ -8627,6 +8627,173 @@ exports[`parse fixtures v3-linux-x86_64-segfault-registers 1`] = `
 }
 `;
 
+exports[`parse fixtures v4-linux-x86_64-panic-debug-id: real trace from a linux x64 debug build of oven-sh/bun#38838 (header: build flags = canary, then the 20-byte GNU build-id exactly as readelf -n prints it) 1`] = `
+{
+  "addresses": [
+    {
+      "address": 228894516,
+      "object": "bun",
+    },
+    {
+      "address": 237765371,
+      "object": "bun",
+    },
+    {
+      "address": 231130632,
+      "object": "bun",
+    },
+    {
+      "address": 222925089,
+      "object": "bun",
+    },
+    {
+      "address": 230873704,
+      "object": "bun",
+    },
+    {
+      "address": 228888207,
+      "object": "bun",
+    },
+    {
+      "address": 0,
+      "object": "?",
+    },
+    {
+      "address": 334255327,
+      "object": "bun",
+    },
+    {
+      "address": 334103932,
+      "object": "bun",
+    },
+    {
+      "address": 381824133,
+      "object": "bun",
+    },
+    {
+      "address": 381825347,
+      "object": "bun",
+    },
+    {
+      "address": 391954040,
+      "object": "bun",
+    },
+    {
+      "address": 391955722,
+      "object": "bun",
+    },
+    {
+      "address": 142537666,
+      "object": "bun",
+    },
+    {
+      "address": 142792837,
+      "object": "bun",
+    },
+    {
+      "address": 142790821,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "a",
+  "commitish": "e65f750",
+  "debug_id": "e2217c82decf60268399d61b412999385c762757",
+  "features": [
+    96,
+    1048641,
+  ],
+  "is_canary": true,
+  "message": "panic: invoked crashByPanic() handler",
+  "os": "linux",
+  "version": "1.4.0",
+}
+`;
+
+exports[`parse fixtures v4-windows-x86_64-segfault-debug-id: frames/features/reason from a real crash of the windows x64 release build of oven-sh/bun#38838 in CI, header re-encoded in the final layout (canary; the 16-byte id is the binary PDB GUID {E4509F66-F3B4-E498-4C4C-44205044422E}; foreign KERNEL32/ntdll frames follow the bun frames) 1`] = `
+{
+  "addresses": [
+    {
+      "address": 31963997,
+      "object": "bun",
+    },
+    {
+      "address": 36215811,
+      "object": "bun",
+    },
+    {
+      "address": 36216419,
+      "object": "bun",
+    },
+    {
+      "address": 27103929,
+      "object": "bun",
+    },
+    {
+      "address": 2825038,
+      "object": "bun",
+    },
+    {
+      "address": 8028986,
+      "object": "bun",
+    },
+    {
+      "address": 5724688,
+      "object": "bun",
+    },
+    {
+      "address": 4592537,
+      "object": "bun",
+    },
+    {
+      "address": 5719392,
+      "object": "bun",
+    },
+    {
+      "address": 5741847,
+      "object": "bun",
+    },
+    {
+      "address": 8364267,
+      "object": "bun",
+    },
+    {
+      "address": 8349662,
+      "object": "bun",
+    },
+    {
+      "address": 17095433,
+      "object": "bun",
+    },
+    {
+      "address": 64396784,
+      "object": "bun",
+    },
+    {
+      "address": 96964,
+      "object": "KERNEL32.DLL",
+    },
+    {
+      "address": 370881,
+      "object": "ntdll.dll",
+    },
+  ],
+  "arch": "x86_64",
+  "command": "t",
+  "commitish": "605e221",
+  "debug_id": "e4509f66f3b4e4984c4c44205044422e",
+  "fault_address": "00000000",
+  "features": [
+    96,
+    1613893705,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0x00000000",
+  "os": "windows",
+  "version": "1.4.0",
+}
+`;
+
 exports[`parse fixtures windows-segfault-neg1 1`] = `
 {
   "addresses": [

@@ -5,7 +5,7 @@ import { basename, escmd, escmdcode } from "../lib/util";
 
 export async function formatMarkdown(remap: Remap, internal?: { source: string }): Promise<string> {
   return [
-    `Bun v${remap.version} (${treeURLMD(remap.commit)}) on ${remap.os} ${remap.arch} [${remap.command}]`,
+    `Bun v${remap.version} (${treeURLMD(remap.commit)}) on ${remap.os} ${remap.arch}${remap.variant ? ` (${remap.variant})` : ""} [${remap.command}]`,
     "",
     remap.message.replace(/^panic: /, "**panic**: "),
     "",
@@ -13,6 +13,7 @@ export async function formatMarkdown(remap: Remap, internal?: { source: string }
     "",
     remap.features.length > 0 ? `Features: ${remap.features.map(escmd).join(", ")}` : "",
     "",
+    ...debugFileNote(remap),
     ...(internal
       ? [`[(see trace)](<https://bun.report/${internal.source.replace(/^\/+/, "")}/view>)`]
       : []),
@@ -20,6 +21,16 @@ export async function formatMarkdown(remap: Remap, internal?: { source: string }
     .join("\n")
     .trim()
     .replace(/\n\n+/g, "\n\n");
+}
+
+function debugFileNote(remap: Remap): string[] {
+  if (!remap.debug_id) return [];
+  const note = `Debug id: \`${remap.debug_id}\``;
+  if (remap.debug_file !== "mismatch") return [note, ""];
+  return [
+    `${note} (none of this commit's published ${remap.os} ${remap.arch} builds has it, so the addresses above are not symbolicated)`,
+    "",
+  ];
 }
 
 function treeURLMD(commit: ResolvedCommit) {

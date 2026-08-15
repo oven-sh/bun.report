@@ -58,6 +58,10 @@ export function parseCacheKey(parse: Parse) {
     parse.arch,
     parse.os,
     !!parse.is_canary,
+    // Two links of one commit have different code at the same addresses, so
+    // their remaps must not share an entry. Only v4 traces have one, so the
+    // keys of already-cached v1-v3 traces are unchanged.
+    ...(parse.debug_id ? ["id:" + parse.debug_id] : []),
     ...parse.addresses.map((a) => a.address.toString(16)),
   ].join("_");
   if (typeof Bun !== "undefined") {

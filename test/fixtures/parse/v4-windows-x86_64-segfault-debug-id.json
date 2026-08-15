@@ -1,0 +1,4 @@
+{
+  "description": "v4-windows-x86_64-segfault-debug-id: frames/features/reason from a real crash of the windows x64 release build of oven-sh/bun#38838 in CI, header re-encoded in the final layout (canary; the 16-byte id is the binary PDB GUID {E4509F66-F3B4-E498-4C4C-44205044422E}; foreign KERNEL32/ntdll frames follow the bun frames)",
+  "input": "https://bun.report/1.4.0/wt4605e221EACCCgCe4509f66f3b4e4984c4c44205044422egGykoomgD619+8BmguilCmmvilCyrp2zB80tsF0zhqPght9Ky5p4Ig2i9Kuxu+K2uw+P89z9PywtzgBg/u66DCYKERNEL32.DLLos9FCSntdll.dllis0WA2AA"
+}

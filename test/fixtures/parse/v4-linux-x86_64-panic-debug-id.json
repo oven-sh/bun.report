@@ -1,0 +1,4 @@
+{
+  "description": "v4-linux-x86_64-panic-debug-id: real trace from a linux x64 debug build of oven-sh/bun#38838 (header: build flags = canary, then the 20-byte GNU build-id exactly as readelf -n prints it)",
+  "input": "1.4.0/la4e65f750EACCCwCe2217c82decf60268399d61b412999385c762757gGikggCozzy0N2vhwlOwgj74NiyompNwmtr4N+ony0N_+tqx9T43io9Tqo2o4Wm04o4Wwn/yrX0wizrXk857vIqosrwIqqorwIA0eNrLzCvLz05NUUguSizOcKoMSMzLTNbQVMhIzEvJSS0CAK/LCxc"
+}

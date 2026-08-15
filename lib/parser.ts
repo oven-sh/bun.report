@@ -25,6 +25,26 @@ const platform_map: { [key: string]: [Platform, Arch] } = {
   F: ["freebsd", "aarch64"],
 };
 
+/**
+ * Tags of the format-4 header fields (`HeaderField` in bun's
+ * src/crash_handler/lib.rs). Unknown tags are skipped, so bun can add fields
+ * without a new version char; add the tag here once we want to read one.
+ */
+const header_field = {
+  /** One VLQ; bit 0 = canary. */
+  build_flags: 0,
+  /** The executable's debug id as lowercase hex. Absent when it has none. */
+  debug_id: 1,
+} as const;
+
+/**
+ * A header field's chars. A debug id is at most 40 chars (a 20-byte sha1
+ * build-id); the bound only exists so a corrupt count cannot swallow the rest
+ * of the string as one field.
+ */
+const max_header_field_chars = 256;
+const max_header_fields = 32;
+
 const reasons: {
   [key: string]: (fault_address: string | undefined, rest: string) => string | Promise<string>;
 } = {
@@ -90,6 +110,16 @@ export interface Parse {
    * encoder had no arch layout (FreeBSD/unknown).
    */
   fault_registers?: FaultRegisters;
+  /**
+   * v4+: the id the linker stamped into both the crashing executable and its
+   * debug info (PDB GUID on Windows, GNU build-id on ELF, LC_UUID on Mach-O),
+   * as lowercase hex in the byte order the platform's tools print it. Unlike
+   * `commitish` + `arch` it names one specific build: the glibc, musl and
+   * android builds of a commit all report the same platform char, and the
+   * addresses only remap against the one that was actually running. Absent
+   * for older formats and for executables that carry no id.
+   */
+  debug_id?: string;
 }
 
 export interface FaultRegisters {
@@ -127,6 +157,22 @@ export interface Remap {
   issue?: number;
   command: string;
   features: string[];
+  /**
+   * Which of the commit's builds for this os/arch the addresses were remapped
+   * with: "musl", "android" or "baseline"; absent for the plain build. Traces
+   * without a debug id always use the plain build (or, for the old baseline
+   * platform chars, the baseline one), so this only varies for v4 traces.
+   */
+  variant?: string;
+  /** See `Parse.debug_id`. */
+  debug_id?: string;
+  /**
+   * v4 traces only. "match": the debug file carries the trace's debug id.
+   * "mismatch": none of the commit's published builds does, so `addresses`
+   * were deliberately left unsymbolicated rather than remapped against the
+   * wrong binary. "unverified": the debug file's own id could not be read.
+   */
+  debug_file?: "match" | "mismatch" | "unverified";
 }
 
 export type Address = RemappedAddress | UnknownAddress;
@@ -163,6 +209,10 @@ export interface RemapAPIResponse {
   command: string;
   version: string;
   features: string[];
+  /** See `Remap.variant`. */
+  variant?: string;
+  /** See `Remap.debug_file`. */
+  debug_file?: Remap["debug_file"];
 }
 
 function validateSemver(version: string): boolean {
@@ -188,6 +238,7 @@ export async function parse(str: string): Promise<Parse | null> {
 
     let is_canary = false;
     let has_build_flags = false;
+    let has_header = false;
     let has_regs = false;
     if (trace_version === "1") {
       // '1' - original. uses 7 char hash with VLQ encoded stack-frames
@@ -200,6 +251,12 @@ export async function parse(str: string): Promise<Parse | null> {
       //       regs) for fault reasons '2'..'7' only.
       has_build_flags = true;
       has_regs = true;
+    } else if (trace_version === "4") {
+      // '4' - '1' plus a header after the sha: a VLQ field count, then per
+      //       field a VLQ tag (`header_field`), a VLQ char count and that many
+      //       chars. No register block. Emitted by `encode_trace_string` in
+      //       bun's src/crash_handler/lib.rs.
+      has_header = true;
     } else {
       DEBUG && debug("invalid version '%s'", trace_version);
       return null;
@@ -219,6 +276,52 @@ export async function parse(str: string): Promise<Parse | null> {
       }
       i += adv;
       is_canary = !!(flags & (1 << 0));
+    }
+
+    let debug_id: string | undefined;
+    if (has_header) {
+      const [field_count, adv] = decodePart(str.slice(i));
+      if (field_count == null || field_count < 0 || field_count > max_header_fields) {
+        DEBUG && debug("invalid header field count %o", str.slice(i));
+        return null;
+      }
+      i += adv;
+      for (let n = 0; n < field_count; n++) {
+        const [tag, tag_adv] = decodePart(str.slice(i));
+        if (tag == null || tag < 0) {
+          DEBUG && debug("invalid header field tag %o", str.slice(i));
+          return null;
+        }
+        i += tag_adv;
+        const [length, length_adv] = decodePart(str.slice(i));
+        if (length == null || length < 0 || length > max_header_field_chars || i + length_adv + length > str.length) {
+          DEBUG && debug("invalid header field length %o", str.slice(i));
+          return null;
+        }
+        i += length_adv;
+        const chars = str.slice(i, i + length);
+        i += length;
+
+        switch (tag) {
+          case header_field.build_flags: {
+            const [flags, flags_adv] = decodePart(chars);
+            if (flags == null || flags_adv !== chars.length) {
+              DEBUG && debug("invalid build_flags field %o", chars);
+              return null;
+            }
+            is_canary = !!(flags & (1 << 0));
+            break;
+          }
+          case header_field.debug_id:
+            if (chars.length === 0 || chars.length % 2 !== 0 || !/^[0-9a-f]+$/.test(chars)) {
+              DEBUG && debug("invalid debug_id field %o", chars);
+              return null;
+            }
+            debug_id = chars;
+            break;
+          // A field this decoder predates: skipped by its length.
+        }
+      }
     }
 
     const [f0, a0] = decodePart(str.slice(i));
@@ -316,6 +419,7 @@ export async function parse(str: string): Promise<Parse | null> {
       is_canary,
       ...(fault_address ? { fault_address } : {}),
       ...(fault_registers ? { fault_registers } : {}),
+      ...(debug_id ? { debug_id } : {}),
     };
   } catch (e) {
     DEBUG && debug(e);

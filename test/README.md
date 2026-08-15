@@ -11,7 +11,9 @@ Expected output lives in `__snapshots__/`. Fixtures hold inputs only.
 
 ## Scope
 
-v1 and v2 trace formats only. v3 has not shipped; do not add v3 fixtures.
+v1, v2 and v4 trace formats, plus the one v3 capture. v3 (fault registers) is
+decoded but no shipped bun emits it; v4 (build flags + debug id) is what bun
+emits from oven-sh/bun#38838 on, so real v4 captures are welcome.
 
 ## Adding a fixture
 

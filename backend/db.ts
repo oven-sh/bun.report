@@ -2,7 +2,7 @@
 // This is used to avoid remapping the same address multiple times.
 import { Database } from "bun:sqlite";
 import type { Remap } from "../lib/parser";
-import { remapCacheKey, type Arch, type Platform } from "../lib/util";
+import { remapCacheKey, type Platform } from "../lib/util";
 import { rm } from "node:fs/promises";
 import { relative } from "node:path";
 import type { FeatureConfig } from "./feature";
@@ -37,6 +37,18 @@ initTable(
   last_updated INTEGER NOT NULL
 `,
 );
+// Added after the table existed in production: the id read from the
+// executable in the profile zip (see debug-id.ts), NULL for rows cached
+// before this column existed.
+if (
+  !db
+    .query("PRAGMA table_info(debug_file)")
+    .all()
+    .some((c: any) => c.name === "debug_id")
+) {
+  db.run("ALTER TABLE debug_file ADD COLUMN debug_id TEXT");
+}
+
 initTable(
   "issues",
   `
@@ -57,9 +69,11 @@ const insert_remap_stmt = db.prepare(
   "INSERT OR REPLACE INTO remap (cache_key, remapped_data) VALUES (?, ?)",
 );
 
-const get_debug_file_stmt = db.prepare("SELECT file_path FROM debug_file WHERE cache_key = ?");
+const get_debug_file_stmt = db.prepare(
+  "SELECT file_path, debug_id FROM debug_file WHERE cache_key = ?",
+);
 const insert_debug_file_stmt = db.prepare(
-  "INSERT INTO debug_file (cache_key, file_path, last_updated) VALUES (?, ?, ?)",
+  "INSERT INTO debug_file (cache_key, file_path, debug_id, last_updated) VALUES (?, ?, ?, ?)",
 );
 const update_debug_file_stmt = db.prepare(
   "UPDATE debug_file SET last_updated = ? WHERE cache_key = ?",
@@ -91,21 +105,38 @@ export function putCachedRemap(cache_key: string, remap: Remap) {
   insert_remap_stmt.run(cache_key, JSON.stringify(remap));
 }
 
-export function getCachedDebugFile(os: Platform, arch: Arch, commit: string): string | null {
-  const cache_key = `${os}-${arch}-${commit}`;
+export interface CachedDebugFile {
+  file_path: string;
+  /** undefined when the executable's id could not be read, or for rows older than the column. */
+  debug_id: string | undefined;
+}
+
+/** `name` is debug-store's `cacheName()`: the arch for a commit's plain build, arch plus link otherwise. */
+export function getCachedDebugFile(
+  os: Platform,
+  name: string,
+  commit: string,
+): CachedDebugFile | null {
+  const cache_key = `${os}-${name}-${commit}`;
   const result = get_debug_file_stmt.get(cache_key) as {
     file_path: string;
-    last_updated: string;
+    debug_id: string | null;
   } | null;
   if (result) {
     update_debug_file_stmt.run(Date.now(), cache_key);
-    return result.file_path;
+    return { file_path: result.file_path, debug_id: result.debug_id ?? undefined };
   }
   return null;
 }
 
-export function putCachedDebugFile(os: Platform, arch: Arch, commit: string, file_path: string) {
-  insert_debug_file_stmt.run(`${os}-${arch}-${commit}`, file_path, Date.now());
+export function putCachedDebugFile(
+  os: Platform,
+  name: string,
+  commit: string,
+  file_path: string,
+  debug_id: string | undefined,
+) {
+  insert_debug_file_stmt.run(`${os}-${name}-${commit}`, file_path, debug_id ?? null, Date.now());
 }
 
 export function getCachedFeatureData(
