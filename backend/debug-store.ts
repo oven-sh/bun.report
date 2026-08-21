@@ -36,18 +36,24 @@ export async function temp() {
 
 const in_progress_downloads = new AsyncMutexMap<DebugInfo>();
 
+// `bun-${os}-${this}-profile.zip`, as .buildkite/scripts/upload-release.sh in
+// oven-sh/bun names the artifacts.
 const map_download_arch = {
   x86_64: "x64",
   x86_64_baseline: "x64-baseline",
   aarch64: "aarch64",
-} as const;
+  x86_64_musl: "x64-musl",
+  aarch64_musl: "aarch64-musl",
+  x86_64_android: "x64-android",
+  aarch64_android: "aarch64-android",
+} as const satisfies Record<Arch, string>;
 
 const map_download_os = {
   windows: "windows",
   macos: "darwin",
   linux: "linux",
   freebsd: "freebsd",
-} as const;
+} as const satisfies Record<Platform, string>;
 
 export async function fetchDebugFile(
   os: Platform,

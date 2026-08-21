@@ -17,9 +17,16 @@ const platform_map: { [key: string]: [Platform, Arch] } = {
   b: ["macos", "x86_64_baseline"],
   M: ["macos", "aarch64"],
 
+  // 'l'/'L' is the glibc build. musl and android builds are separate binaries
+  // with their own profile zips; builds up to 1.4.0 reported them as 'l'/'L'
+  // too, and those traces still decode (against the glibc symbols) here.
   l: ["linux", "x86_64"],
   B: ["linux", "x86_64_baseline"],
   L: ["linux", "aarch64"],
+  u: ["linux", "x86_64_musl"],
+  U: ["linux", "aarch64_musl"],
+  a: ["linux", "x86_64_android"],
+  A: ["linux", "aarch64_android"],
 
   f: ["freebsd", "x86_64"],
   F: ["freebsd", "aarch64"],

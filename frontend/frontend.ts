@@ -2,7 +2,7 @@ import type { Parse, RemapAPIResponse } from "../lib/parser";
 import { os_names } from "../lib/format";
 
 import { parse } from "../lib/parser";
-import { parseCacheKey, debounce, escapeHTML as eschtml } from "../lib/util";
+import { parseCacheKey, debounce, describeArch, escapeHTML as eschtml } from "../lib/util";
 import { addrsToHTML } from "./html";
 
 // Bindings
@@ -235,8 +235,6 @@ function cardFooter() {
     ? `<a href="https://github.com/oven-sh/bun/commit/${oid}" target="_blank">${parsed.commitish}</a>`
     : parsed.commitish;
 
-  const arch = parsed.arch.split("_baseline");
-
   const features = fetched?.features
     ? /* html */ `
         <p><strong>Features:</strong> ${fetched.features.join(", ")}</p>
@@ -246,7 +244,7 @@ function cardFooter() {
   return /* html */ `
     <p>
       Bun v${addCanarySuffix(fetched ? fetched.version : parsed.version, parsed.is_canary)} <small>(<code>${commit}</code>)</small>
-      on ${os_names[parsed.os[0]]} ${arch[0]} ${arch.length > 1 ? "(baseline)" : ""}
+      on ${os_names[parsed.os[0]]} ${describeArch(parsed.arch)}
     </p>
     ${features}
   `;

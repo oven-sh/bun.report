@@ -1,7 +1,8 @@
 import { describe, test, expect } from "bun:test";
 import { parse } from "../lib/parser";
-import { buildTraceString, encodeVlq, type BuildTraceOpts } from "./helpers/encode";
+import { buildTraceString, encodeVlq, platform_char, type BuildTraceOpts } from "./helpers/encode";
 import { decodePart } from "../lib/vlq";
+import { describeArch, parseCacheKey, splitArch, type Arch, type Platform } from "../lib/util";
 
 describe("vlq roundtrip", () => {
   for (const v of [0, 1, 2, 31, 32, 0x1234, 0x10ab34, 0x7fffffff]) {
@@ -228,4 +229,63 @@ describe("parse(buildTraceString(x)) recovers x", () => {
       }
     });
   }
+});
+
+describe("every platform character decodes to its own (os, arch)", () => {
+  // BUN-4MRJ, a 1.4.0 trace whose platform character says glibc aarch64.
+  // Everything after that character is the same whichever build of the commit
+  // crashed, so the character alone selects the debug file: parseCacheKey
+  // hashes os + arch, and the debug store is keyed the same way, so distinct
+  // keys here mean distinct debug files.
+  const real_trace = "1.4.0/L_134cbb9aEggggC+98pvDA2Dhggw6jC";
+  const base = {
+    version: "1.4.0",
+    command: "_",
+    trace_version: "1",
+    commitish: "34cbb9a",
+    features: [2, 1048576],
+    addresses: [{ address: 0x37a79df, object: "bun" }],
+    reason: { kind: "segfault", addr_hi: -1, addr_lo: 0xbc2c0000 | 0 },
+  } satisfies Omit<BuildTraceOpts, "os" | "arch">;
+
+  test("the encoder reproduces the real trace", () => {
+    expect(buildTraceString({ ...base, os: "linux", arch: "aarch64" })).toBe(real_trace);
+  });
+
+  const seen_keys = new Map<string, string>();
+  const seen_chars = new Map<string, string>();
+
+  for (const [target, char] of Object.entries(platform_char)) {
+    const [os, arch] = target.split(/-(.*)/) as [Platform, Arch];
+    test(`'${char}' -> ${os} ${arch}`, async () => {
+      expect(seen_chars.get(char)).toBeUndefined();
+      seen_chars.set(char, target);
+
+      const trace = buildTraceString({ ...base, os, arch });
+      expect(trace).toBe(real_trace.replace("/L", "/" + char));
+
+      const p = await parse(trace);
+      expect(p).not.toBeNull();
+      expect([p!.os, p!.arch]).toEqual([os, arch]);
+
+      const key = parseCacheKey(p!);
+      expect(seen_keys.get(key)).toBeUndefined();
+      seen_keys.set(key, target);
+    });
+  }
+});
+
+describe("splitArch / describeArch", () => {
+  test.each([
+    ["x86_64", "x86_64", null, "x86_64"],
+    ["aarch64", "aarch64", null, "aarch64"],
+    ["x86_64_baseline", "x86_64", "baseline", "x86_64 (baseline)"],
+    ["x86_64_musl", "x86_64", "musl", "x86_64 (musl)"],
+    ["aarch64_musl", "aarch64", "musl", "aarch64 (musl)"],
+    ["x86_64_android", "x86_64", "android", "x86_64 (android)"],
+    ["aarch64_android", "aarch64", "android", "aarch64 (android)"],
+  ] as const)("%s", (arch, cpu, variant, description) => {
+    expect(splitArch(arch)).toEqual({ cpu, variant });
+    expect(describeArch(arch)).toBe(description);
+  });
 });

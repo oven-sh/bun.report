@@ -27,6 +27,10 @@ const platforms: Array<[BuildTraceOpts["os"], BuildTraceOpts["arch"]]> = [
   ["linux", "x86_64"],
   ["linux", "x86_64_baseline"],
   ["linux", "aarch64"],
+  ["linux", "x86_64_musl"],
+  ["linux", "aarch64_musl"],
+  ["linux", "x86_64_android"],
+  ["linux", "aarch64_android"],
 ];
 
 const cases: Case[] = [];

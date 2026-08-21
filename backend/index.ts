@@ -4,7 +4,7 @@ import crashRecordedStandaloneHtml from "../frontend/crash-recorded-standalone.h
 import crashRecordedHtml from "../frontend/crash-recorded.html" with { type: "text" };
 import { addrsToPlainText, os_names } from "../lib/format";
 import { parse, type Parse, type RemapAPIResponse } from "../lib/parser";
-import { escapeHTML, remapCacheKey } from "../lib/util";
+import { describeArch, escapeHTML, remapCacheKey } from "../lib/util";
 import { garbageCollect } from "./db";
 import { onFeedbackRequest } from "./feedback";
 import { getCommit } from "./git";
@@ -111,13 +111,12 @@ export default {
             return new Response("Not found", { status: 404 });
           }
 
-          const arch = parsed.arch.split("_baseline");
           let { oid } = (await getCommit(parsed.commitish).catch(_ => null)) ?? {};
 
           const oembed: { [key: string]: string } = {
             author_name: parsed.message,
             author_url: `${request_url.origin}/${encodeURI(str)}/view`,
-            provider_name: `Bun v${parsed.version} (${parsed.commitish}) on ${os_names[parsed.os[0]]} ${arch[0]}${arch.length > 1 ? " (baseline)" : ""}`,
+            provider_name: `Bun v${parsed.version} (${parsed.commitish}) on ${os_names[parsed.os[0]]} ${describeArch(parsed.arch)}`,
             type: "link",
             version: "1.0",
           };

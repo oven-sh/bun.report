@@ -16,7 +16,8 @@ export function encodeVlq(value: number): string {
   return out;
 }
 
-const platform_char: Record<string, string> = {
+/** Inverse of `platform_map` in lib/parser.ts; mirrors `Platform::CURRENT` in bun's src/crash_handler/lib.rs. */
+export const platform_char: Record<string, string> = {
   "windows-x86_64": "w",
   "windows-x86_64_baseline": "e",
   "windows-aarch64": "W",
@@ -26,6 +27,10 @@ const platform_char: Record<string, string> = {
   "linux-x86_64": "l",
   "linux-x86_64_baseline": "B",
   "linux-aarch64": "L",
+  "linux-x86_64_musl": "u",
+  "linux-aarch64_musl": "U",
+  "linux-x86_64_android": "a",
+  "linux-aarch64_android": "A",
   "freebsd-x86_64": "f",
   "freebsd-aarch64": "F",
 } satisfies Partial<Record<`${Platform}-${Arch}`, string>>;

@@ -46,7 +46,43 @@ export const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 export const basename = (path: string) => path.split("/").pop()!;
 
 export type Platform = "windows" | "linux" | "macos" | "freebsd";
-export type Arch = "x86_64" | "aarch64" | "x86_64_baseline";
+
+/**
+ * The CPU architecture, plus the build variant when a commit is published as
+ * more than one binary for that os and cpu. The variant is part of the arch
+ * string because everything keyed on (os, arch) (the remap cache key, the
+ * debug-file store, the download name) has to tell those binaries apart:
+ * `bun-linux-x64`, `bun-linux-x64-musl` and `bun-linux-x64-android` are three
+ * different links of the same commit with three different profile zips.
+ *
+ * `_baseline` is historical: since oven-sh/bun#34782 x64 ships one binary and
+ * bun no longer emits the baseline platform characters, but traces from older
+ * builds still carry them.
+ */
+export type Arch =
+  | "x86_64"
+  | "aarch64"
+  | "x86_64_baseline"
+  | "x86_64_musl"
+  | "aarch64_musl"
+  | "x86_64_android"
+  | "aarch64_android";
+
+export type Cpu = "x86_64" | "aarch64";
+export type ArchVariant = "baseline" | "musl" | "android";
+
+/** Splits an `Arch` into the cpu and the build variant, if it has one. */
+export function splitArch(arch: Arch): { cpu: Cpu; variant: ArchVariant | null } {
+  const cpu: Cpu = arch.startsWith("aarch64") ? "aarch64" : "x86_64";
+  const suffix = arch.slice(cpu.length);
+  return { cpu, variant: suffix ? (suffix.slice("_".length) as ArchVariant) : null };
+}
+
+/** "x86_64", "x86_64 (musl)": how the footer, the oembed card and Sentry describe an `Arch`. */
+export function describeArch(arch: Arch): string {
+  const { cpu, variant } = splitArch(arch);
+  return variant ? `${cpu} (${variant})` : cpu;
+}
 
 /**
  * Computes a cache key to go from a parsed string to the fully remapped data,

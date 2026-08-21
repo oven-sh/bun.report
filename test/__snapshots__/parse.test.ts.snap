@@ -7793,6 +7793,68 @@ exports[`parse fixtures v1-linux-aarch64-segfault 1`] = `
 }
 `;
 
+exports[`parse fixtures v1-linux-aarch64_android-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64_android",
+  "command": "r",
+  "commitish": "abc1234",
+  "fault_address": "6EADBEEF",
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "linux",
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v1-linux-aarch64_musl-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64_musl",
+  "command": "r",
+  "commitish": "abc1234",
+  "fault_address": "6EADBEEF",
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "linux",
+  "version": "1.1.30",
+}
+`;
+
 exports[`parse fixtures v1-linux-x86_64-foreign-object 1`] = `
 {
   "addresses": [
@@ -7896,6 +7958,37 @@ exports[`parse fixtures v1-linux-x86_64-with-js-and-unknown-frames 1`] = `
 }
 `;
 
+exports[`parse fixtures v1-linux-x86_64_android-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_android",
+  "command": "r",
+  "commitish": "abc1234",
+  "fault_address": "6EADBEEF",
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "linux",
+  "version": "1.1.30",
+}
+`;
+
 exports[`parse fixtures v1-linux-x86_64_baseline-segfault 1`] = `
 {
   "addresses": [
@@ -7913,6 +8006,37 @@ exports[`parse fixtures v1-linux-x86_64_baseline-segfault 1`] = `
     },
   ],
   "arch": "x86_64_baseline",
+  "command": "r",
+  "commitish": "abc1234",
+  "fault_address": "6EADBEEF",
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": false,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "linux",
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v1-linux-x86_64_musl-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_musl",
   "command": "r",
   "commitish": "abc1234",
   "fault_address": "6EADBEEF",
@@ -8214,6 +8338,68 @@ exports[`parse fixtures v2-linux-aarch64-segfault 1`] = `
 }
 `;
 
+exports[`parse fixtures v2-linux-aarch64_android-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64_android",
+  "command": "r",
+  "commitish": "abc1234",
+  "fault_address": "6EADBEEF",
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "linux",
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v2-linux-aarch64_musl-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "aarch64_musl",
+  "command": "r",
+  "commitish": "abc1234",
+  "fault_address": "6EADBEEF",
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "linux",
+  "version": "1.1.30",
+}
+`;
+
 exports[`parse fixtures v2-linux-x86_64-segfault 1`] = `
 {
   "addresses": [
@@ -8245,6 +8431,37 @@ exports[`parse fixtures v2-linux-x86_64-segfault 1`] = `
 }
 `;
 
+exports[`parse fixtures v2-linux-x86_64_android-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_android",
+  "command": "r",
+  "commitish": "abc1234",
+  "fault_address": "6EADBEEF",
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "linux",
+  "version": "1.1.30",
+}
+`;
+
 exports[`parse fixtures v2-linux-x86_64_baseline-segfault 1`] = `
 {
   "addresses": [
@@ -8262,6 +8479,37 @@ exports[`parse fixtures v2-linux-x86_64_baseline-segfault 1`] = `
     },
   ],
   "arch": "x86_64_baseline",
+  "command": "r",
+  "commitish": "abc1234",
+  "fault_address": "6EADBEEF",
+  "features": [
+    3,
+    7,
+  ],
+  "is_canary": true,
+  "message": "Segmentation fault at address 0x6EADBEEF",
+  "os": "linux",
+  "version": "1.1.30",
+}
+`;
+
+exports[`parse fixtures v2-linux-x86_64_musl-segfault 1`] = `
+{
+  "addresses": [
+    {
+      "address": 1092404,
+      "object": "bun",
+    },
+    {
+      "address": 2149718,
+      "object": "bun",
+    },
+    {
+      "address": 3207032,
+      "object": "bun",
+    },
+  ],
+  "arch": "x86_64_musl",
   "command": "r",
   "commitish": "abc1234",
   "fault_address": "6EADBEEF",

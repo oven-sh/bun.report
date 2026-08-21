@@ -1,6 +1,6 @@
 import { MD5, spawnSync } from "bun";
 import type { Address, Parse, Remap } from "../lib";
-import type { Platform } from "../lib/util";
+import { splitArch, type Platform } from "../lib/util";
 import type * as Sentry from "./sentry-types";
 import { getCodeView } from "./code-view";
 
@@ -60,9 +60,11 @@ async function remapToPayload(parse: Parse, remap: Remap, trace_str: string): Pr
 function getTags(parse: Parse, remap: Remap): any {
   const tags: any = {};
 
+  const { cpu, variant } = splitArch(parse.arch);
+
   tags.version = remap.version;
   tags.commit = remap.commit.oid.slice(0, 9);
-  tags.arch = parse.arch.replace(/_baseline$/, "");
+  tags.arch = cpu;
   // cache_key is SHA256(commitish_arch_os_canary_addresses). Before the
   // randomUUID switch, MD5(cache_key) was the event_id — so Sentry deduped
   // identical (stack, build) tuples to one event. Sending it as a tag lets
@@ -77,9 +79,9 @@ function getTags(parse: Parse, remap: Remap): any {
     tags[feature] = true;
   }
 
-  if (parse.arch.endsWith("_baseline")) {
-    tags.baseline = true;
-  }
+  // `baseline: true`, `musl: true`, `android: true`: filterable like the
+  // feature tags above. The same value is also the event's `dist`.
+  if (variant) tags[variant] = true;
 
   if (parse.is_canary) tags.canary = true;
 
@@ -90,14 +92,16 @@ function getTags(parse: Parse, remap: Remap): any {
 
 /**
  * `dist` marks build variants of the same release — same version, same commit,
- * different compile flags. For bun that's baseline (older-CPU target) and musl
- * (Alpine/musl libc). undefined means the standard build for this os/arch.
+ * different binary. For bun that's baseline (older-CPU target, historical),
+ * musl (Alpine/musl libc) and android (bionic). undefined means the standard
+ * build for this os/arch.
  */
 function buildDist(parse: Parse): string | undefined {
-  return parse.arch.endsWith("_baseline") ? "baseline" : undefined;
+  return splitArch(parse.arch).variant ?? undefined;
 }
 
 function getOSContext(parse: Parse): Sentry.OS {
+  if (splitArch(parse.arch).variant === "android") return { name: "Android" };
   return { name: ({ windows: "Windows", macos: "macOS", linux: "Linux", freebsd: "FreeBSD" } as const)[parse.os] };
 }
 
@@ -120,7 +124,7 @@ function buildExtra(remap: Remap, view_url: string): Record<string, unknown> {
 }
 
 function getOSDeviceContext(parse: Parse): Sentry.PayloadEventContexts["device"] {
-  return { arch: parse.arch };
+  return { arch: splitArch(parse.arch).cpu };
 }
 
 /**
