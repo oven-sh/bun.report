@@ -43,7 +43,9 @@ export class FloodGate {
 
     if (!bucket.warned) {
       bucket.warned = true;
-      console.warn(`flood-gate: ${bucketKey} exceeded ${this.#limit} distinct stacks this hour; dropping new stacks`);
+      console.warn(
+        `flood-gate: ${bucketKey} exceeded ${this.#limit} distinct stacks this hour; dropping new stacks`,
+      );
     }
     return false;
   }
@@ -56,4 +58,6 @@ export class FloodGate {
 }
 
 const envLimit = Number(process.env.BUN_REPORT_MAX_DISTINCT_STACKS_PER_BUILD_HOUR);
-export const floodGate = new FloodGate(Number.isFinite(envLimit) && envLimit > 0 ? envLimit : DEFAULT_LIMIT);
+export const floodGate = new FloodGate(
+  Number.isFinite(envLimit) && envLimit > 0 ? envLimit : DEFAULT_LIMIT,
+);

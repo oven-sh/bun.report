@@ -43,6 +43,8 @@ describe("FloodGate", () => {
 
   test("events without a cache_key are forwarded", () => {
     const gate = new FloodGate(0, () => 0);
-    expect(gate.shouldForward({ os: "macos", arch: "aarch64" } as unknown as Parse, remap())).toBe(true);
+    expect(gate.shouldForward({ os: "macos", arch: "aarch64" } as unknown as Parse, remap())).toBe(
+      true,
+    );
   });
 });
