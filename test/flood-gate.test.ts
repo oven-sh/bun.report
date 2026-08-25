@@ -24,7 +24,7 @@ describe("FloodGate", () => {
     expect(gate.shouldForward(parse("k999"), remap())).toBe(true);
   });
 
-  test("buckets are per commit/os/arch/canary", () => {
+  test("buckets are per commit/os/arch/environment", () => {
     const gate = new FloodGate(1, () => 0);
     expect(gate.shouldForward(parse("a"), remap("111111111"))).toBe(true);
     expect(gate.shouldForward(parse("b"), remap("111111111"))).toBe(false);

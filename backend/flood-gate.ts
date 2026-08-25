@@ -25,7 +25,7 @@ export class FloodGate {
     if (!key) return true;
 
     const hour = Math.floor(this.#now() / HOUR_MS);
-    const bucketKey = `${remap.commit.oid}/${parse.os}/${parse.arch}${parse.is_canary ? "/canary" : ""}`;
+    const bucketKey = `${remap.commit.oid}/${parse.os}/${parse.arch}/${parse.is_canary ? "canary" : "production"}`;
 
     let bucket = this.#buckets.get(bucketKey);
     if (!bucket || bucket.hour !== hour) {
