@@ -2,8 +2,8 @@ import { describe, expect, test } from "bun:test";
 import { FloodGate } from "../backend/flood-gate";
 import type { Parse, Remap } from "../lib/parser";
 
-function parse(cache_key: string, os = "macos", arch = "aarch64"): Parse {
-  return { cache_key, os, arch } as unknown as Parse;
+function parse(cache_key: string, os = "macos", arch = "aarch64", is_canary = false): Parse {
+  return { cache_key, os, arch, is_canary } as unknown as Parse;
 }
 function remap(oid = "aaaaaaaaa"): Remap {
   return { commit: { oid, pr: null } } as unknown as Remap;
@@ -24,12 +24,15 @@ describe("FloodGate", () => {
     expect(gate.shouldForward(parse("k999"), remap())).toBe(true);
   });
 
-  test("buckets are per commit/os/arch", () => {
+  test("buckets are per commit/os/arch/canary", () => {
     const gate = new FloodGate(1, () => 0);
     expect(gate.shouldForward(parse("a"), remap("111111111"))).toBe(true);
     expect(gate.shouldForward(parse("b"), remap("111111111"))).toBe(false);
     expect(gate.shouldForward(parse("b"), remap("222222222"))).toBe(true);
-    expect(gate.shouldForward(parse("b", "windows", "x86_64"), remap("111111111"))).toBe(true);
+    expect(gate.shouldForward(parse("b", "windows"), remap("111111111"))).toBe(true);
+    expect(gate.shouldForward(parse("b", "macos", "x86_64"), remap("111111111"))).toBe(true);
+    expect(gate.shouldForward(parse("b", "macos", "aarch64", true), remap("111111111"))).toBe(true);
+    expect(gate.shouldForward(parse("c"), remap("111111111"))).toBe(false);
   });
 
   test("limit resets each hour", () => {
@@ -39,6 +42,7 @@ describe("FloodGate", () => {
     expect(gate.shouldForward(parse("b"), remap())).toBe(false);
     now = 60 * 60 * 1000;
     expect(gate.shouldForward(parse("b"), remap())).toBe(true);
+    expect(gate.shouldForward(parse("a"), remap())).toBe(false);
   });
 
   test("events without a cache_key are forwarded", () => {

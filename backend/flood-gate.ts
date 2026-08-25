@@ -3,7 +3,7 @@ import type { Parse, Remap } from "../lib/parser";
 const DEFAULT_LIMIT = 1000;
 const HOUR_MS = 60 * 60 * 1000;
 
-type Bucket = { hour: number; keys: Set<string>; warned: boolean };
+type Bucket = { hour: number; keys: Set<string>; dropped: number };
 
 export class FloodGate {
   #limit: number;
@@ -25,12 +25,17 @@ export class FloodGate {
     if (!key) return true;
 
     const hour = Math.floor(this.#now() / HOUR_MS);
-    const bucketKey = `${remap.commit.oid}/${parse.os}/${parse.arch}`;
+    const bucketKey = `${remap.commit.oid}/${parse.os}/${parse.arch}${parse.is_canary ? "/canary" : ""}`;
 
     let bucket = this.#buckets.get(bucketKey);
     if (!bucket || bucket.hour !== hour) {
+      if (bucket && bucket.dropped > 0) {
+        console.warn(
+          `flood-gate: ${bucketKey} dropped ${bucket.dropped} events in hour ${bucket.hour}`,
+        );
+      }
       if (this.#buckets.size > 256) this.#prune(hour);
-      bucket = { hour, keys: new Set(), warned: false };
+      bucket = { hour, keys: new Set(), dropped: 0 };
       this.#buckets.set(bucketKey, bucket);
     }
 
@@ -41,23 +46,24 @@ export class FloodGate {
       return true;
     }
 
-    if (!bucket.warned) {
-      bucket.warned = true;
+    if (bucket.dropped === 0) {
       console.warn(
         `flood-gate: ${bucketKey} exceeded ${this.#limit} distinct stacks this hour; dropping new stacks`,
       );
     }
+    bucket.dropped++;
     return false;
   }
 
   #prune(hour: number) {
     for (const [k, b] of this.#buckets) {
-      if (b.hour !== hour) this.#buckets.delete(k);
+      if (b.hour === hour) continue;
+      if (b.dropped > 0)
+        console.warn(`flood-gate: ${k} dropped ${b.dropped} events in hour ${b.hour}`);
+      this.#buckets.delete(k);
     }
   }
 }
 
-const envLimit = Number(process.env.BUN_REPORT_MAX_DISTINCT_STACKS_PER_BUILD_HOUR);
-export const floodGate = new FloodGate(
-  Number.isFinite(envLimit) && envLimit > 0 ? envLimit : DEFAULT_LIMIT,
-);
+const envLimit = Math.floor(Number(process.env.BUN_REPORT_MAX_DISTINCT_STACKS_PER_BUILD_HOUR));
+export const floodGate = new FloodGate(envLimit > 0 ? envLimit : DEFAULT_LIMIT);

@@ -305,12 +305,10 @@ async function remapAndRedirect(url: URL, parsed_str: string, parsed: Parse, hea
 
     let sentryDetails: { id: string } | { shortId: string; permalink: string } | undefined;
 
-    if (floodGate.shouldForward(parsed, remapped)) {
-      try {
-        sentryDetails = await sendToSentry(parsed, remapped, parsed_str);
-      } catch (e) {
-        console.error("Failed to send to sentry", e);
-      }
+    try {
+      sentryDetails = await sendToSentry(parsed, remapped, parsed_str);
+    } catch (e) {
+      console.error("Failed to send to sentry", e);
     }
 
     if (remapped.issue) {
