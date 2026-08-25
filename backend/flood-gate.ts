@@ -29,11 +29,7 @@ export class FloodGate {
 
     let bucket = this.#buckets.get(bucketKey);
     if (!bucket || bucket.hour !== hour) {
-      if (bucket && bucket.dropped > 0) {
-        console.warn(
-          `flood-gate: ${bucketKey} dropped ${bucket.dropped} events in hour ${bucket.hour}`,
-        );
-      }
+      if (bucket) this.#report(bucketKey, bucket);
       if (this.#buckets.size > 256) this.#prune(hour);
       bucket = { hour, keys: new Set(), dropped: 0 };
       this.#buckets.set(bucketKey, bucket);
@@ -58,9 +54,21 @@ export class FloodGate {
   #prune(hour: number) {
     for (const [k, b] of this.#buckets) {
       if (b.hour === hour) continue;
-      if (b.dropped > 0)
-        console.warn(`flood-gate: ${k} dropped ${b.dropped} events in hour ${b.hour}`);
+      this.#report(k, b);
       this.#buckets.delete(k);
+    }
+  }
+
+  /** Logs a finished hour for a bucket if it dropped events or used at least half the limit. */
+  #report(bucketKey: string, bucket: Bucket) {
+    if (bucket.dropped > 0) {
+      console.warn(
+        `flood-gate: ${bucketKey} dropped ${bucket.dropped} events in hour ${bucket.hour}`,
+      );
+    } else if (bucket.keys.size * 2 >= this.#limit) {
+      console.warn(
+        `flood-gate: ${bucketKey} used ${bucket.keys.size}/${this.#limit} distinct stacks in hour ${bucket.hour}`,
+      );
     }
   }
 }

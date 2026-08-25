@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, spyOn, test } from "bun:test";
 import { FloodGate } from "../backend/flood-gate";
 import type { Parse, Remap } from "../lib/parser";
 
@@ -50,5 +50,41 @@ describe("FloodGate", () => {
     expect(gate.shouldForward({ os: "macos", arch: "aarch64" } as unknown as Parse, remap())).toBe(
       true,
     );
+  });
+
+  test("logs usage at rollover when a bucket reached half the limit", () => {
+    let now = 0;
+    const gate = new FloodGate(4, () => now);
+    const warn = spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      gate.shouldForward(parse("a"), remap());
+      gate.shouldForward(parse("b"), remap());
+      now = 60 * 60 * 1000;
+      gate.shouldForward(parse("c"), remap());
+      expect(warn.mock.calls.map((c) => c[0])).toEqual([
+        "flood-gate: aaaaaaaaa/macos/aarch64/production used 2/4 distinct stacks in hour 0",
+      ]);
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  test("logs dropped count at rollover", () => {
+    let now = 0;
+    const gate = new FloodGate(1, () => now);
+    const warn = spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      gate.shouldForward(parse("a"), remap());
+      gate.shouldForward(parse("b"), remap());
+      gate.shouldForward(parse("c"), remap());
+      now = 60 * 60 * 1000;
+      gate.shouldForward(parse("a"), remap());
+      expect(warn.mock.calls.map((c) => c[0])).toEqual([
+        "flood-gate: aaaaaaaaa/macos/aarch64/production exceeded 1 distinct stacks this hour; dropping new stacks",
+        "flood-gate: aaaaaaaaa/macos/aarch64/production dropped 2 events in hour 0",
+      ]);
+    } finally {
+      warn.mockRestore();
+    }
   });
 });
