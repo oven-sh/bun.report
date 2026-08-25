@@ -7,6 +7,7 @@ import { parse, type Parse, type RemapAPIResponse } from "../lib/parser";
 import { describeArch, escapeHTML, remapCacheKey } from "../lib/util";
 import { garbageCollect } from "./db";
 import { onFeedbackRequest } from "./feedback";
+import { floodGate } from "./flood-gate";
 import { getCommit } from "./git";
 import { formatMarkdown } from "./markdown";
 import { remap } from "./remap";
@@ -178,6 +179,7 @@ export default {
 
           remap(str, parsed)
             .then(remap => {
+              if (!floodGate.shouldForward(parsed, remap)) return;
               return sendToSentry(parsed, remap, str);
             })
             .catch(() => {});
