@@ -5,14 +5,33 @@ const HOUR_MS = 60 * 60 * 1000;
 
 type Bucket = { hour: number; keys: Set<string>; dropped: number };
 
+/** `commit-prefix/os/arch` entries; an event matches if its commit starts with the prefix and os/arch are equal. */
+export function parseBlocklist(list: string | undefined): string[][] {
+  return (list ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map((s) => s.split("/"));
+}
+
 export class FloodGate {
   #limit: number;
   #now: () => number;
+  #blocklist: string[][];
   #buckets = new Map<string, Bucket>();
 
-  constructor(limit = DEFAULT_LIMIT, now: () => number = Date.now) {
+  constructor(limit = DEFAULT_LIMIT, now: () => number = Date.now, blocklist: string[][] = []) {
     this.#limit = limit;
     this.#now = now;
+    this.#blocklist = blocklist;
+  }
+
+  #blocked(parse: Parse, remap: Remap): boolean {
+    for (const [commit, os, arch] of this.#blocklist) {
+      if (commit && remap.commit.oid.startsWith(commit) && parse.os === os && parse.arch === arch)
+        return true;
+    }
+    return false;
   }
 
   /**
@@ -21,6 +40,8 @@ export class FloodGate {
    * a new stack is allowed until the build has `limit` distinct stacks this hour.
    */
   shouldForward(parse: Parse, remap: Remap): boolean {
+    if (this.#blocked(parse, remap)) return false;
+
     const key = parse.cache_key;
     if (!key) return true;
 
@@ -74,4 +95,8 @@ export class FloodGate {
 }
 
 const envLimit = Math.floor(Number(process.env.BUN_REPORT_MAX_DISTINCT_STACKS_PER_BUILD_HOUR));
-export const floodGate = new FloodGate(envLimit > 0 ? envLimit : DEFAULT_LIMIT);
+export const floodGate = new FloodGate(
+  envLimit > 0 ? envLimit : DEFAULT_LIMIT,
+  Date.now,
+  parseBlocklist(process.env.BUN_REPORT_SENTRY_BLOCKLIST),
+);

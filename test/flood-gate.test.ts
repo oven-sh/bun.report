@@ -1,5 +1,5 @@
 import { describe, expect, spyOn, test } from "bun:test";
-import { FloodGate } from "../backend/flood-gate";
+import { FloodGate, parseBlocklist } from "../backend/flood-gate";
 import type { Parse, Remap } from "../lib/parser";
 
 function parse(cache_key: string, os = "macos", arch = "aarch64", is_canary = false): Parse {
@@ -86,5 +86,28 @@ describe("FloodGate", () => {
     } finally {
       warn.mockRestore();
     }
+  });
+
+  test("blocklisted builds are never forwarded", () => {
+    const gate = new FloodGate(
+      1000,
+      () => 0,
+      parseBlocklist("1111111/macos/aarch64, 2222222/windows/x86_64"),
+    );
+    expect(gate.shouldForward(parse("a"), remap("111111111"))).toBe(false);
+    expect(gate.shouldForward(parse("a"), remap("111111111"))).toBe(false);
+    expect(gate.shouldForward(parse("a", "macos", "x86_64"), remap("111111111"))).toBe(true);
+    expect(gate.shouldForward(parse("a", "linux"), remap("111111111"))).toBe(true);
+    expect(gate.shouldForward(parse("a"), remap("333333333"))).toBe(true);
+    expect(gate.shouldForward(parse("b", "windows", "x86_64"), remap("222222222"))).toBe(false);
+  });
+
+  test("parseBlocklist", () => {
+    expect(parseBlocklist(undefined)).toEqual([]);
+    expect(parseBlocklist("")).toEqual([]);
+    expect(parseBlocklist(" abc/macos/aarch64 ,def/linux/x86_64,")).toEqual([
+      ["abc", "macos", "aarch64"],
+      ["def", "linux", "x86_64"],
+    ]);
   });
 });

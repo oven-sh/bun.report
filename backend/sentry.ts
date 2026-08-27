@@ -427,12 +427,9 @@ export async function sendToSentry(parse: Parse, remap: Remap, trace_str: string
   const event = await remapToPayload(parse, remap, trace_str);
   const body = event.map(x => JSON.stringify(x)).join("\n");
 
-  console.log(body);
-
   const response = await fetch(url, {
     method: "POST",
     body: body,
-    verbose: true,
   });
 
   // https://${domain}.sentry.io/issues/?query=${id}
