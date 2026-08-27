@@ -1,13 +1,20 @@
 // This file manages a in-memory cache of "code views", aka a few lines above and below a given line.
-// Values are cached in memory for ever, assuming the bun.report server has a lot of memory.
 import { SHA256 } from "bun";
-import assert from "node:assert";
 import { AsyncMutexMap } from "./mutex";
 
 type FileHash = string;
 
-/** commit:path -> hash of file */
-const file_hash_map = new Map<string, FileHash>();
+const MAX_FILES = 20_000;
+
+/** Insertion-ordered map that evicts its oldest entries past `max`. */
+function setBounded<K, V>(map: Map<K, V>, key: K, value: V, max: number) {
+  map.delete(key);
+  map.set(key, value);
+  while (map.size > max) map.delete(map.keys().next().value!);
+}
+
+/** commit:path -> hash of file, or null if the file could not be fetched */
+const file_hash_map = new Map<string, FileHash | null>();
 /** hash of file -> lines of source code */
 const file_content_map = new Map<FileHash, string[]>();
 
@@ -22,12 +29,12 @@ async function resolveZigCommit(bunCommit: string): Promise<string | null> {
     `https://raw.githubusercontent.com/oven-sh/bun/${bunCommit}/scripts/build/zig.ts`,
   );
   if (!res.ok) {
-    zig_commit_cache.set(bunCommit, null);
+    setBounded(zig_commit_cache, bunCommit, null, MAX_FILES);
     return null;
   }
   const m = (await res.text()).match(/ZIG_COMMIT\s*=\s*"([0-9a-f]{40})"/);
   const zigCommit = m?.[1] ?? null;
-  zig_commit_cache.set(bunCommit, zigCommit);
+  setBounded(zig_commit_cache, bunCommit, zigCommit, MAX_FILES);
   return zigCommit;
 }
 
@@ -48,31 +55,36 @@ async function getFileContent(commit: string, path: string): Promise<null | stri
   if (path.includes("WebKit")) return null;
 
   const key = commit + ":" + path.toLowerCase();
-  const hash = file_hash_map.get(key);
-  if (hash) {
+  if (file_hash_map.has(key)) {
+    const hash = file_hash_map.get(key);
+    if (hash == null) return null;
     const content = file_content_map.get(hash);
-    assert(content);
-    return content;
+    if (content) return content;
+    file_hash_map.delete(key);
   }
 
   return get_file_content_in_progress.get(key, async () => {
     const url = await resolveSourceUrl(commit, path);
-    if (!url) return null;
+    if (!url) {
+      setBounded(file_hash_map, key, null, MAX_FILES);
+      return null;
+    }
     const res = await fetch(url);
-    if (!res.ok) return null;
+    if (!res.ok) {
+      // Only remember a definitive "not there"; leave transient failures uncached.
+      if (res.status === 404) setBounded(file_hash_map, key, null, MAX_FILES);
+      return null;
+    }
 
     const content = await res.text();
     const hash: FileHash = SHA256.hash(content, "hex");
-    file_hash_map.set(key, hash);
+    setBounded(file_hash_map, key, hash, MAX_FILES);
 
-    if (file_content_map.has(hash)) {
-      const result = file_content_map.get(hash);
-      assert(result);
-      return result;
-    }
+    const existing = file_content_map.get(hash);
+    if (existing) return existing;
 
     const split = content.split("\n");
-    file_content_map.set(hash, split);
+    setBounded(file_content_map, hash, split, MAX_FILES);
     return split;
   });
 }
@@ -91,7 +103,6 @@ export async function getCodeView(
   const lines = await getFileContent(commit, path);
   if (!lines) return null;
 
-  console.log(line, lines.length);
   if (line > lines.length) {
     return null;
   }

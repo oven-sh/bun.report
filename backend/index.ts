@@ -367,6 +367,24 @@ async function remapAndRedirect(url: URL, parsed_str: string, parsed: Parse, hea
   }
 }
 
+const DISCORD_ERROR_INTERVAL_MS = 10 * 60 * 1000;
+const recent_discord_errors = new Map<string, number>();
+
+/** At most one post per distinct error message per interval. */
+function shouldPostErrorToDiscord(message: string): boolean {
+  const key = message.slice(0, 200);
+  const now = Date.now();
+  const last = recent_discord_errors.get(key);
+  if (last !== undefined && now - last < DISCORD_ERROR_INTERVAL_MS) return false;
+  if (recent_discord_errors.size > 1000) {
+    for (const [k, t] of recent_discord_errors) {
+      if (now - t >= DISCORD_ERROR_INTERVAL_MS) recent_discord_errors.delete(k);
+    }
+  }
+  recent_discord_errors.set(key, now);
+  return true;
+}
+
 function handleError(url: URL, e: any, visual: boolean) {
   switch (e?.code) {
     case "MissingToken":
@@ -385,7 +403,7 @@ function handleError(url: URL, e: any, visual: boolean) {
       });
     default:
       console.error(e);
-      if (process.env.DISCORD_WEBHOOK_URL) {
+      if (process.env.DISCORD_WEBHOOK_URL && shouldPostErrorToDiscord(String(e))) {
         fetch(process.env.DISCORD_WEBHOOK_URL, {
           method: "POST",
           body: JSON.stringify({
